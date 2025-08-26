@@ -1,0 +1,157 @@
+/* بهبودهای اضافی برای هدر */
+
+/* انیمیشن برای dropdown */
+.dropdown-menu {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* اثر hover برای navbar brand */
+.navbar-brand:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+/* نشانگر فعال بودن صفحه */
+.nav-link.active::before {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* بهبود ظاهر toggle button در موبایل */
+.navbar-toggler {
+    border: none;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* اثر loading برای dropdown */
+.dropdown-toggle::after {
+    transition: transform 0.3s ease;
+}
+
+.dropdown-toggle[aria-expanded="true"]::after {
+    transform: rotate(180deg);
+}
+
+/* بهبود فاصله‌گذاری */
+.navbar-nav {
+    gap: 4px;
+}
+
+/* اثر گلو برای منوهای اصلی */
+.nav-link {
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.nav-link:hover::before {
+    left: 100%;
+}
+
+/* بهبود ظاهر user menu */
+.navbar-nav .nav-item:last-child .nav-link {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.navbar-nav .nav-item:last-child .nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* انیمیشن برای آیکون‌ها */
+.nav-link i {
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover i {
+    transform: scale(1.1);
+}
+
+/* بهبود ظاهر divider در dropdown */
+.dropdown-divider {
+    margin: 8px 16px;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* اثر پالس برای admin badge */
+.admin-badge {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 4px rgba(239, 68, 68, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+}
+
+/* بهبود accessibility */
+.nav-link:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+}
+
+.dropdown-item:focus {
+    outline: 2px solid var(--mdz-primary);
+    outline-offset: -2px;
+}
+
+/* Dark mode support (اختیاری) */
+@media (prefers-color-scheme: dark) {
+    .nav-dropdown {
+        background: #1f2937;
+        border: 1px solid #374151;
+    }
+    
+    .nav-dropdown .dropdown-item {
+        color: #e5e7eb;
+    }
+    
+    .nav-dropdown .dropdown-item:hover {
+        background: linear-gradient(135deg, var(--mdz-primary), var(--mdz-accent));
+        color: white;
+    }
+}

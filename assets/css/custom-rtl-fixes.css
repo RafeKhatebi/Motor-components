@@ -1,0 +1,515 @@
+/*
+ * Custom RTL Fixes for Argon Dashboard
+ * 
+ * Scope:
+ * 1. Base & Grid - Box model, containers, responsive grid
+ * 2. Overflow Control - Prevent horizontal scroll, table handling
+ * 3. RTL-safe Properties - Logical properties for RTL support
+ * 4. Components - Navbar, cards, forms, modals responsive fixes
+ * 5. Responsive Utilities - Mobile-first responsive design
+ */
+
+/* ===== 1. BASE & GRID ===== */
+:where(*) {
+    box-sizing: border-box;
+}
+
+:where(img, video, canvas, audio, iframe, embed, object) {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Container width control for desktop */
+:where(.container, .container-fluid, .main-content-navbar) {
+    max-width: min(100vw, 1400px);
+    margin-inline: auto;
+}
+
+/* ===== 2. OVERFLOW CONTROL ===== */
+
+/* Prevent horizontal overflow on tables */
+:where(.table-responsive) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 1200px) {
+    :where(.table-responsive) {
+        overflow-x: visible;
+    }
+    
+    :where(.table) {
+        table-layout: fixed;
+        width: 100%;
+    }
+    
+    :where(.table th, .table td) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+/* Card overflow control */
+:where(.card) {
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+:where(.card-body) {
+    overflow-wrap: break-word;
+}
+
+/* Modal responsive width */
+:where(.modal-dialog) {
+    max-width: min(90vw, 800px);
+    margin-inline: auto;
+}
+
+:where(.modal-xl) {
+    max-width: min(95vw, 1140px);
+}
+
+/* ===== 3. RTL-SAFE PROPERTIES ===== */
+
+/* Navigation spacing */
+:where(.navbar-nav .nav-link i) {
+    margin-inline-end: 0.5rem;
+    margin-inline-start: 0;
+}
+
+:where(.me-2) {
+    margin-inline-end: 0.5rem !important;
+}
+
+:where(.ms-2) {
+    margin-inline-start: 0.5rem !important;
+}
+
+:where(.me-3) {
+    margin-inline-end: 1rem !important;
+}
+
+:where(.me-auto) {
+    margin-inline-start: auto !important;
+}
+
+/* Dropdown positioning */
+:where(.dropdown-menu) {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+}
+
+:where(.dropdown-menu-left) {
+    inset-inline-start: 0;
+    inset-inline-end: auto;
+}
+
+/* Badge spacing */
+:where(.badge-dot i) {
+    margin-inline-end: 0.375rem;
+    margin-inline-start: 0;
+}
+
+/* Input group RTL */
+:where(.input-group-prepend) {
+    margin-inline-end: -1px;
+    margin-inline-start: 0;
+}
+
+/* ===== 4. COMPONENTS ===== */
+
+/* Hamburger menu button */
+:where(.navbar-toggler) {
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 0.375rem 0.5rem;
+    border-radius: 0.375rem;
+}
+
+:where(.navbar-toggler:focus) {
+    box-shadow: 0 0 0 0.2rem rgba(255,255,255,0.25);
+    outline: none;
+}
+
+:where(.navbar-toggler-icon) {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    width: 1.5em;
+    height: 1.5em;
+}
+
+/* Navbar responsive */
+@media (max-width: 991.98px) {
+    :where(.navbar) {
+        padding: 0.75rem 0;
+    }
+    
+    :where(.navbar-collapse) {
+        background: rgba(0,0,0,0.1);
+        margin-top: 0.5rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        backdrop-filter: blur(10px);
+        max-width: 100%;
+        overflow: visible;
+    }
+    
+    :where(.navbar-nav) {
+        width: 100%;
+        gap: 0.25rem;
+    }
+    
+    :where(.navbar-nav .nav-link) {
+        padding: 0.75rem 1rem;
+        border-radius: 0.375rem;
+        background: rgba(255,255,255,0.05);
+        margin-bottom: 0.25rem;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+    }
+    
+    :where(.navbar-nav .nav-link:hover) {
+        background: rgba(255,255,255,0.15);
+        transform: translateX(5px);
+    }
+    
+    :where(.navbar-nav .nav-link.active) {
+        background: rgba(255,255,255,0.2);
+        font-weight: 600;
+    }
+    
+    /* User dropdown in mobile */
+    :where(.navbar-nav:last-child) {
+        border-top: 1px solid rgba(255,255,255,0.2);
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    :where(.navbar-brand) {
+        font-size: 0.9rem;
+        max-width: 65%;
+    }
+    
+    :where(.navbar-brand span) {
+        display: none;
+    }
+    
+    :where(.navbar-collapse) {
+        margin-top: 0.75rem;
+        padding: 0.75rem;
+    }
+    
+    :where(.navbar-nav .nav-link) {
+        padding: 0.6rem 0.8rem;
+    }
+    
+    :where(.navbar-nav .nav-link i) {
+        margin-inline-end: 0.75rem;
+        width: 1.2rem;
+        text-align: center;
+    }
+}
+
+/* Header responsive */
+@media (max-width: 767.98px) {
+    :where(.header) {
+        padding-block: 3rem;
+    }
+    
+    :where(.container-fluid) {
+        padding-inline: 1rem;
+    }
+}
+
+/* Card stats responsive */
+:where(.card-stats) {
+    min-height: 120px;
+}
+
+@media (max-width: 575.98px) {
+    :where(.card-stats .card-body) {
+        padding: 1rem;
+    }
+    
+    :where(.card-stats .h2) {
+        font-size: 1.5rem;
+    }
+}
+
+/* Form responsive */
+:where(.form-control, .form-control-alternative) {
+    min-width: 0;
+    width: 100%;
+}
+
+/* Button responsive */
+:where(.btn) {
+    min-width: fit-content;
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    :where(.btn-sm) {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Table responsive improvements */
+@media (max-width: 991.98px) {
+    :where(.table-responsive) {
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+    }
+    
+    :where(.table) {
+        margin-bottom: 0;
+        min-width: 600px;
+    }
+    
+    :where(.table th, .table td) {
+        white-space: nowrap;
+        min-width: 100px;
+    }
+}
+
+/* Modal responsive */
+@media (max-width: 575.98px) {
+    :where(.modal-dialog) {
+        margin: 0.5rem;
+        max-width: calc(100vw - 1rem);
+    }
+    
+    :where(.modal-body) {
+        padding: 1rem;
+    }
+    
+    :where(.modal-header, .modal-footer) {
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* Progress bar container */
+:where(.progress) {
+    overflow: hidden;
+}
+
+/* Avatar responsive */
+:where(.avatar) {
+    flex-shrink: 0;
+}
+
+/* ===== 5. RESPONSIVE UTILITIES ===== */
+
+/* Grid responsive */
+@media (min-width: 576px) {
+    :where(.col-sm-6) {
+        flex: 0 0 auto;
+        width: 50%;
+    }
+}
+
+@media (min-width: 768px) {
+    :where(.col-md-6) {
+        flex: 0 0 auto;
+        width: 50%;
+    }
+    
+    :where(.d-md-inline-block) {
+        display: inline-block !important;
+    }
+    
+    :where(.d-md-none) {
+        display: none !important;
+    }
+}
+
+@media (min-width: 992px) {
+    :where(.col-lg-3) {
+        flex: 0 0 auto;
+        width: 25%;
+    }
+    
+    :where(.col-lg-4) {
+        flex: 0 0 auto;
+        width: 33.333333%;
+    }
+    
+    :where(.col-lg-6) {
+        flex: 0 0 auto;
+        width: 50%;
+    }
+    
+    :where(.col-lg-8) {
+        flex: 0 0 auto;
+        width: 66.666667%;
+    }
+    
+    :where(.d-lg-block) {
+        display: block !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    :where(.col-xl-3) {
+        flex: 0 0 auto;
+        width: 25%;
+    }
+    
+    :where(.col-xl-4) {
+        flex: 0 0 auto;
+        width: 33.333333%;
+    }
+    
+    :where(.col-xl-6) {
+        flex: 0 0 auto;
+        width: 50%;
+    }
+    
+    :where(.col-xl-8) {
+        flex: 0 0 auto;
+        width: 66.666667%;
+    }
+}
+
+/* Text alignment responsive */
+@media (max-width: 575.98px) {
+    :where(.text-left) {
+        text-align: center !important;
+    }
+}
+
+/* Spacing responsive */
+@media (max-width: 767.98px) {
+    :where(.mt--7) {
+        margin-top: -4rem !important;
+    }
+    
+    :where(.pb-8) {
+        padding-bottom: 4rem !important;
+    }
+    
+    :where(.pt-5) {
+        padding-top: 2rem !important;
+    }
+}
+
+/* Navigation responsive text - override for mobile menu */
+@media (max-width: 991.98px) {
+    :where(.navbar-nav .nav-link span) {
+        display: inline !important;
+    }
+    
+    :where(.navbar-nav .nav-link i) {
+        margin-inline-end: 0.5rem !important;
+    }
+}
+
+/* Breadcrumb responsive */
+@media (max-width: 767.98px) {
+    :where(.breadcrumb) {
+        display: none;
+    }
+}
+
+/* Card header responsive */
+@media (max-width: 575.98px) {
+    :where(.card-header .row) {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    :where(.card-header .col) {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Pagination responsive */
+@media (max-width: 575.98px) {
+    :where(.pagination) {
+        justify-content: center;
+    }
+    
+    :where(.page-link) {
+        padding: 0.375rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Tab navigation responsive */
+@media (max-width: 767.98px) {
+    :where(.nav-pills) {
+        flex-direction: column;
+    }
+    
+    :where(.nav-pills .nav-link) {
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+}
+
+/* Icon responsive */
+@media (max-width: 575.98px) {
+    :where(.icon) {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* Media object responsive */
+@media (max-width: 575.98px) {
+    :where(.media) {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    :where(.media-body) {
+        margin-top: 0.5rem;
+    }
+}
+
+/* Alert responsive */
+@media (max-width: 575.98px) {
+    :where(.alert) {
+        padding: 0.75rem;
+        font-size: 0.8125rem;
+    }
+}
+
+/* Dropdown responsive */
+@media (max-width: 575.98px) {
+    :where(.dropdown-menu) {
+        position: static !important;
+        transform: none !important;
+        width: 100%;
+        box-shadow: none;
+        border: 1px solid #dee2e6;
+        margin-top: 0.5rem;
+    }
+}
+
+/* Final overflow prevention */
+@media (min-width: 1200px) {
+    :where(body) {
+        overflow-x: hidden;
+    }
+    
+    :where(.container-fluid) {
+        padding-inline: clamp(1rem, 2vw, 2rem);
+    }
+}
+
+/* ===== Page Header Spacing Tweaks ===== */
+/* Remove top spacing above page titles and action buttons (e.g., مدیریت کالاها, محصول جدید) */
+:where(.header) {
+    padding-top: 0 !important;
+}
+
+/* Keep row internal spacing but remove its top padding only */
+:where(.header .py-4) {
+    padding-top: 0 !important;
+}

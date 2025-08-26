@@ -1,0 +1,25 @@
+[2025-08-20 08:25:12] Error: PDO::quote(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\motor\backup.php on line 45
+[2025-08-20 10:57:19] Error: PDO::quote(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\motor\backup.php on line 45
+[2025-08-20 11:05:17] Error: PDO::quote(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\motor\test_backup.php on line 56
+[2025-08-20 11:05:25] Error: PDO::quote(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\motor\backup.php on line 45
+[2025-08-20 14:03:51] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:05:29] Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'transaction_date' in 'where clause' in C:\xampp\htdocs\motor\dashboard.php on line 37
+[2025-08-20 14:08:54] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:10:16] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:14:17] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:14:26] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:14:27] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:15:20] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:15:27] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:16:30] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:23:17] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:25:33] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:25:41] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:25:51] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:27:21] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:27:21] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:28:14] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:28:37] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:43:23] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:55:06] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3
+[2025-08-20 14:55:08] Exception: Failed opening required '../config/database.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\motor\includes\auth.php on line 3

@@ -1,0 +1,125 @@
+/* Compact DateTime Styles - Override all backgrounds */
+.dari-datetime,
+.dari-datetime *,
+#dari-datetime,
+#dari-datetime * {
+    background: white !important;
+    background-color: white !important;
+    background-image: none !important;
+    background-attachment: initial !important;
+    background-blend-mode: initial !important;
+    background-clip: initial !important;
+    background-origin: initial !important;
+    background-position: initial !important;
+    background-repeat: initial !important;
+    background-size: initial !important;
+    color: #6b7280 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    backdrop-filter: none !important;
+    filter: none !important;
+}
+
+.dari-datetime {
+    padding: 4px 10px !important;
+    margin: 0 !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    text-align: center !important;
+    border-bottom: 1px solid #f1f3f4 !important;
+    display: block !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* حذف فاصله اضافی بعد از تاریخ - به جز داشبورد */
+body:not([data-page="dashboard"]) .main-content-navbar {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* حفظ فاصله برای داشبورد */
+body[data-page="dashboard"] .main-content-navbar {
+    padding-top: var(--space-8, 2rem) !important;
+}
+
+.dari-datetime .weekday,
+.dari-datetime .weekday *,
+#dari-datetime .weekday,
+#dari-datetime .weekday *,
+.dari-datetime .date,
+.dari-datetime .date *,
+#dari-datetime .date,
+#dari-datetime .date *,
+.dari-datetime .time,
+.dari-datetime .time *,
+#dari-datetime .time,
+#dari-datetime .time * {
+    font-weight: 500 !important;
+    color: #6b7280 !important;
+    background: white !important;
+    background-color: white !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    backdrop-filter: none !important;
+    filter: none !important;
+    margin: 0 4px !important;
+    padding: 0 !important;
+    font-family: inherit !important;
+}
+
+/* Force override any inherited styles */
+.dari-datetime::before,
+.dari-datetime::after,
+#dari-datetime::before,
+#dari-datetime::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* Override any parent container styles */
+body .dari-datetime,
+body #dari-datetime,
+html .dari-datetime,
+html #dari-datetime,
+.navbar .dari-datetime,
+.navbar #dari-datetime,
+.container .dari-datetime,
+.container #dari-datetime {
+    background: white !important;
+    background-color: white !important;
+    background-image: none !important;
+    color: #6b7280 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    backdrop-filter: none !important;
+    filter: none !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dari-datetime {
+        font-size: 0.7rem !important;
+        padding: 3px 15px !important;
+        background: white !important;
+        background-color: white !important;
+        background-image: none !important;
+    }
+
+    .dari-datetime .weekday,
+    .dari-datetime .date {
+        margin: 0 4px !important;
+        background: white !important;
+        background-color: white !important;
+        background-image: none !important;
+    }
+
+    .dari-datetime .time {
+        margin: 0 !important;
+        font-size: 0.65rem !important;
+        background: white !important;
+        background-color: white !important;
+        background-image: none !important;
+    }
+}
