@@ -146,6 +146,24 @@ foreach ($allowed_files as $file) {
                         </a>
                     </div>
                 </div>
+                
+                <div class="nav-section">
+                    <div class="nav-item">
+                        <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'warranties.php' ? 'active' : '' ?>" href="warranties.php">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>گارانتی</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-item">
+                        <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'barcodes.php' ? 'active' : '' ?>" href="barcodes.php">
+                            <i class="fas fa-qrcode"></i>
+                            <span>بارکد</span>
+                        </a>
+                    </div>
+                </div>
 
                 <?php if ($_SESSION['role'] === 'admin'): ?>
                 <div class="nav-section">

@@ -155,17 +155,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $sale_id = $db->lastInsertId();
 
-        // ثبت آیتمها و کاهش موجودی
+        // ثبت آیتمها، کاهش موجودی و ایجاد گارانتی
         foreach ($valid_items as $item) {
             // ثبت آیتم
             $item_query = "INSERT INTO sale_items (sale_id, product_id, quantity, unit_price, total_price) VALUES (?, ?, ?, ?, ?)";
             $item_stmt = $db->prepare($item_query);
             $item_stmt->execute([$sale_id, $item['product_id'], $item['quantity'], $item['price'], $item['total']]);
+            $sale_item_id = $db->lastInsertId();
 
             // کاهش موجودی
             $update_stock_query = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?";
             $update_stock_stmt = $db->prepare($update_stock_query);
             $update_stock_stmt->execute([$item['quantity'], $item['product_id']]);
+            
+            // ایجاد گارانتی خودکار اگر محصول گارانتی دارد
+            $warranty_check = "SELECT warranty_months FROM products WHERE id = ? AND warranty_months > 0";
+            $warranty_stmt = $db->prepare($warranty_check);
+            $warranty_stmt->execute([$item['product_id']]);
+            $product_warranty = $warranty_stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($product_warranty && $product_warranty['warranty_months'] > 0) {
+                $warranty_months = $product_warranty['warranty_months'];
+                $warranty_start = date('Y-m-d');
+                $warranty_end = date('Y-m-d', strtotime("+{$warranty_months} months"));
+                
+                $warranty_query = "INSERT INTO warranties (sale_item_id, product_id, customer_id, warranty_start, warranty_end, warranty_months, warranty_type) 
+                                  VALUES (?, ?, ?, ?, ?, ?, 'shop')";
+                $warranty_insert = $db->prepare($warranty_query);
+                $warranty_insert->execute([$sale_item_id, $item['product_id'], $customer_id, $warranty_start, $warranty_end, $warranty_months]);
+            }
         }
 
         // Skip audit logging for now

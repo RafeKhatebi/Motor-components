@@ -30,6 +30,9 @@ try {
     $name = trim($_POST['name'] ?? '');
     $phone = trim($_POST['phone'] ?? '');
     $address = trim($_POST['address'] ?? '');
+    $customer_type = in_array($_POST['customer_type'] ?? 'retail', ['retail', 'wholesale', 'garage', 'dealer']) ? $_POST['customer_type'] : 'retail';
+    $discount_percentage = filter_input(INPUT_POST, 'discount_percentage', FILTER_VALIDATE_FLOAT) ?: 0;
+    $credit_limit = filter_input(INPUT_POST, 'credit_limit', FILTER_VALIDATE_FLOAT) ?: 0;
     
     // Sanitize inputs
     $name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
@@ -59,9 +62,9 @@ try {
         }
     }
     
-    $query = "INSERT INTO customers (name, phone, address) VALUES (?, ?, ?)";
+    $query = "INSERT INTO customers (name, phone, address, customer_type, discount_percentage, credit_limit) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $db->prepare($query);
-    $result = $stmt->execute([$name, $phone, $address]);
+    $result = $stmt->execute([$name, $phone, $address, $customer_type, $discount_percentage, $credit_limit]);
     
     if ($result && $stmt->rowCount() > 0) {
         sendJsonResponse(true, 'مشتری با موفقیت اضافه شد');

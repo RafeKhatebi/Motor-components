@@ -81,14 +81,20 @@ include __DIR__ . '/includes/header.php';
         <div class="card-body">
             <form id="addProductForm" onsubmit="event.preventDefault(); submitForm('addProductForm', 'api/add_product.php');">
                 <input type="hidden" name="csrf_token" value="<?= sanitizeOutput($_SESSION['csrf_token'] ?? '') ?>">
+                
+                <!-- ردیف اول: اطلاعات پایه -->
                 <div class="d-flex gap-2 align-items-end mb-3">
                     <div class="form-group" style="flex: 2;">
-                        <label class="form-label">نام محصول</label>
+                        <label class="form-label">نام قطعه</label>
                         <input type="text" name="name" class="form-control" required>
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label class="form-label">کد محصول</label>
                         <input type="text" name="code" id="productCode" class="form-control" readonly required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">شماره OEM</label>
+                        <input type="text" name="oem_number" class="form-control" placeholder="شماره اصلی">
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label class="form-label">دستهبندی</label>
@@ -99,6 +105,44 @@ include __DIR__ . '/includes/header.php';
                             <?php endforeach; ?>
                         </select>
                     </div>
+                </div>
+                
+                <!-- ردیف دوم: مشخصات موتور -->
+                <div class="d-flex gap-2 align-items-end mb-3">
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">برند موتور</label>
+                        <select name="brand" class="form-select">
+                            <option value="">انتخاب کنید</option>
+                            <option value="Honda">Honda</option>
+                            <option value="Yamaha">Yamaha</option>
+                            <option value="Suzuki">Suzuki</option>
+                            <option value="Kawasaki">Kawasaki</option>
+                            <option value="Bajaj">Bajaj</option>
+                            <option value="TVS">TVS</option>
+                            <option value="Hero">Hero</option>
+                            <option value="Royal Enfield">Royal Enfield</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">مدل موتور</label>
+                        <input type="text" name="motor_model" class="form-control" placeholder="مثال: CBR150">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">سال از</label>
+                        <input type="number" name="year_from" class="form-control" min="1990" max="2030">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">سال تا</label>
+                        <input type="number" name="year_to" class="form-control" min="1990" max="2030">
+                    </div>
+                </div>
+                
+                <!-- ردیف سوم: قیمت و موجودی -->
+                <div class="d-flex gap-2 align-items-end mb-3">
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">قیمت خرید</label>
+                        <input type="number" name="buy_price" class="form-control" required>
+                    </div>
                     <div class="form-group" style="flex: 1;">
                         <label class="form-label">قیمت فروش</label>
                         <input type="number" name="sell_price" class="form-control" required>
@@ -107,21 +151,46 @@ include __DIR__ . '/includes/header.php';
                         <label class="form-label">موجودی</label>
                         <input type="number" name="stock_quantity" class="form-control" value="0">
                     </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-check me-1"></i>ثبت
-                        </button>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">حداقل موجودی</label>
+                        <input type="number" name="min_stock" class="form-control" value="5">
                     </div>
                 </div>
-                <div class="d-flex gap-2">
+                
+                <!-- ردیف چهارم: مشخصات فیزیکی -->
+                <div class="d-flex gap-2 align-items-end mb-3">
                     <div class="form-group" style="flex: 1;">
-                        <input type="number" name="buy_price" class="form-control" placeholder="قیمت خرید" required>
+                        <label class="form-label">نوع قطعه</label>
+                        <select name="part_type" class="form-select">
+                            <option value="aftermarket">جایگزین</option>
+                            <option value="original">اصلی</option>
+                            <option value="used">دست دوم</option>
+                        </select>
                     </div>
                     <div class="form-group" style="flex: 1;">
-                        <input type="number" name="min_stock" class="form-control" placeholder="حداقل موجودی" value="5">
+                        <label class="form-label">وزن (گرم)</label>
+                        <input type="number" name="weight" class="form-control" step="0.01">
                     </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">گارانتی (ماه)</label>
+                        <input type="number" name="warranty_months" class="form-control" value="0">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">موقعیت انبار</label>
+                        <input type="text" name="shelf_location" class="form-control" placeholder="قفسه A-1">
+                    </div>
+                </div>
+                
+                <!-- ردیف پنجم: توضیحات و ثبت -->
+                <div class="d-flex gap-2 align-items-end">
                     <div class="form-group" style="flex: 4;">
-                        <input type="text" name="description" class="form-control" placeholder="توضیحات">
+                        <label class="form-label">توضیحات</label>
+                        <input type="text" name="description" class="form-control" placeholder="توضیحات اضافی">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check me-1"></i>ثبت قطعه
+                        </button>
                     </div>
                 </div>
             </form>

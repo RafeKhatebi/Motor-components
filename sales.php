@@ -257,6 +257,19 @@ include __DIR__ . '/includes/header.php';
                 ?>
                 <input type="hidden" name="csrf_token" value="<?= sanitizeOutput($_SESSION['csrf_token']) ?>">
 
+                <!-- بارکد اسکنر -->
+                <div class="d-flex gap-3 align-items-end mb-3">
+                    <div class="form-group" style="flex: 3;">
+                        <label class="form-label">اسکن بارکد</label>
+                        <div class="input-group">
+                            <input type="text" id="barcodeInput" class="form-control" placeholder="بارکد را اسکن کنید یا وارد کنید" onkeypress="handleBarcodeInput(event)">
+                            <button type="button" class="btn btn-primary" onclick="searchBarcode()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="d-flex gap-3 align-items-end mb-3">
                     <div class="form-group" style="flex: 2;">
                         <label class="form-label">مشتری</label>
@@ -647,13 +660,44 @@ include __DIR__ . '/includes/header.php';
         }
     }
 
-    function updatePrice(select) {
-        const price = select.options[select.selectedIndex].dataset.price || 0;
-        const buyPrice = select.options[select.selectedIndex].dataset.buyPrice || 0;
+    async function updatePrice(select) {
+        const productId = select.value;
+        const customerId = document.getElementById('customer_id').value;
         const row = select.closest("tr");
         const priceInput = row.querySelector(".price");
-        priceInput.value = price;
-        priceInput.dataset.buyPrice = buyPrice;
+        const quantityInput = row.querySelector(".quantity");
+        
+        if (!productId) {
+            priceInput.value = '';
+            return;
+        }
+        
+        try {
+            const quantity = quantityInput.value || 1;
+            const url = `api/get_smart_price.php?product_id=${productId}&customer_id=${customerId}&quantity=${quantity}`;
+            const response = await fetch(url);
+            const result = await response.json();
+            
+            if (result.success) {
+                priceInput.value = result.data.final_price;
+                priceInput.dataset.buyPrice = result.data.base_price;
+                
+                // نمایش اطلاعات تخفیف
+                if (result.data.applied_discount > 0) {
+                    const discountInfo = `تخفیف ${result.data.applied_discount}% اعمال شد`;
+                    priceInput.title = discountInfo;
+                }
+            } else {
+                // fallback to original price
+                const price = select.options[select.selectedIndex].dataset.price || 0;
+                priceInput.value = price;
+            }
+        } catch (error) {
+            // fallback to original price
+            const price = select.options[select.selectedIndex].dataset.price || 0;
+            priceInput.value = price;
+        }
+        
         calculateInvoice();
     }
 
@@ -882,6 +926,86 @@ include __DIR__ . '/includes/header.php';
         }
     }
 
+    // Barcode functions
+    function handleBarcodeInput(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            searchBarcode();
+        }
+    }
+    
+    async function searchBarcode() {
+        const barcodeInput = document.getElementById('barcodeInput');
+        const barcode = barcodeInput.value.trim();
+        
+        if (!barcode) {
+            showAlert('بارکد را وارد کنید', 'error');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`api/barcode_search.php?barcode=${encodeURIComponent(barcode)}&type=sale`);
+            const result = await response.json();
+            
+            if (result.success) {
+                addProductToInvoice(result.product);
+                barcodeInput.value = '';
+                showAlert(`محصول اضافه شد: ${result.product.name}`, 'success');
+            } else {
+                showAlert(result.message, 'error');
+            }
+        } catch (error) {
+            showAlert('خطا در جستجوی بارکد', 'error');
+        }
+    }
+    
+    function addProductToInvoice(product) {
+        const tbody = document.querySelector('#invoiceItems tbody');
+        let emptyRow = null;
+        
+        // پیدا کردن ردیف خالی
+        const rows = tbody.querySelectorAll('tr');
+        for (let row of rows) {
+            const select = row.querySelector('select[name="products[]"]');
+            if (!select.value) {
+                emptyRow = row;
+                break;
+            }
+        }
+        
+        // اگر ردیف خالی نیست، یکی اضافه کن
+        if (!emptyRow) {
+            addRow();
+            emptyRow = tbody.lastElementChild;
+        }
+        
+        // پر کردن اطلاعات
+        const select = emptyRow.querySelector('select[name="products[]"]');
+        const quantityInput = emptyRow.querySelector('input[name="quantities[]"]');
+        const priceInput = emptyRow.querySelector('input[name="prices[]"]');
+        
+        // اضافه کردن محصول به لیست اگر وجود ندارد
+        let optionExists = false;
+        for (let option of select.options) {
+            if (option.value == product.id) {
+                optionExists = true;
+                break;
+            }
+        }
+        
+        if (!optionExists) {
+            const option = new Option(`${product.name} (موجودی: ${product.stock_quantity})`, product.id);
+            option.dataset.price = product.sell_price;
+            select.add(option);
+        }
+        
+        select.value = product.id;
+        quantityInput.value = 1;
+        priceInput.value = product.sell_price;
+        
+        calculateInvoice();
+    }
+    
     // Initialize event listeners
     document.addEventListener('DOMContentLoaded', function() {
         // Add event listeners to existing row
