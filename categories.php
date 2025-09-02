@@ -25,119 +25,66 @@ if (!isset($_SESSION['csrf_token'])) {
 }
 $csrf_token = $_SESSION['csrf_token'];
 
-$extra_css = '
-<style>
-/* Mobile responsive improvements for categories */
-@media (max-width: 768px) {
-    .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    .table {
-        min-width: 600px;
-        font-size: 0.8rem;
-    }
-    
-    .table th,
-    .table td {
-        padding: 8px 6px;
-        white-space: nowrap;
-    }
-    
-    .table td:last-child {
-        min-width: 100px;
-        position: sticky;
-        right: 0;
-        background: white;
-        z-index: 1;
-    }
-    
-    .btn-group .btn {
-        padding: 4px 6px;
-        margin-right: 2px;
-        min-width: 32px;
-    }
-    
-    .card-header .row {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .card-header .col.text-left {
-        text-align: center !important;
-    }
-    
-    #searchInput {
-        width: 100% !important;
-        max-width: 300px;
-        margin: 0 auto;
-    }
-    
-    .header .btn {
-        width: 100%;
-        max-width: 200px;
-        margin: 5px auto;
-        display: block;
-    }
-    
-    .modal-dialog {
-        max-width: 95%;
-        margin: 10px;
-    }
-}
-</style>
-';
+$extra_css = '';
 
 include 'includes/header.php';
 ?>
 
-<!-- Header -->
-<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-white d-inline-block mb-0"><?= __('category_management') ?></h6>
+<!-- فرم دسته بندی جدید -->
+<div class="section">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-plus me-2"></i>
+                افزودن دسته بندی جدید
+            </h5>
+        </div>
+        <div class="card-body">
+            <form id="addCategoryForm" onsubmit="event.preventDefault(); submitForm('addCategoryForm', 'api/add_category.php');">
+                <div class="d-flex gap-3 align-items-end">
+                    <div class="form-group" style="flex: 2;">
+                        <label class="form-label">نام دسته بندی</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group" style="flex: 3;">
+                        <label class="form-label">توضیحات</label>
+                        <input type="text" name="description" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check me-1"></i>ثبت
+                        </button>
+                    </div>
                 </div>
-                <div class="col-lg-6 col-5 text-left">
-                    <a href="#" class="btn btn-professional btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#addCategoryModal">
-                        <i class="fas fa-plus"></i> <?= __('new_category') ?>
-                    </a>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
 
-<!-- Page content -->
-<div class="container-fluid mt--7">
-    <div class="row">
-        <div class="col">
-            <div class="card card-professional">
-                <div class="card-header border-0">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h3 class="mb-0"><?= __('list_title') ?> <?= __('categories') ?></h3>
-                        </div>
-                        <div class="col text-left">
-                            <input type="text" class="form-control form-control-sm" placeholder="جستجو..."
-                                id="searchInput" style="width: 200px; display: inline-block;">
-                        </div>
-                    </div>
+<div class="section">
+    <div class="table-card">
+        <div class="table-header">
+            <div class="action-bar">
+                <div class="action-group">
+                    <h3><?= __('list_title') ?> <?= __('categories') ?></h3>
                 </div>
-                <div class="table-responsive">
-                    <table class="table align-items-center table-flush" id="categoriesTable">
-                        <thead class="thead-light">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col"><?= __('category_name') ?></th>
-                                <th scope="col"><?= __('description') ?></th>
-                                <th scope="col"><?= __('creation_date') ?></th>
-                                <th scope="col"><?= __('actions') ?></th>
-                            </tr>
-                        </thead>
+                <div class="action-group">
+                    <input type="text" class="form-control form-control-sm" placeholder="جستجو..."
+                        id="searchInput" style="width: 200px;">
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table" id="categoriesTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th><?= __('category_name') ?></th>
+                        <th><?= __('description') ?></th>
+                        <th><?= __('creation_date') ?></th>
+                        <th><?= __('actions') ?></th>
+                    </tr>
+                </thead>
                         <tbody>
                             <?php foreach ($categories as $index => $category): ?>
                                 <tr>
@@ -148,12 +95,12 @@ include 'includes/header.php';
                                     <td class="text-left">
                                         <div class="btn-group" role="group">
                                             <button onclick="editCategory(<?= $category['id'] ?>)"
-                                                class="btn btn-professional btn-warning btn-sm" title="ویرایش">
+                                                class="btn btn-warning btn-sm" title="ویرایش">
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                             <button
                                                 onclick="confirmDelete(<?= $category['id'] ?>, 'api/delete_category.php', <?= htmlspecialchars(json_encode($category['name']), ENT_QUOTES, 'UTF-8') ?>)"
-                                                class="btn btn-professional btn-danger btn-sm" title="حذف">
+                                                class="btn btn-danger btn-sm" title="حذف">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
@@ -162,40 +109,11 @@ include 'includes/header.php';
                             <?php endforeach; ?>
                         </tbody>
                     </table>
-                </div>
-            </div>
         </div>
     </div>
 </div>
 
-<!-- Modal افزودن دستهبندی -->
-<div class="modal fade modal-professional" id="addCategoryModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">افزودن دسته بندی جدید</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addCategoryForm"
-                    onsubmit="event.preventDefault(); submitForm('addCategoryForm', 'api/add_category.php');">
-                    <div class="form-group">
-                        <label class="form-control-label">نام دسته بندی</label>
-                        <input type="text" name="name" class="form-control form-control-professional" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-control-label">توضیحات</label>
-                        <textarea name="description" class="form-control form-control-professional" rows="3"></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-professional btn-secondary" data-bs-dismiss="modal">انصراف</button>
-                <button type="submit" form="addCategoryForm" class="btn btn-professional btn-success">ذخیره</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <script>
     const CSRF = '<?= $csrf_token ?>';
@@ -215,13 +133,9 @@ include 'includes/header.php';
             const result = await response.json();
 
             if (result.success) {
-                showAlert('عملیات با موفقیت انجام شد', 'success');
-                const modalEl = form.closest('.modal');
-                if (modalEl) {
-                    const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-                    modalInstance.hide();
-                }
-                location.reload();
+                showAlert('دسته بندی با موفقیت اضافه شد', 'success');
+                form.reset();
+                setTimeout(() => location.reload(), 1000);
             } else {
                 showAlert(result.message || 'خطا در انجام عملیات', 'error');
             }
@@ -263,7 +177,7 @@ include 'includes/header.php';
                     showAlert('دسته بندی با موفقیت حذف شد', 'success');
                     setTimeout(() => location.reload(), 1000);
                 } else {
-                    showAlert(result.message || 'خطا در حذف دستهبندی', 'error');
+                    showAlert(result.message || 'خطا در حذف دسته بندی', 'error');
                 }
             } catch (error) {
                 console.error('Fetch Error:', error);
@@ -293,10 +207,4 @@ include 'includes/header.php';
     });
 </script>
 
-<?php
-$footer_path = 'includes/footer.php';
-if (!preg_match('/^[a-zA-Z0-9_\-\/]+\.php$/', $footer_path) || strpos($footer_path, '..') !== false) {
-    die('Invalid file path');
-}
-include $footer_path;
-?>
+<?php include 'includes/footer-modern.php'; ?>

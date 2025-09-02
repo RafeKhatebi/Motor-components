@@ -52,91 +52,16 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $extra_css = '
 <style>
 .table-summary {
-    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-    border-top: 2px solid #1f2937;
+    background: var(--bg-tertiary);
+    border-top: 2px solid var(--primary);
     font-weight: 600;
-    color: #1f2937;
+    color: var(--text-primary);
 }
 
 .table-summary th {
-    padding: 16px 12px;
-    font-size: 0.95rem;
-    border-top: 2px solid #1f2937;
-}
-
-.table-summary th:first-child {
-    border-radius: 0 0 0 8px;
-}
-
-.table-summary th:last-child {
-    border-radius: 0 0 8px 0;
-}
-
-/* Pagination Styles */
-.pagination {
-    gap: 4px;
-}
-
-.page-link {
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-    color: #374151;
-    padding: 8px 12px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.page-link:hover {
-    background: #1f2937;
-    border-color: #1f2937;
-    color: white;
-    transform: translateY(-1px);
-}
-
-.page-item.active .page-link {
-    background: #1f2937;
-    border-color: #1f2937;
-    color: white;
-    box-shadow: 0 4px 12px rgba(31, 41, 55, 0.3);
-}
-
-.page-item.disabled .page-link {
-    color: #9ca3af;
-    background: #f9fafb;
-    border-color: #e5e7eb;
-}
-
-/* Mobile responsive improvements */
-@media (max-width: 768px) {
-    .table th:nth-child(3),
-    .table td:nth-child(3) {
-        display: none;
-    }
-    
-    .btn-group {
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    .btn-group .btn {
-        width: 100%;
-        margin-bottom: 5px;
-        border-radius: 6px !important;
-    }
-    
-    .modal-lg {
-        max-width: 95%;
-    }
-    
-    .card-header .row {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    #searchInput {
-        width: 100% !important;
-        max-width: 300px;
-    }
+    padding: var(--space-4) var(--space-3);
+    font-size: var(--font-sm);
+    border-top: 2px solid var(--primary);
 }
 </style>
 ';
@@ -144,53 +69,91 @@ $extra_css = '
 include __DIR__ . '/includes/header.php';
 ?>
 
-<!-- Header -->
-<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-white d-inline-block mb-0"><?= sanitizeOutput(__('product_management')) ?></h6>
+<!-- فرم محصول جدید -->
+<div class="section">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-plus me-2"></i>
+                افزودن محصول جدید
+            </h5>
+        </div>
+        <div class="card-body">
+            <form id="addProductForm" onsubmit="event.preventDefault(); submitForm('addProductForm', 'api/add_product.php');">
+                <input type="hidden" name="csrf_token" value="<?= sanitizeOutput($_SESSION['csrf_token'] ?? '') ?>">
+                <div class="d-flex gap-2 align-items-end mb-3">
+                    <div class="form-group" style="flex: 2;">
+                        <label class="form-label">نام محصول</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">کد محصول</label>
+                        <input type="text" name="code" id="productCode" class="form-control" readonly required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">دستهبندی</label>
+                        <select name="category_id" class="form-select" required>
+                            <option value="">انتخاب کنید</option>
+                            <?php foreach ($categories as $category): ?>
+                                <option value="<?= $category['id'] ?>"><?= sanitizeOutput($category['name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">قیمت فروش</label>
+                        <input type="number" name="sell_price" class="form-control" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">موجودی</label>
+                        <input type="number" name="stock_quantity" class="form-control" value="0">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check me-1"></i>ثبت
+                        </button>
+                    </div>
                 </div>
-                <div class="col-lg-6 col-5 text-left">
-                    <a href="#" class="btn btn-professional btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#addProductModal">
-                        <i class="fas fa-plus"></i> <?= sanitizeOutput(__('new_product')) ?>
-                    </a>
+                <div class="d-flex gap-2">
+                    <div class="form-group" style="flex: 1;">
+                        <input type="number" name="buy_price" class="form-control" placeholder="قیمت خرید" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <input type="number" name="min_stock" class="form-control" placeholder="حداقل موجودی" value="5">
+                    </div>
+                    <div class="form-group" style="flex: 4;">
+                        <input type="text" name="description" class="form-control" placeholder="توضیحات">
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
-
-<!-- Page content -->
-<div class="container-fluid mt--7">
-    <div class="row">
-        <div class="col">
-            <div class="card card-professional">
-                <div class="card-header border-0">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h3 class="mb-0"><?= sanitizeOutput(__('list')) ?> <?= sanitizeOutput(__('products')) ?></h3>
-                        </div>
-                        <div class="col text-left">
-                            <input type="text" class="form-control form-control-sm" placeholder="<?= sanitizeOutput(__('search')) ?>..."
-                                id="searchInput" style="width: 200px; display: inline-block;">
-                        </div>
-                    </div>
+<div class="section">
+    <div class="table-card">
+        <div class="table-header">
+            <div class="action-bar">
+                <div class="action-group">
+                    <h3>فهرست محصولات</h3>
                 </div>
+                <div class="action-group">
+                    <input type="text" class="form-control form-control-sm" placeholder="جستجو..."
+                        id="searchInput" style="width: 200px;">
 
-                <div class="table-responsive">
-                    <table class="table align-items-center table-flush" id="productsTable">
-                        <thead class="thead-light">
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-modern" id="productsTable">
+                <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col"><?= sanitizeOutput(__('products')) ?></th>
-                                <th scope="col"><?= sanitizeOutput(__('category')) ?></th>
-                                <th scope="col"><?= sanitizeOutput(__('sell_price')) ?></th>
-                                <th scope="col"><?= sanitizeOutput(__('stock_quantity')) ?></th>
-                                <th scope="col"><?= sanitizeOutput(__('status')) ?></th>
-                                <th scope="col"><?= sanitizeOutput(__('actions')) ?></th>
+                                <th>#</th>
+                                <th>محصول</th>
+                                <th>دسته بندی</th>
+                                <th>قیمت فروش</th>
+                                <th>موجودی</th>
+                                <th>وضعیت</th>
+                                <th>عملیات</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -232,12 +195,12 @@ include __DIR__ . '/includes/header.php';
                                     </td>
                                     <td class="text-left">
                                         <button onclick="editProduct(<?= $product['id'] ?>)"
-                                            class="btn btn-professional btn-warning btn-sm">
+                                            class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button
                                             onclick="confirmDelete(<?= $product['id'] ?>, 'api/delete_product.php', '<?= sanitizeOutput($product['name']) ?>')"
-                                            class="btn btn-professional btn-danger btn-sm">
+                                            class="btn btn-danger btn-sm">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -327,95 +290,12 @@ include __DIR__ . '/includes/header.php';
         </div>
     </div>
 
-    <?php include __DIR__ . '/includes/footer.php'; ?>
-
-    <!-- Modal افزودن محصول -->
-    <div class="modal fade modal-professional" id="addProductModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">افزودن محصول جدید</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addProductForm"
-                        onsubmit="event.preventDefault(); submitForm('addProductForm', 'api/add_product.php');">
-                        <?php if (!isset($_SESSION['csrf_token']))
-                            $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); ?>
-                        <input type="hidden" name="csrf_token" value="<?= sanitizeOutput($_SESSION['csrf_token']) ?>">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">نام محصول</label>
-                                    <input type="text" name="name" class="form-control form-control-professional"
-                                        required>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">کد محصول</label>
-                                    <input type="text" name="code" id="productCode"
-                                        class="form-control form-control-professional" readonly required>
-                                    <small class="form-text text-muted">کد به صورت خودکار تولید میشود</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">دسته بندی</label>
-                                    <select name="category_id" class="form-control form-control-professional" required>
-                                        <option value="">انتخاب کنید</option>
-                                        <?php foreach ($categories as $category): ?>
-                                            <option value="<?= $category['id'] ?>"><?= sanitizeOutput($category['name']) ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">موجودی اولیه</label>
-                                    <input type="number" name="stock_quantity"
-                                        class="form-control form-control-professional" value="0">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">قیمت خرید</label>
-                                    <input type="number" name="buy_price" class="form-control form-control-professional"
-                                        required>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">قیمت فروش</label>
-                                    <input type="number" name="sell_price"
-                                        class="form-control form-control-professional" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-control-label">حداقل موجودی</label>
-                            <input type="number" name="min_stock" class="form-control form-control-professional"
-                                value="5">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-control-label">توضیحات</label>
-                            <textarea name="description" class="form-control form-control-professional"
-                                rows="3"></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-professional btn-secondary"
-                        data-bs-dismiss="modal">انصراف</button>
-                    <button type="submit" form="addProductForm" class="btn btn-professional btn-success">ذخیره</button>
-                </div>
-            </div>
-        </div>
     </div>
+</div>
+
+<?php include __DIR__ . '/includes/footer-modern.php'; ?>
+
+
 
     <script>
         function editProduct(id) {
@@ -435,8 +315,9 @@ include __DIR__ . '/includes/header.php';
                 const result = await response.json();
 
                 if (result.success) {
-                    showAlert('عملیات با موفقیت انجام شد', 'success');
-                    bootstrap.Modal.getInstance(form.closest('.modal')).hide();
+                    showAlert('محصول با موفقیت اضافه شد', 'success');
+                    form.reset();
+                    generateProductCode();
                     setTimeout(() => location.reload(), 1000);
                 } else {
                     showAlert(result.message || 'خطا در انجام عملیات', 'error');
@@ -520,8 +401,8 @@ include __DIR__ . '/includes/header.php';
             document.getElementById('totalStock').textContent = totalStock.toLocaleString();
         }
 
-        // Load product code when modal opens
-        document.getElementById('addProductModal').addEventListener('show.bs.modal', async function () {
+        // Generate product code function
+        async function generateProductCode() {
             try {
                 const response = await fetch('api/get_next_product_code.php');
                 const result = await response.json();
@@ -534,8 +415,11 @@ include __DIR__ . '/includes/header.php';
             } catch (error) {
                 showAlert('خطا در ارتباط با سرور', 'error');
             }
-        });
+        }
 
-        // Calculate on page load
-        document.addEventListener('DOMContentLoaded', calculateSummary);
+        // Calculate on page load and generate product code
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateSummary();
+            generateProductCode();
+        });
     </script>

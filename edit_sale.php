@@ -61,38 +61,27 @@ $products = $products_stmt->fetchAll(PDO::FETCH_ASSOC);
 include 'includes/header.php';
 ?>
 
-<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-white d-inline-block mb-0">ویرایش فاکتور فروش #<?= $sale['id'] ?></h6>
-                </div>
-                <div class="col-lg-6 col-5 text-left">
-                    <a href="sales.php" class="btn btn-professional btn-sm">
-                        <i class="fas fa-arrow-right"></i> بازگشت
-                    </a>
-                </div>
+<div class="section">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-edit me-2"></i>
+                    ویرایش فاکتور فروش #<?= $sale['id'] ?>
+                </h5>
+                <a href="sales.php" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-right me-1"></i>بازگشت
+                </a>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="container-fluid mt--7">
-    <div class="row">
-        <div class="col-12">
-            <div class="card card-professional">
-                <div class="card-header">
-                    <h3 class="mb-0">ویرایش فاکتور فروش</h3>
-                </div>
-                <div class="card-body">
+        <div class="card-body">
                     <form id="editSaleForm">
                         <input type="hidden" name="sale_id" value="<?= $sale['id'] ?>">
                         <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label>مشتری</label>
-                                    <select name="customer_id" class="form-control">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">مشتری</label>
+                                    <select name="customer_id" class="form-select">
                                         <option value="">مشتری نقدی</option>
                                         <?php foreach ($customers as $customer): ?>
                                             <option value="<?= $customer['id'] ?>" <?= $sale['customer_id'] == $customer['id'] ? 'selected' : '' ?>>
@@ -102,17 +91,17 @@ include 'includes/header.php';
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label>تخفیف (%)</label>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">تخفیف (%)</label>
                                     <input type="number" name="discount" class="form-control" value="<?= $sale['discount'] ?>" min="0" max="100" step="0.01" onchange="calculateTotal()">
                                 </div>
                             </div>
                         </div>
 
-                        <h6 class="heading-small text-muted mb-4">آیتمهای فاکتور</h6>
+                        <h6 class="mb-3">آیتمهای فاکتور</h6>
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table table-sm">
                                 <thead>
                                     <tr>
                                         <th>محصول</th>
@@ -126,7 +115,7 @@ include 'includes/header.php';
                                     <?php foreach ($sale_items as $item): ?>
                                     <tr>
                                         <td>
-                                            <select name="products[]" class="form-control" onchange="updatePrice(this)">
+                                            <select name="products[]" class="form-select form-select-sm" onchange="updatePrice(this)">
                                                 <?php foreach ($products as $product): ?>
                                                     <option value="<?= $product['id'] ?>" data-price="<?= $product['sell_price'] ?>" 
                                                             <?= $item['product_id'] == $product['id'] ? 'selected' : '' ?>>
@@ -136,16 +125,18 @@ include 'includes/header.php';
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="number" name="quantities[]" class="form-control quantity" 
+                                            <input type="number" name="quantities[]" class="form-control form-control-sm quantity" 
                                                    value="<?= $item['quantity'] ?>" min="1" onchange="calculateTotal()">
                                         </td>
                                         <td>
-                                            <input type="number" name="prices[]" class="form-control price" 
+                                            <input type="number" name="prices[]" class="form-control form-control-sm price" 
                                                    value="<?= $item['unit_price'] ?>" min="0" step="0.01" onchange="calculateTotal()">
                                         </td>
                                         <td class="subtotal"><?= number_format($item['total_price']) ?></td>
                                         <td>
-                                            <button type="button" onclick="removeRow(this)" class="btn btn-danger btn-sm">حذف</button>
+                                            <button type="button" onclick="removeRow(this)" class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
@@ -153,28 +144,27 @@ include 'includes/header.php';
                             </table>
                         </div>
 
-                        <button type="button" onclick="addRow()" class="btn btn-professional btn-sm mb-3">
-                            <i class="fas fa-plus"></i> افزودن ردیف
+                        <button type="button" onclick="addRow()" class="btn btn-outline-success btn-sm mb-3">
+                            <i class="fas fa-plus me-1"></i>افزودن ردیف
                         </button>
 
-                        <div class="text-left">
-                            <h4>مبلغ کل: <span id="totalAmount" class="text-success"><?= number_format($sale['final_amount']) ?></span> افغانی</h4>
-                        </div>
-
-                        <div class="text-center mt-4">
-                            <button type="button" onclick="updateSale()" class="btn btn-professional btn-success">
-                                <i class="fas fa-save"></i> ذخیره تغییرات
-                            </button>
-                            <a href="sales.php" class="btn btn-secondary">انصراف</a>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <h5>مبلغ کل: <span id="totalAmount" class="text-success"><?= number_format($sale['final_amount']) ?></span> افغانی</h5>
+                            <div>
+                                <button type="button" onclick="updateSale()" class="btn btn-success me-2">
+                                    <i class="fas fa-save me-1"></i>ذخیره تغییرات
+                                </button>
+                                <a href="sales.php" class="btn btn-secondary">
+                                    <i class="fas fa-times me-1"></i>انصراف
+                                </a>
+                            </div>
                         </div>
                     </form>
-                </div>
-            </div>
         </div>
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include 'includes/footer-modern.php'; ?>
 
 <script>
 function addRow() {
@@ -182,7 +172,7 @@ function addRow() {
     const newRow = tbody.insertRow();
     newRow.innerHTML = `
         <td>
-            <select name="products[]" class="form-control" onchange="updatePrice(this)">
+            <select name="products[]" class="form-select form-select-sm" onchange="updatePrice(this)">
                 <option value="">انتخاب محصول</option>
                 <?php foreach ($products as $product): ?>
                     <option value="<?= $product['id'] ?>" data-price="<?= $product['sell_price'] ?>">
@@ -191,10 +181,10 @@ function addRow() {
                 <?php endforeach; ?>
             </select>
         </td>
-        <td><input type="number" name="quantities[]" class="form-control quantity" min="1" onchange="calculateTotal()"></td>
-        <td><input type="number" name="prices[]" class="form-control price" min="0" step="0.01" onchange="calculateTotal()"></td>
+        <td><input type="number" name="quantities[]" class="form-control form-control-sm quantity" min="1" onchange="calculateTotal()"></td>
+        <td><input type="number" name="prices[]" class="form-control form-control-sm price" min="0" step="0.01" onchange="calculateTotal()"></td>
         <td class="subtotal">0</td>
-        <td><button type="button" onclick="removeRow(this)" class="btn btn-danger btn-sm">حذف</button></td>
+        <td><button type="button" onclick="removeRow(this)" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></button></td>
     `;
 }
 
@@ -245,14 +235,30 @@ async function updateSale() {
         const result = await response.json();
 
         if (result.success) {
-            alert('فاکتور با موفقیت ویرایش شد');
-            window.close();
+            showAlert('فاکتور با موفقیت ویرایش شد', 'success');
+            setTimeout(() => {
+                if (window.opener) {
+                    window.opener.location.reload();
+                    window.close();
+                } else {
+                    window.location.href = 'sales.php';
+                }
+            }, 1000);
         } else {
-            alert(result.message || 'خطا در ویرایش فاکتور');
+            showAlert(result.message || 'خطا در ویرایش فاکتور', 'error');
         }
     } catch (error) {
-        alert('خطا در ارتباط با سرور');
+        showAlert('خطا در ارتباط با سرور', 'error');
     }
+}
+
+function showAlert(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+    const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>`;
+    document.body.insertAdjacentHTML('afterbegin', alertHtml);
 }
 
 // محاسبه اولیه

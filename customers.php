@@ -48,6 +48,27 @@ $extra_css = '
     border-top: 2px solid #1f2937;
 }
 
+/* Edit Modal Styles */
+#editCustomerModal {
+    display: none;
+}
+
+#editCustomerModal.show {
+    display: block;
+}
+
+.modal-professional .modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.modal-professional .modal-header {
+    background: linear-gradient(135deg, #1f2937, #374151);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
 /* Pagination Styles */
 .pagination {
     gap: 4px;
@@ -121,44 +142,61 @@ $extra_css = '
 include 'includes/header.php';
 ?>
 
-<!-- Header -->
-<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-white d-inline-block mb-0"><?= __('customer_management') ?></h6>
+<!-- فرم مشتری جدید -->
+<div class="section">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-user-plus me-2"></i>
+                افزودن مشتری جدید
+            </h5>
+        </div>
+        <div class="card-body">
+            <form id="addCustomerForm" onsubmit="event.preventDefault(); submitForm('addCustomerForm', 'api/add_customer.php');">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                <div class="d-flex gap-3 align-items-end">
+                    <div class="form-group" style="flex: 2;">
+                        <label class="form-label">نام مشتری</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group" style="flex: 2;">
+                        <label class="form-label">شماره تلفن</label>
+                        <input type="text" name="phone" id="customerPhone" class="form-control" 
+                               placeholder="07XXXXXXXX" maxlength="10" onblur="checkPhoneUnique('customers', this.value)" 
+                               oninput="validatePhoneFormat(this)">
+                        <div id="phoneValidation" class="mt-1"></div>
+                    </div>
+                    <div class="form-group" style="flex: 3;">
+                        <label class="form-label">آدرس</label>
+                        <input type="text" name="address" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-check me-1"></i>ثبت
+                        </button>
+                    </div>
                 </div>
-                <div class="col-lg-6 col-5 text-left">
-                    <a href="#" class="btn btn-professional btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#addCustomerModal">
-                        <i class="fas fa-plus"></i> <?= __('new_customer') ?>
-                    </a>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
-
-<!-- Page content -->
-<div class="container-fluid mt--7">
-    <div class="row">
-        <div class="col">
-            <div class="card card-professional">
-                <div class="card-header border-0">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h3 class="mb-0"><?= __('list_title') ?> <?= __('customers') ?></h3>
-                        </div>
-                        <div class="col text-left">
-                            <input type="text" class="form-control form-control-sm" placeholder="جستجو..."
-                                id="searchInput" style="width: 200px; display: inline-block;">
-                        </div>
-                    </div>
+<div class="section">
+    <div class="table-card">
+        <div class="table-header">
+            <div class="action-bar">
+                <div class="action-group">
+                    <h3>فهرست مشتریان</h3>
                 </div>
-                <div class="table-responsive">
-                    <table class="table align-items-center table-flush" id="customersTable">
-                        <thead class="thead-light">
+                <div class="action-group">
+                    <input type="text" class="form-control form-control-sm" placeholder="جستجو..."
+                        id="searchInput" style="width: 200px;">
+
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-modern" id="customersTable">
+                <thead>
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">نام</th>
@@ -249,49 +287,10 @@ include 'includes/header.php';
                     </div>
                 <?php endif; ?>
             </div>
-        </div>
     </div>
 </div>
 
-<!-- Modal افزودن مشتری -->
-<div class="modal fade modal-professional" id="addCustomerModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">افزودن مشتری جدید</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addCustomerForm"
-                    onsubmit="event.preventDefault(); submitForm('addCustomerForm', 'api/add_customer.php');">
-                    <?php if (!isset($_SESSION['csrf_token']))
-                        $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); ?>
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                    <div class="form-group">
-                        <label class="form-control-label">نام مشتری</label>
-                        <input type="text" name="name" class="form-control form-control-professional" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-control-label">شماره تلفن</label>
-                        <input type="text" name="phone" id="customerPhone"
-                            class="form-control form-control-professional" placeholder="07XXXXXXXX" maxlength="10"
-                            onblur="checkPhoneUnique('customers', this.value)" oninput="validatePhoneFormat(this)">
-                        <div id="phoneValidation" class="mt-1"></div>
-                        <small class="form-text text-muted">شماره تلفن باید با 07 شروع شود و 10 رقم باشد</small>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-control-label">آدرس</label>
-                        <textarea name="address" class="form-control form-control-professional" rows="3"></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-professional btn-secondary" data-bs-dismiss="modal">انصراف</button>
-                <button type="submit" form="addCustomerForm" class="btn btn-professional btn-success">ذخیره</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Modal ویرایش مشتری -->
 <div class="modal fade modal-professional" id="editCustomerModal" tabindex="-1" role="dialog">
@@ -402,9 +401,11 @@ include 'includes/header.php';
             const result = await response.json();
 
             if (result.success) {
-                showAlert('عملیات با موفقیت انجام شد', 'success');
-                bootstrap.Modal.getInstance(form.closest('.modal')).hide();
-                location.reload();
+                showAlert('مشتری با موفقیت اضافه شد', 'success');
+                form.reset();
+                document.getElementById('phoneValidation').innerHTML = '';
+                phoneValidationPassed = true;
+                setTimeout(() => location.reload(), 1000);
             } else {
                 showAlert(result.message || 'خطا در انجام عملیات', 'error');
             }
@@ -419,12 +420,15 @@ include 'includes/header.php';
             const result = await response.json();
             
             if (result.success) {
+                // پر کردن فیلدهای فرم ویرایش
                 document.getElementById('editCustomerId').value = id;
                 document.getElementById('editCustomerName').value = result.data.name;
                 document.getElementById('editCustomerPhone').value = result.data.phone;
                 document.getElementById('editCustomerAddress').value = result.data.address;
                 
-                const modal = new bootstrap.Modal(document.getElementById('editCustomerModal'));
+                // نمایش مودال ویرایش
+                const modalElement = document.getElementById('editCustomerModal');
+                const modal = new bootstrap.Modal(modalElement);
                 modal.show();
             } else {
                 showAlert('خطا در دریافت اطلاعات مشتری', 'error');
@@ -493,4 +497,4 @@ include 'includes/header.php';
     document.addEventListener('DOMContentLoaded', calculateSummary);
 </script>
 
-<?php include 'includes/footer.php'; ?>
+<?php include 'includes/footer-modern.php'; ?>

@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 require_once 'config/database.php';
 require_once 'includes/functions.php';
 require_once 'includes/SettingsHelper.php';
-$page_title = 'پشتیبانگیری';
+$page_title = 'بک آپگیری';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -66,9 +66,9 @@ if ($_POST && isset($_POST['action'])) {
         }
 
         if (file_put_contents($backup_path, $backup_content) !== false) {
-            $success_message = "پشتیبان گیری با موفقیت انجام شد: $backup_file";
+            $success_message = "بک آپ گیری با موفقیت انجام شد: $backup_file";
         } else {
-            $error_message = "خطا در ایجاد فایل پشتیبان";
+            $error_message = "خطا در ایجاد فایل بک آپ";
         }
     }
 }
@@ -81,20 +81,6 @@ if (is_dir('backups')) {
 
 include 'includes/header.php';
 ?>
-
-<!-- Header -->
-<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-white d-inline-block mb-0"><?= __('backup_management') ?></h6>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Page content -->
 <div class="container-fluid mt--7">
     <?php if (isset($success_message)): ?>
@@ -117,14 +103,14 @@ include 'includes/header.php';
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header border-0">
-                    <h3 class="mb-0">ایجاد پشتیبان جدید</h3>
+                    <h3 class="mb-0">ایجاد بک آپ جدید</h3>
                 </div>
                 <div class="card-body">
                     <form method="POST">
                         <input type="hidden" name="action" value="backup">
                         <button type="submit" class="btn btn-success">
                             <i class="fas fa-download ml-2"></i>
-                            ایجاد پشتیبان
+                            ایجاد بک آپ
                         </button>
                     </form>
                 </div>
@@ -138,7 +124,7 @@ include 'includes/header.php';
                 <div class="card-header border-0">
                     <div class="row align-items-center">
                         <div class="col">
-                            <h3 class="mb-0">فایلهای پشتیبان</h3>
+                            <h3 class="mb-0">فایلهای بک آپ</h3>
                         </div>
                         <div class="col text-left">
                             <input type="text" class="form-control form-control-sm" placeholder="جستجو..."
@@ -198,4 +184,4 @@ include 'includes/header.php';
     });
 </script>
 
-<?php include 'includes/footer.php'; ?>
+<?php include 'includes/footer-modern.php'; ?>

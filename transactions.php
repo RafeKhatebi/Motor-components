@@ -71,116 +71,143 @@ foreach ($transactions as $transaction) {
 include __DIR__ . '/includes/header.php';
 ?>
 
-<!-- Header -->
-<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-white d-inline-block mb-0">مدیریت هزینه ها مالی</h6>
-                </div>
-                <div class="col-lg-6 col-5 text-left">
-                    <a href="#" class="btn btn-professional btn-sm" data-bs-toggle="modal" data-bs-target="#addTransactionModal">
-                        <i class="fas fa-plus"></i> افزودن هزینه
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Page content -->
-<div class="container-fluid mt--7">
+<div class="container-fluid mt-4">
     <div class="row">
         <div class="col">
             <div class="card card-professional">
+                <!-- Add Transaction Form -->
                 <div class="card-header border-0">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h3 class="mb-0">لیست هزینه ها</h3>
+                    <h5 class="mb-3"><i class="fas fa-plus"></i> افزودن هزینه جدید</h5>
+                    <form id="transactionForm" onsubmit="event.preventDefault(); submitTransaction();">
+                        <div class="d-flex gap-2 align-items-end mb-3">
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">نوع هزینه</label>
+                                <select name="transaction_type" class="form-control" required>
+                                    <option value="">انتخاب کنید</option>
+                                    <option value="expense">مصرف</option>
+                                    <option value="withdrawal">برداشت</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">دسته</label>
+                                <select name="type_id" class="form-control" required>
+                                    <option value="">ابتدا نوع هزینه را انتخاب کنید</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">مبلغ (افغانی)</label>
+                                <input type="number" name="amount" class="form-control" min="1" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">نام شخص</label>
+                                <input type="text" name="person_name" class="form-control" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">تاریخ</label>
+                                <input type="date" name="transaction_date" class="form-control" value="<?= date('Y-m-d') ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> افزودن
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                        <div class="form-group">
+                            <label class="form-label">توضیحات</label>
+                            <textarea name="description" class="form-control" rows="2" placeholder="توضیحات اختیاری..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-header border-0">
+                    <h3 class="mb-0">لیست هزینه ها</h3>
                 </div>
 
-                <!-- فیلترها -->
                 <div class="card-body">
+                    <!-- خلاصه مالی -->
+                    <div class="d-flex w-100 gap-3 mb-4">
+                        <div style="flex: 1;">
+                            <div class="card bg-danger text-white">
+                                <div class="card-body text-center py-3">
+                                    <i class="fas fa-money-bill-wave fa-2x mb-2"></i>
+                                    <div class="h6">کل مصارف</div>
+                                    <h4 class="mb-0"><?= number_format($total_expenses) ?></h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body text-center py-3">
+                                    <i class="fas fa-hand-holding-usd fa-2x mb-2"></i>
+                                    <div class="h6">کل برداشتها</div>
+                                    <h4 class="mb-0"><?= number_format($total_withdrawals) ?></h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="card bg-info text-white">
+                                <div class="card-body text-center py-3">
+                                    <i class="fas fa-arrow-down fa-2x mb-2"></i>
+                                    <div class="h6">کل خروجی</div>
+                                    <h4 class="mb-0"><?= number_format($total_expenses + $total_withdrawals) ?></h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center py-3">
+                                    <i class="fas fa-list-ol fa-2x mb-2"></i>
+                                    <div class="h6">تعداد هزینه</div>
+                                    <h4 class="mb-0"><?= count($transactions) ?></h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- فیلترها -->
                     <div class="row mb-4">
                         <div class="col-12">
                             <div class="card bg-light">
                                 <div class="card-body">
-                                    <form method="GET" class="row g-3">
-                                        <div class="col-md-3">
-                                            <label class="form-label">نوع هزینه</label>
-                                            <select name="filter_type" class="form-control">
-                                                <option value="">همه انواع</option>
-                                                <option value="expense" <?= $filter_type === 'expense' ? 'selected' : '' ?>>مصارف</option>
-                                                <option value="withdrawal" <?= $filter_type === 'withdrawal' ? 'selected' : '' ?>>برداشتها</option>
-                                            </select>
+                                    <form method="GET">
+                                        <!-- سطر اول: نوع هزینه و نام شخص -->
+                                        <div class="d-flex gap-3 mb-3">
+                                            <div style="flex: 1;">
+                                                <label class="form-label">نوع هزینه</label>
+                                                <select name="filter_type" class="form-control">
+                                                    <option value="">همه انواع</option>
+                                                    <option value="expense" <?= $filter_type === 'expense' ? 'selected' : '' ?>>مصارف</option>
+                                                    <option value="withdrawal" <?= $filter_type === 'withdrawal' ? 'selected' : '' ?>>برداشتها</option>
+                                                </select>
+                                            </div>
+                                            <div style="flex: 1;">
+                                                <label class="form-label">نام شخص</label>
+                                                <input type="text" name="filter_person" class="form-control" placeholder="جستجو..." value="<?= sanitizeOutput($filter_person) ?>">
+                                            </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <label class="form-label">نام شخص</label>
-                                            <input type="text" name="filter_person" class="form-control" placeholder="جستجو..." value="<?= sanitizeOutput($filter_person) ?>">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label class="form-label">از تاریخ</label>
-                                            <input type="date" name="filter_date_from" class="form-control" value="<?= $filter_date_from ?>">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label class="form-label">تا تاریخ</label>
-                                            <input type="date" name="filter_date_to" class="form-control" value="<?= $filter_date_to ?>">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label class="form-label d-block">&nbsp;</label>
-                                            <div class="d-flex gap-2">
-                                                <button type="submit" class="btn btn-primary">
-                                                    <i class="fas fa-search"></i> فیلتر
-                                                </button>
-                                                <a href="transactions.php" class="btn btn-secondary">
-                                                    <i class="fas fa-times"></i> پاک
-                                                </a>
+                                        <!-- سطر دوم: تاریخها و دکمه ها -->
+                                        <div class="d-flex gap-3">
+                                            <div style="flex: 1;">
+                                                <label class="form-label">از تاریخ</label>
+                                                <input type="date" name="filter_date_from" class="form-control" value="<?= $filter_date_from ?>">
+                                            </div>
+                                            <div style="flex: 1;">
+                                                <label class="form-label">تا تاریخ</label>
+                                                <input type="date" name="filter_date_to" class="form-control" value="<?= $filter_date_to ?>">
+                                            </div>
+                                            <div style="flex: 1;">
+                                                <label class="form-label d-block">&nbsp;</label>
+                                                <div class="d-flex gap-2">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="fas fa-search"></i> فیلتر
+                                                    </button>
+                                                    <a href="transactions.php" class="btn btn-secondary">
+                                                        <i class="fas fa-times"></i> پاک
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- خلاصه مالی -->
-                    <div class="row mb-4">
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="card bg-danger text-white">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-shopping-cart fa-2x mb-2"></i>
-                                    <h6>کل مصارف</h6>
-                                    <h4><?= number_format($total_expenses) ?> افغانی</h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="card bg-warning text-white">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-hand-holding-usd fa-2x mb-2"></i>
-                                    <h6>کل برداشتها</h6>
-                                    <h4><?= number_format($total_withdrawals) ?> افغانی</h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="card bg-info text-white">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-calculator fa-2x mb-2"></i>
-                                    <h6>کل خروجی</h6>
-                                    <h4><?= number_format($total_expenses + $total_withdrawals) ?> افغانی</h4>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6 mb-3">
-                            <div class="card bg-success text-white">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-list fa-2x mb-2"></i>
-                                    <h6>تعداد هزینه</h6>
-                                    <h4><?= count($transactions) ?> مورد</h4>
                                 </div>
                             </div>
                         </div>
@@ -189,16 +216,16 @@ include __DIR__ . '/includes/header.php';
 
                 <!-- جدول  هزینه ها -->
                 <div class="table-responsive">
-                    <table class="table align-items-center table-flush">
+                    <table class="table align-items-center table-flush table-sm">
                         <thead class="thead-light">
                             <tr>
-                                <th>کد هزینه</th>
-                                <th>نوع</th>
-                                <th>دسته</th>
-                                <th>مبلغ</th>
-                                <th>شخص</th>
-                                <th>تاریخ</th>
-                                <th>عملیات</th>
+                                <th class="text-center" style="width: 10%">کد</th>
+                                <th class="text-center" style="width: 10%">نوع</th>
+                                <th class="text-center" style="width: 15%">دسته</th>
+                                <th class="text-center" style="width: 15%">مبلغ</th>
+                                <th class="text-center" style="width: 20%">شخص</th>
+                                <th class="text-center" style="width: 15%">تاریخ</th>
+                                <th class="text-center" style="width: 15%">عملیات</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -212,21 +239,21 @@ include __DIR__ . '/includes/header.php';
                             <?php else: ?>
                             <?php foreach ($transactions as $transaction): ?>
                             <tr>
-                                <td><code><?= $transaction['transaction_code'] ?></code></td>
-                                <td>
-                                    <span class="badge badge-<?= $transaction['transaction_type'] === 'expense' ? 'danger' : 'warning' ?>">
+                                <td class="text-center"><small><code><?= $transaction['transaction_code'] ?></code></small></td>
+                                <td class="text-center">
+                                    <span class="badge badge-<?= $transaction['transaction_type'] === 'expense' ? 'danger' : 'warning' ?> badge-sm">
                                         <?= $transaction['transaction_type'] === 'expense' ? 'مصرف' : 'برداشت' ?>
                                     </span>
                                 </td>
-                                <td><?= sanitizeOutput($transaction['type_name']) ?></td>
-                                <td><?= number_format($transaction['amount']) ?> افغانی</td>
-                                <td><?= sanitizeOutput($transaction['person_name']) ?></td>
-                                <td><?= date('Y/m/d', strtotime($transaction['transaction_date'])) ?></td>
-                                <td>
-                                    <button onclick="editTransaction(<?= $transaction['id'] ?>)" class="btn btn-professional btn-warning btn-sm">
+                                <td class="text-center"><small><?= sanitizeOutput($transaction['type_name']) ?></small></td>
+                                <td class="text-center"><small><?= number_format($transaction['amount']) ?></small></td>
+                                <td class="text-center"><small><?= sanitizeOutput($transaction['person_name']) ?></small></td>
+                                <td class="text-center"><small><?= date('Y/m/d', strtotime($transaction['transaction_date'])) ?></small></td>
+                                <td class="text-center">
+                                    <button onclick="editTransaction(<?= $transaction['id'] ?>)" class="btn btn-warning btn-xs">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button onclick="deleteTransaction(<?= $transaction['id'] ?>)" class="btn btn-professional btn-danger btn-sm">
+                                    <button onclick="deleteTransaction(<?= $transaction['id'] ?>)" class="btn btn-danger btn-xs">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
@@ -240,69 +267,65 @@ include __DIR__ . '/includes/header.php';
         </div>
     </div>
 
-    <?php include __DIR__ . '/includes/footer.php'; ?>
-
-    <!-- Modal افزودن/ویرایش هزینه -->
-    <div class="modal fade modal-professional" id="addTransactionModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">افزودن هزینه جدید</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="transactionForm" onsubmit="event.preventDefault(); submitTransaction();">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">نوع هزینه</label>
-                                    <select name="transaction_type" class="form-control" required>
-                                        <option value="">انتخاب کنید</option>
-                                        <option value="expense">مصرف</option>
-                                        <option value="withdrawal">برداشت</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">دسته</label>
-                                    <select name="type_id" class="form-control" required>
-                                        <option value="">ابتدا نوع هزینه را انتخاب کنید</option>
-                                    </select>
-                                </div>
-                            </div>
+<!-- Edit Transaction Modal -->
+<div class="modal fade" id="editTransactionModal" tabindex="-1" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">ویرایش هزینه</h5>
+                <button type="button" class="btn-close" onclick="closeEditModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editTransactionForm">
+                    <input type="hidden" name="id" id="editTransactionId">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">نوع هزینه</label>
+                            <select name="transaction_type" id="editTransactionType" class="form-control" required>
+                                <option value="expense">مصرف</option>
+                                <option value="withdrawal">برداشت</option>
+                            </select>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">مبلغ (افغانی)</label>
-                                    <input type="number" name="amount" class="form-control" min="1" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="form-control-label">نام شخص</label>
-                                    <input type="text" name="person_name" class="form-control" required>
-                                </div>
-                            </div>
+                        <div class="col-md-6">
+                            <label class="form-label">دسته</label>
+                            <select name="type_id" id="editTypeId" class="form-control" required>
+                                <option value="">انتخاب کنید</option>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label class="form-control-label">تاریخ</label>
-                            <input type="date" name="transaction_date" class="form-control" value="<?= date('Y-m-d') ?>" required>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label class="form-label">مبلغ (افغانی)</label>
+                            <input type="number" name="amount" id="editAmount" class="form-control" required>
                         </div>
-                        <div class="form-group">
-                            <label class="form-control-label">توضیحات</label>
-                            <textarea name="description" class="form-control" rows="3"></textarea>
+                        <div class="col-md-6">
+                            <label class="form-label">نام شخص</label>
+                            <input type="text" name="person_name" id="editPersonName" class="form-control" required>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-professional btn-secondary" data-bs-dismiss="modal">انصراف</button>
-                    <button type="submit" form="transactionForm" class="btn btn-professional btn-success">ذخیره</button>
-                </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label class="form-label">تاریخ</label>
+                            <input type="date" name="transaction_date" id="editTransactionDate" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <label class="form-label">توضیحات</label>
+                        <textarea name="description" id="editDescription" class="form-control" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">انصراف</button>
+                <button type="button" class="btn btn-success" onclick="updateTransaction()">بروزرسانی</button>
             </div>
         </div>
     </div>
+</div>
+
+    <?php include __DIR__ . '/includes/footer-modern.php'; ?>
+
+
 
     <script>
         const transactionTypes = <?= json_encode($transaction_types) ?>;
@@ -350,7 +373,8 @@ include __DIR__ . '/includes/header.php';
                 
                 if (result.success) {
                     showAlert('عملیات با موفقیت انجام شد', 'success');
-                    bootstrap.Modal.getInstance(document.getElementById('addTransactionModal')).hide();
+                    form.reset();
+                    form.querySelector('select[name="type_id"]').innerHTML = '<option value="">ابتدا نوع هزینه را انتخاب کنید</option>';
                     setTimeout(() => location.reload(), 1000);
                 } else {
                     showAlert(result.message || 'خطا در انجام عملیات', 'error');
@@ -368,30 +392,83 @@ include __DIR__ . '/includes/header.php';
                 
                 if (result.success) {
                     const transaction = result.transaction;
-                    const form = document.getElementById('transactionForm');
                     
-                    form.querySelector('select[name="transaction_type"]').value = transaction.transaction_type;
-                    updateTypeOptions(transaction.transaction_type, transaction.type_id);
-                    form.querySelector('input[name="amount"]').value = transaction.amount;
-                    form.querySelector('input[name="person_name"]').value = transaction.person_name;
-                    form.querySelector('input[name="transaction_date"]').value = transaction.transaction_date;
-                    form.querySelector('textarea[name="description"]').value = transaction.description || '';
+                    document.getElementById('editTransactionId').value = transaction.id;
+                    document.getElementById('editTransactionType').value = transaction.transaction_type;
+                    document.getElementById('editAmount').value = transaction.amount;
+                    document.getElementById('editPersonName').value = transaction.person_name;
+                    document.getElementById('editTransactionDate').value = transaction.transaction_date;
+                    document.getElementById('editDescription').value = transaction.description || '';
                     
-                    document.querySelector('#addTransactionModal .modal-title').textContent = 'ویرایش هزینه';
-                    if (!form.querySelector('input[name="id"]')) {
-                        const idInput = document.createElement('input');
-                        idInput.type = 'hidden';
-                        idInput.name = 'id';
-                        form.appendChild(idInput);
-                    }
-                    form.querySelector('input[name="id"]').value = transaction.id;
-                    
-                    new bootstrap.Modal(document.getElementById('addTransactionModal')).show();
+                    updateEditTypeOptions(transaction.transaction_type, transaction.type_id);
+                    openEditModal();
+                } else {
+                    showAlert(result.message || 'خطا در دریافت اطلاعات', 'error');
                 }
             } catch (error) {
-                showAlert('خطا در دریافت اطلاعات', 'error');
+                showAlert('خطا در ارتباط با سرور', 'error');
             }
         }
+        
+        function updateEditTypeOptions(selectedType, selectedValue = null) {
+            const typeSelect = document.getElementById('editTypeId');
+            typeSelect.innerHTML = '<option value="">انتخاب کنید</option>';
+            
+            transactionTypes.forEach(type => {
+                if (type.type === selectedType) {
+                    const option = document.createElement('option');
+                    option.value = type.id;
+                    option.textContent = type.name;
+                    if (selectedValue && type.id == selectedValue) {
+                        option.selected = true;
+                    }
+                    typeSelect.appendChild(option);
+                }
+            });
+        }
+        
+        function openEditModal() {
+            const modal = document.getElementById('editTransactionModal');
+            modal.style.display = 'block';
+            modal.classList.add('show');
+        }
+        
+        function closeEditModal() {
+            const modal = document.getElementById('editTransactionModal');
+            modal.style.display = 'none';
+            modal.classList.remove('show');
+        }
+        
+        async function updateTransaction() {
+            const form = document.getElementById('editTransactionForm');
+            const formData = new FormData(form);
+            
+            try {
+                const response = await fetch('api/update_transaction.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('هزینه با موفقیت بروزرسانی شد', 'success');
+                    closeEditModal();
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showAlert(result.message || 'خطا در بروزرسانی', 'error');
+                }
+            } catch (error) {
+                showAlert('خطا در ارتباط با سرور', 'error');
+            }
+        }
+        
+        // Event listener for edit modal transaction type change
+        document.addEventListener('change', function(e) {
+            if (e.target.id === 'editTransactionType') {
+                updateEditTypeOptions(e.target.value);
+            }
+        });
 
         // حذف هزینه
         async function deleteTransaction(id) {
@@ -426,13 +503,5 @@ include __DIR__ . '/includes/header.php';
             document.body.insertAdjacentHTML('afterbegin', alertHtml);
         }
 
-        // ریست فرم هنگام بستن مودال
-        document.getElementById('addTransactionModal').addEventListener('hidden.bs.modal', function() {
-            const form = document.getElementById('transactionForm');
-            form.reset();
-            document.querySelector('#addTransactionModal .modal-title').textContent = 'افزودن هزینه جدید';
-            const idInput = form.querySelector('input[name="id"]');
-            if (idInput) idInput.remove();
-            form.querySelector('select[name="type_id"]').innerHTML = '<option value="">ابتدا نوع هزینه را انتخاب کنید</option>';
-        });
+
     </script>

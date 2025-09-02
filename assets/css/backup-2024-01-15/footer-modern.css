@@ -1,0 +1,19 @@
+/* Modern Footer */
+.footer-modern {
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border);
+  padding: var(--space-6) 0;
+  margin-top: auto;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.footer-content {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}

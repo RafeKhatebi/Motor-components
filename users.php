@@ -25,39 +25,51 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 include 'includes/header.php';
 ?>
 
-<!-- Header -->
-<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-white d-inline-block mb-0"><?= __('user_management') ?></h6>
-                </div>
-                <div class="col-lg-6 col-5 text-left">
-                    <button onclick="openModal('addUserModal')" class="btn btn-professional btn-sm">
-                        <i class="fas fa-plus"></i> <?= __('add') ?> <?= __('new_user') ?>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Page content -->
-<div class="container-fluid mt--7">
+<div class="container-fluid mt-4">
     <div class="row">
         <div class="col-12">
             <div class="card card-professional">
+                <!-- Add User Form -->
                 <div class="card-header border-0">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h3 class="mb-0">مدیریت کاربران</h3>
+                    <h5 class="mb-3"><i class="fas fa-user-plus"></i> افزودن کاربر جدید</h5>
+                    <form id="addUserForm" onsubmit="event.preventDefault(); submitForm('addUserForm', 'api/add_user.php');">
+                        <?php if (!isset($_SESSION['csrf_token'])) $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); ?>
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                        <div class="d-flex gap-2 align-items-end mb-3">
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">نام کاربری</label>
+                                <input type="text" name="username" class="form-control" required>
+                            </div>
+                            <div class="form-group" style="flex: 2;">
+                                <label class="form-label">نام کامل</label>
+                                <input type="text" name="full_name" class="form-control" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">رمز عبور</label>
+                                <input type="password" name="password" class="form-control" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">نقش</label>
+                                <select name="role" class="form-control" required>
+                                    <option value="employee">کارمند</option>
+                                    <option value="manager">مدیر فروش</option>
+                                    <option value="admin">مدیر</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> افزودن
+                                </button>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <input type="text" class="form-control" placeholder="جستجو..." id="searchInput">
+                            </div>
                         </div>
-                        <div class="col text-left">
-                            <input type="text" class="form-control form-control-sm" placeholder="جستجو..."
-                                id="searchInput" style="width: 200px; display: inline-block;">
-                        </div>
-                    </div>
+                    </form>
+                </div>
+                <div class="card-header border-0">
+                    <h3 class="mb-0">لیست کاربران</h3>
                 </div>
                 <div class="table-responsive">
                     <table class="table align-items-center table-flush" id="usersTable">
@@ -120,52 +132,10 @@ include 'includes/header.php';
     </div>
 </div>
 
-<!-- Modal افزودن کاربر -->
-<div class="modal fade modal-professional" id="addUserModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">افزودن کاربر جدید</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addUserForm"
-                    onsubmit="event.preventDefault(); submitForm('addUserForm', 'api/add_user.php');">
-                    <?php if (!isset($_SESSION['csrf_token'])) $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); ?>
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                    <div class="form-group mb-3">
-                        <label class="form-control-label">نام کاربری</label>
-                        <input type="text" name="username" class="form-control form-control-professional" required>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-control-label">نام کامل</label>
-                        <input type="text" name="full_name" class="form-control form-control-professional" required>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-control-label">رمز عبور</label>
-                        <input type="password" name="password" class="form-control form-control-professional" required>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-control-label">نقش</label>
-                        <select name="role" class="form-control form-control-professional" required>
-                            <option value="employee">کارمند</option>
-                            <option value="manager">مدیر فروش</option>
-                            <option value="admin">مدیر</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-professional btn-secondary" data-bs-dismiss="modal">انصراف</button>
-                <button type="button" onclick="submitForm('addUserForm', 'api/add_user.php')"
-                    class="btn btn-professional btn-success">ذخیره</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Modal ویرایش کاربر -->
-<div class="modal fade modal-professional" id="editUserModal" tabindex="-1">
+<div class="modal fade modal-professional" id="editUserModal" tabindex="-1" style="display: none;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -210,14 +180,9 @@ include 'includes/header.php';
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include 'includes/footer-modern.php'; ?>
 
 <script>
-    function openModal(modalId) {
-        const modal = new bootstrap.Modal(document.getElementById(modalId));
-        modal.show();
-    }
-
     async function submitForm(formId, apiUrl) {
         const form = document.getElementById(formId);
         const formData = new FormData(form);
@@ -232,7 +197,7 @@ include 'includes/header.php';
 
             if (result.success) {
                 showAlert('عملیات با موفقیت انجام شد', 'success');
-                bootstrap.Modal.getInstance(form.closest('.modal')).hide();
+                form.reset();
                 location.reload();
             } else {
                 showAlert(result.message || 'خطا در انجام عملیات', 'error');
@@ -240,6 +205,13 @@ include 'includes/header.php';
         } catch (error) {
             showAlert('خطا در ارتباط با سرور', 'error');
         }
+    }
+
+    function openModal(modalId) {
+        const modalElement = document.getElementById(modalId);
+        modalElement.style.display = 'block';
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
     }
 
     function editUser(id) {

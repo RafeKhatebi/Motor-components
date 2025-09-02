@@ -59,59 +59,63 @@ if (!isset($_SESSION['csrf_token'])) {
 include 'includes/header.php';
 ?>
 
-<div class="container-fluid mt-4">
-    <?php if (isset($success_message)): ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle ml-2"></i>
-            <?= sanitizeOutput($success_message) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    <?php endif; ?>
+<?php if (isset($success_message)): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <?= sanitizeOutput($success_message) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
 
-    <?php if (isset($error_message)): ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-circle ml-2"></i>
-            <?= sanitizeOutput($error_message) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    <?php endif; ?>
+<?php if (isset($error_message)): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <?= sanitizeOutput($error_message) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header border-0">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h3 class="mb-0">ویرایش دسته بندی</h3>
+<div class="section">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-edit me-2"></i>
+                    ویرایش دسته بندی
+                </h5>
+                <a href="categories.php" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-right me-1"></i>بازگشت
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?= sanitizeOutput($_SESSION['csrf_token']) ?>">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label">نام دسته بندی</label>
+                            <input type="text" name="name" class="form-control" value="<?= sanitizeOutput($category['name']) ?>" required>
                         </div>
-                        <div class="col text-left">
-                            <a href="categories.php" class="btn btn-secondary btn-sm">
-                                <i class="fas fa-arrow-right"></i> بازگشت
-                            </a>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label">توضیحات</label>
+                            <textarea name="description" class="form-control" rows="3"><?= sanitizeOutput($category['description']) ?></textarea>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <form method="POST">
-                        <input type="hidden" name="csrf_token" value="<?= sanitizeOutput($_SESSION['csrf_token']) ?>">
-                        <div class="form-group mb-3">
-                            <label class="form-control-label">نام دسته بندی</label>
-                            <input type="text" name="name" class="form-control" value="<?= sanitizeOutput($category['name']) ?>" required>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="form-control-label">توضیحات</label>
-                            <textarea name="description" class="form-control" rows="3"><?= sanitizeOutput($category['description']) ?></textarea>
-                        </div>
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> بروزرسانی دسته بندی
-                            </button>
-                        </div>
-                    </form>
+                <div class="d-flex justify-content-center gap-2">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-1"></i>بروزرسانی
+                    </button>
+                    <a href="categories.php" class="btn btn-secondary">
+                        <i class="fas fa-times me-1"></i>انصراف
+                    </a>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include 'includes/footer-modern.php'; ?>

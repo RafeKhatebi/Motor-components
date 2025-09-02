@@ -49,61 +49,86 @@ $total_supplier_credit = array_sum(array_column($supplier_credits, 'remaining_am
 include 'includes/header.php';
 ?>
 
-<div class="header bg-gradient-primary pb-8 pt-5 pt-md-8">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-white d-inline-block mb-0">مدیریت قرض ها و طلب ها</h6>
+<div class="container-fluid mt-4">
+    <!-- ثبت پرداخت -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-money-bill-wave me-2"></i>
+                        ثبت پرداخت جدید
+                    </h5>
                 </div>
-            </div>
-
-            <!-- آمار کلی -->
-            <div class="row">
-                <div class="col-xl-6 col-lg-6">
-                    <div class="card card-stats mb-4 mb-xl-0">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col">
-                                    <h5 class="card-title text-uppercase text-muted mb-0">کل قرض مشتریان</h5>
-                                    <span class="h2 font-weight-bold mb-0 text-danger">
-                                        <?= number_format($total_customer_debt) ?> افغانی
-                                    </span>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
-                                        <i class="fas fa-arrow-down"></i>
-                                    </div>
-                                </div>
+                <div class="card-body">
+                    <form id="quickPaymentForm" onsubmit="event.preventDefault(); submitQuickPayment();">
+                        <div class="d-flex gap-3 align-items-end mb-3">
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">نوع پرداخت</label>
+                                <select name="payment_type" class="form-control" required>
+                                    <option value="">انتخاب کنید</option>
+                                    <option value="sale">پرداخت قرض مشتری</option>
+                                    <option value="purchase">پرداخت به تأمین کننده</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">شماره فاکتور</label>
+                                <input type="number" name="invoice_id" class="form-control" min="1" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">مبلغ پرداخت</label>
+                                <input type="number" name="amount" class="form-control" min="1" step="0.01" required>
+                                <small class="form-text text-muted">حداکثر: <span id="maxAmountDisplay">-</span> افغانی</small>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">روش پرداخت</label>
+                                <select name="payment_method" class="form-control">
+                                    <option value="cash">نقدی</option>
+                                    <option value="bank">بانکی</option>
+                                    <option value="check">چک</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">تاریخ پرداخت</label>
+                                <input type="date" name="payment_date" class="form-control" value="<?= date('Y-m-d') ?>" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label class="form-label">یادداشت</label>
+                                <input type="text" name="notes" class="form-control" placeholder="یادداشت اختیاری...">
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> ثبت
+                                </button>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-xl-6 col-lg-6">
-                    <div class="card card-stats mb-4 mb-xl-0">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col">
-                                    <h5 class="card-title text-uppercase text-muted mb-0">کل طلب از تأمین کنندگان</h5>
-                                    <span class="h2 font-weight-bold mb-0 text-success">
-                                        <?= number_format($total_supplier_credit) ?> افغانی
-                                    </span>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="icon icon-shape bg-success text-white rounded-circle shadow">
-                                        <i class="fas fa-arrow-up"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="container-fluid mt--7">
+    <!-- آمار کلی -->
+    <div class="d-flex w-100 gap-3 mb-4">
+        <div style="flex: 1;">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center py-3">
+                    <i class="fas fa-arrow-down fa-2x mb-2"></i>
+                    <div class="h6">کل قرض مشتریان</div>
+                    <h4 class="mb-0"><?= number_format($total_customer_debt) ?> افغانی</h4>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 1;">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center py-3">
+                    <i class="fas fa-arrow-up fa-2x mb-2"></i>
+                    <div class="h6">کل طلب از تأمین کنندگان</div>
+                    <h4 class="mb-0"><?= number_format($total_supplier_credit) ?> افغانی</h4>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- قرض مشتریان -->
     <div class="row mb-4">
         <div class="col">
@@ -135,7 +160,7 @@ include 'includes/header.php';
                                     <td><?= DateManager::formatDateForDisplay($debt['created_at']) ?></td>
                                     <td>
                                         <button
-                                            onclick="showPaymentModal('sale', <?= $debt['id'] ?>, <?= $debt['remaining_amount'] ?>)"
+                                            onclick="fillPaymentForm('sale', <?= $debt['id'] ?>, <?= $debt['remaining_amount'] ?>)"
                                             class="btn btn-success btn-sm">
                                             <i class="fas fa-money-bill"></i> پرداخت
                                         </button>
@@ -180,7 +205,7 @@ include 'includes/header.php';
                                     <td><?= DateManager::formatDateForDisplay($credit['created_at']) ?></td>
                                     <td>
                                         <button
-                                            onclick="showPaymentModal('purchase', <?= $credit['id'] ?>, <?= $credit['remaining_amount'] ?>)"
+                                            onclick="fillPaymentForm('purchase', <?= $credit['id'] ?>, <?= $credit['remaining_amount'] ?>)"
                                             class="btn btn-primary btn-sm">
                                             <i class="fas fa-money-bill"></i> پرداخت
                                         </button>
@@ -195,69 +220,27 @@ include 'includes/header.php';
     </div>
 </div>
 
-<!-- Modal پرداخت -->
-<div class="modal fade" id="paymentModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">ثبت پرداخت</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="paymentForm">
-                    <input type="hidden" id="paymentType">
-                    <input type="hidden" id="paymentId">
-                    <div class="form-group">
-                        <label>مبلغ پرداخت</label>
-                        <input type="number" id="paymentAmount" class="form-control" min="1" step="0.01" required>
-                        <small class="form-text text-muted">حداکثر: <span id="maxAmount"></span> افغانی</small>
-                    </div>
-                    <div class="form-group">
-                        <label>تاریخ پرداخت</label>
-                        <input type="date" id="paymentDate" class="form-control" value="<?= date('Y-m-d') ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label>روش پرداخت</label>
-                        <select id="paymentMethod" class="form-control">
-                            <option value="cash">نقدی</option>
-                            <option value="bank">بانکی</option>
-                            <option value="check">چک</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>یادداشت</label>
-                        <textarea id="paymentNotes" class="form-control" rows="3"></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
-                <button type="button" class="btn btn-success" onclick="submitPayment()">ثبت پرداخت</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <script>
-    function showPaymentModal(type, id, maxAmount) {
-        document.getElementById('paymentType').value = type;
-        document.getElementById('paymentId').value = id;
-        document.getElementById('paymentAmount').max = maxAmount;
-        document.getElementById('maxAmount').textContent = maxAmount.toLocaleString();
-
-        new bootstrap.Modal(document.getElementById('paymentModal')).show();
+    function fillPaymentForm(type, id, maxAmount) {
+        const form = document.getElementById('quickPaymentForm');
+        form.querySelector('select[name="payment_type"]').value = type;
+        form.querySelector('input[name="invoice_id"]').value = id;
+        form.querySelector('input[name="amount"]').max = maxAmount;
+        form.querySelector('input[name="amount"]').value = maxAmount;
+        document.getElementById('maxAmountDisplay').textContent = maxAmount.toLocaleString();
+        
+        // Scroll to form
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    async function submitPayment() {
-        const form = document.getElementById('paymentForm');
-        const formData = new FormData();
-
-        formData.append('type', document.getElementById('paymentType').value);
-        formData.append('id', document.getElementById('paymentId').value);
-        formData.append('amount', document.getElementById('paymentAmount').value);
-        formData.append('payment_date', document.getElementById('paymentDate').value);
-        formData.append('payment_method', document.getElementById('paymentMethod').value);
-        formData.append('notes', document.getElementById('paymentNotes').value);
+    async function submitQuickPayment() {
+        const form = document.getElementById('quickPaymentForm');
+        const formData = new FormData(form);
+        formData.append('id', formData.get('invoice_id'));
+        formData.append('type', formData.get('payment_type'));
+        formData.append('payment_date', new Date().toISOString().split('T')[0]);
 
         try {
             const response = await fetch('api/add_payment.php', {
@@ -269,8 +252,8 @@ include 'includes/header.php';
 
             if (result.success) {
                 showAlert(result.message, 'success');
-                bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
-                location.reload();
+                form.reset();
+                setTimeout(() => location.reload(), 1000);
             } else {
                 showAlert(result.message, 'error');
             }
@@ -289,4 +272,4 @@ include 'includes/header.php';
     }
 </script>
 
-<?php include 'includes/footer.php'; ?>
+<?php include 'includes/footer-modern.php'; ?>

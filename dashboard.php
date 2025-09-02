@@ -61,505 +61,339 @@ $top_products_stmt = $db->prepare($top_products_query);
 $top_products_stmt->execute();
 $top_products_data = $top_products_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$extra_css = '
-<link rel="stylesheet" href="assets/css/quick-sale.css">
-<style>
-.dashboard-container {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    min-height: 100vh;
-    padding: 0;
-    margin-top: -8px;
-}
-
-.dashboard-header {
-    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-    border-radius: 0 0 20px 20px;
-    padding: 20px 30px;
-    margin-bottom: 30px;
-    color: #1f2937;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e7eb;
-}
-
-.dashboard-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-.dashboard-subtitle {
-    opacity: 0.9;
-    font-size: 1.1rem;
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.stat-card {
-    background: white;
-    border-radius: 16px;
-    padding: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    min-height: 120px;
-}
-
-.stat-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--gradient);
-}
-
-.stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-}
-
-.stat-card.primary::before { background: linear-gradient(90deg, #4f46e5, #7c3aed); }
-.stat-card.success::before { background: linear-gradient(90deg, #10b981, #059669); }
-.stat-card.warning::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
-.stat-card.danger::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
-.stat-card.info::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
-
-.stat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-}
-
-.stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    color: white;
-}
-
-.stat-icon.primary { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
-.stat-icon.success { background: linear-gradient(135deg, #10b981, #059669); }
-.stat-icon.warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
-.stat-icon.danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
-.stat-icon.info { background: linear-gradient(135deg, #06b6d4, #0891b2); }
-
-.stat-title {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #6b7280;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-}
-
-.stat-value {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: #1f2937;
-    margin-bottom: 6px;
-    line-height: 1.2;
-}
-
-.stat-change {
-    font-size: 0.875rem;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.stat-change.positive { color: #059669; }
-.stat-change.negative { color: #dc2626; }
-
-.charts-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-@media (max-width: 1200px) {
-    .charts-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-.chart-card {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.chart-header {
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.chart-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 4px;
-}
-
-.chart-subtitle {
-    font-size: 0.875rem;
-    color: #6b7280;
-}
-
-.recent-sales {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.table-modern {
-    border-collapse: separate;
-    border-spacing: 0;
-}
-
-.table-modern thead th {
-    background: #f8fafc;
-    border: none;
-    padding: 16px;
-    font-weight: 600;
-    color: #374151;
-    font-size: 0.875rem;
-}
-
-.table-modern tbody td {
-    padding: 16px;
-    border-top: 1px solid #e5e7eb;
-    vertical-align: middle;
-}
-
-.table-modern tbody tr:hover {
-    background: #f9fafb;
-}
-
-@media (max-width: 768px) {
-    .charts-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    }
-}
-
-@media (max-width: 768px) {
-    .dashboard-header {
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-    
-    .dashboard-title {
-        font-size: 1.5rem;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-    
-    .stat-card {
-        padding: 14px;
-        min-height: 100px;
-    }
-    
-    .stat-value {
-        font-size: 1.4rem;
-    }
-    
-    .stat-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 1.1rem;
-    }
-    
-    .chart-card, .recent-sales {
-        padding: 20px;
-    }
-    
-    .recent-sales .d-flex {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .recent-sales .d-flex .btn {
-        width: 100%;
-        max-width: 200px;
-    }
-    
-    #recentSalesSearch {
-        width: 100% !important;
-        max-width: none !important;
-    }
-}
-</style>
-';
+$extra_css = '';
 
 include 'includes/header.php';
 ?>
 
-<div class="dashboard-container">
-    <div class="container-fluid">
-        <!-- Stats Grid -->
-        <div class="stats-grid">
-            <div class="stat-card primary">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-title">کل محصولات</div>
-                        <div class="stat-value"><?= number_format($stats['products']) ?></div>
-                        <div class="stat-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>3.48% نسبت به ماه گذشته</span>
-                        </div>
-                    </div>
-                    <div class="stat-icon primary">
-                        <i class="fas fa-box"></i>
-                    </div>
+<div class="section">
+    <div class="stats-grid">
+        <div class="stat-card primary">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-title">کل محصولات</div>
+                    <div class="stat-value"><?= number_format($stats['products']) ?></div>
                 </div>
-            </div>
-
-
-
-            <div class="stat-card warning">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-title">فروش امروز</div>
-                        <div class="stat-value"><?= number_format($stats['today_sales']) ?></div>
-                        <div class="stat-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>12.5% نسبت به دیروز</span>
-                        </div>
-                    </div>
-                    <div class="stat-icon warning">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stat-card info">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-title">مصارف امروز</div>
-                        <div class="stat-value"><?= number_format($stats['today_transactions']) ?></div>
-                        <div class="stat-change negative">
-                            <i class="fas fa-arrow-down"></i>
-                            <span>خروجی مالی</span>
-                        </div>
-                    </div>
-                    <div class="stat-icon info">
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stat-card <?= $stats['today_profit'] >= 0 ? 'success' : 'danger' ?>">
-                <div class="stat-header">
-                    <div>
-                        <div class="stat-title">فایده خالص امروز</div>
-                        <div class="stat-value"><?= number_format($stats['today_profit']) ?></div>
-                        <div class="stat-change <?= $stats['today_profit'] >= 0 ? 'positive' : 'negative' ?>">
-                            <i class="fas fa-<?= $stats['today_profit'] >= 0 ? 'arrow-up' : 'arrow-down' ?>"></i>
-                            <span><?= $stats['today_profit'] >= 0 ? 'فایده آور' : 'زیانده' ?></span>
-                        </div>
-                    </div>
-                    <div class="stat-icon <?= $stats['today_profit'] >= 0 ? 'success' : 'danger' ?>">
-                        <i class="fas fa-<?= $stats['today_profit'] >= 0 ? 'chart-line' : 'chart-line-down' ?>"></i>
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-
-        <!-- Quick Actions Card -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card quick-actions-card">
-                    <div class="card-header">
-                        <h3>عملیات سریع</h3>
-                    </div>
-                    <div class="card-body">
-                        <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px;">
-                            <a href="sales.php" style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.3s ease; text-decoration: none; color: #374151; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 80px;" onmouseover="this.style.background='linear-gradient(135deg, #667eea, #764ba2)'; this.style.color='white';" onmouseout="this.style.background='linear-gradient(135deg, #f8fafc, #e2e8f0)'; this.style.color='#374151';">
-                                <i class="fas fa-shopping-cart" style="font-size: 16px; margin-bottom: 4px;"></i>
-                                <span style="font-weight: 600; font-size: 11px; line-height: 1.2;">فروش سریع</span>
-                                <kbd style="background: rgba(0, 0, 0, 0.1); padding: 1px 4px; border-radius: 3px; font-size: 8px; margin-top: 2px;">F2</kbd>
-                            </a>
-                            <a href="products.php#add" style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.3s ease; text-decoration: none; color: #374151; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 80px;" onmouseover="this.style.background='linear-gradient(135deg, #667eea, #764ba2)'; this.style.color='white';" onmouseout="this.style.background='linear-gradient(135deg, #f8fafc, #e2e8f0)'; this.style.color='#374151';">
-                                <i class="fas fa-plus" style="font-size: 16px; margin-bottom: 4px;"></i>
-                                <span style="font-weight: 600; font-size: 11px; line-height: 1.2;">محصول جدید</span>
-                                <kbd style="background: rgba(0, 0, 0, 0.1); padding: 1px 4px; border-radius: 3px; font-size: 8px; margin-top: 2px;">Ctrl+P</kbd>
-                            </a>
-                            <a href="customers.php" style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.3s ease; text-decoration: none; color: #374151; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 80px;" onmouseover="this.style.background='linear-gradient(135deg, #667eea, #764ba2)'; this.style.color='white';" onmouseout="this.style.background='linear-gradient(135deg, #f8fafc, #e2e8f0)'; this.style.color='#374151';">
-                                <i class="fas fa-user-plus" style="font-size: 16px; margin-bottom: 4px;"></i>
-                                <span style="font-weight: 600; font-size: 11px; line-height: 1.2;">مشتری جدید</span>
-                                <kbd style="background: rgba(0, 0, 0, 0.1); padding: 1px 4px; border-radius: 3px; font-size: 8px; margin-top: 2px;">Ctrl+C</kbd>
-                            </a>
-                            <a href="purchases.php" style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.3s ease; text-decoration: none; color: #374151; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 80px;" onmouseover="this.style.background='linear-gradient(135deg, #667eea, #764ba2)'; this.style.color='white';" onmouseout="this.style.background='linear-gradient(135deg, #f8fafc, #e2e8f0)'; this.style.color='#374151';">
-                                <i class="fas fa-shopping-bag" style="font-size: 16px; margin-bottom: 4px;"></i>
-                                <span style="font-weight: 600; font-size: 11px; line-height: 1.2;">خرید جدید</span>
-                                <kbd style="background: rgba(0, 0, 0, 0.1); padding: 1px 4px; border-radius: 3px; font-size: 8px; margin-top: 2px;">Ctrl+B</kbd>
-                            </a>
-                            <a href="transactions.php" style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.3s ease; text-decoration: none; color: #374151; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 80px;" onmouseover="this.style.background='linear-gradient(135deg, #667eea, #764ba2)'; this.style.color='white';" onmouseout="this.style.background='linear-gradient(135deg, #f8fafc, #e2e8f0)'; this.style.color='#374151';">
-                                <i class="fas fa-money-bill-wave" style="font-size: 16px; margin-bottom: 4px;"></i>
-                                <span style="font-weight: 600; font-size: 11px; line-height: 1.2;">مصارف</span>
-                                <kbd style="background: rgba(0, 0, 0, 0.1); padding: 1px 4px; border-radius: 3px; font-size: 8px; margin-top: 2px;">Ctrl+E</kbd>
-                            </a>
-                            <a href="reports.php#lowstock" onclick="setTimeout(() => showReport('lowstock'), 100)" style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.3s ease; text-decoration: none; color: #374151; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 80px;" onmouseover="this.style.background='linear-gradient(135deg, #667eea, #764ba2)'; this.style.color='white';" onmouseout="this.style.background='linear-gradient(135deg, #f8fafc, #e2e8f0)'; this.style.color='#374151';">
-                                <i class="fas fa-warehouse" style="font-size: 16px; margin-bottom: 4px;"></i>
-                                <span style="font-weight: 600; font-size: 11px; line-height: 1.2;">موجودی کم</span>
-                                <kbd style="background: rgba(0, 0, 0, 0.1); padding: 1px 4px; border-radius: 3px; font-size: 8px; margin-top: 2px;">Ctrl+I</kbd>
-                            </a>
-                            <a href="reports.php" style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.3s ease; text-decoration: none; color: #374151; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 80px;" onmouseover="this.style.background='linear-gradient(135deg, #667eea, #764ba2)'; this.style.color='white';" onmouseout="this.style.background='linear-gradient(135deg, #f8fafc, #e2e8f0)'; this.style.color='#374151';">
-                                <i class="fas fa-chart-line" style="font-size: 16px; margin-bottom: 4px;"></i>
-                                <span style="font-weight: 600; font-size: 11px; line-height: 1.2;">گزارشات</span>
-                                <kbd style="background: rgba(0, 0, 0, 0.1); padding: 1px 4px; border-radius: 3px; font-size: 8px; margin-top: 2px;">Ctrl+R</kbd>
-                            </a>
-                            <a href="backup.php" style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.3s ease; text-decoration: none; color: #374151; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 80px;" onmouseover="this.style.background='linear-gradient(135deg, #667eea, #764ba2)'; this.style.color='white';" onmouseout="this.style.background='linear-gradient(135deg, #f8fafc, #e2e8f0)'; this.style.color='#374151';">
-                                <i class="fas fa-database" style="font-size: 16px; margin-bottom: 4px;"></i>
-                                <span style="font-weight: 600; font-size: 11px; line-height: 1.2;">پشتیبان</span>
-                                <kbd style="background: rgba(0, 0, 0, 0.1); padding: 1px 4px; border-radius: 3px; font-size: 8px; margin-top: 2px;">Ctrl+S</kbd>
-                            </a>
-                        </div>
-                    </div>
+                <div class="stat-icon primary">
+                    <i class="fas fa-box"></i>
                 </div>
             </div>
         </div>
 
-        <!-- Charts Grid -->
-        <div class="charts-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;">
-            <div class="chart-card" style="padding: 16px;">
-                <div class="chart-header" style="margin-bottom: 12px;">
-                    <h3 class="chart-title" style="font-size: 1rem; margin-bottom: 2px;">روند فروش هفتگی</h3>
-                    <p class="chart-subtitle" style="font-size: 0.75rem;">فروش روزانه در 7 روز گذشته</p>
-                </div>
-                <div class="chart">
-                    <canvas id="chart-sales" style="max-height: 180px;"></canvas>
-                </div>
-            </div>
 
-            <div class="chart-card" style="padding: 16px;">
-                <div class="chart-header" style="margin-bottom: 12px;">
-                    <h3 class="chart-title" style="font-size: 1rem; margin-bottom: 2px;">محصولات پرفروش</h3>
-                    <p class="chart-subtitle" style="font-size: 0.75rem;">5 محصول برتر</p>
+
+        <div class="stat-card warning">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-title">فروش امروز</div>
+                    <div class="stat-value"><?= number_format($stats['today_sales']) ?></div>
                 </div>
-                <div class="chart">
-                    <canvas id="chart-orders" style="max-height: 180px;"></canvas>
-                </div>
-            </div>
-            
-            <div class="chart-card" style="padding: 16px;">
-                <div class="chart-header" style="margin-bottom: 12px;">
-                    <h3 class="chart-title" style="font-size: 1rem; margin-bottom: 2px;">روند موجودی</h3>
-                    <p class="chart-subtitle" style="font-size: 0.75rem;">وضعیت موجودی کالاها</p>
-                </div>
-                <div class="chart">
-                    <canvas id="chart-inventory" style="max-height: 180px;"></canvas>
-                </div>
-            </div>
-            
-            <div class="chart-card" style="padding: 16px;">
-                <div class="chart-header" style="margin-bottom: 12px;">
-                    <h3 class="chart-title" style="font-size: 1rem; margin-bottom: 2px;">روند فایده</h3>
-                    <p class="chart-subtitle" style="font-size: 0.75rem;">فایده روزانه 7 روز گذشته</p>
-                </div>
-                <div class="chart">
-                    <canvas id="chart-profit" style="max-height: 180px;"></canvas>
+                <div class="stat-icon warning">
+                    <i class="fas fa-chart-line"></i>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Sales -->
-        <div class="recent-sales">
+        <div class="stat-card info">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-title">مصارف امروز</div>
+                    <div class="stat-value"><?= number_format($stats['today_transactions']) ?></div>
+                </div>
+                <div class="stat-icon info">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card <?= $stats['today_profit'] >= 0 ? 'success' : 'danger' ?>">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-title">فایده امروز</div>
+                    <div class="stat-value"><?= number_format($stats['today_profit']) ?></div>
+
+                </div>
+                <div class="stat-icon <?= $stats['today_profit'] >= 0 ? 'success' : 'danger' ?>">
+                    <i class="fas fa-<?= $stats['today_profit'] >= 0 ? 'chart-line' : 'chart-line-down' ?>"></i>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<div class="section">
+    <div class="quick-actions-grid">
+        <a href="sales.php" class="quick-action">
+            <i class="fas fa-shopping-cart"></i>
+            <span>فروش سریع</span>
+        </a>
+        <a href="products.php" class="quick-action">
+            <i class="fas fa-plus"></i>
+            <span>محصول جدید</span>
+        </a>
+        <a href="customers.php" class="quick-action">
+            <i class="fas fa-user-plus"></i>
+            <span>مشتری جدید</span>
+        </a>
+        <a href="purchases.php" class="quick-action">
+            <i class="fas fa-shopping-bag"></i>
+            <span>خرید جدید</span>
+        </a>
+        <a href="transactions.php" class="quick-action">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>مصارف</span>
+        </a>
+        <a href="reports.php" class="quick-action">
+            <i class="fas fa-warehouse"></i>
+            <span>موجودی کم</span>
+        </a>
+        <a href="reports.php" class="quick-action">
+            <i class="fas fa-chart-line"></i>
+            <span>گزارشات</span>
+        </a>
+        <a href="backup.php" class="quick-action">
+            <i class="fas fa-database"></i>
+            <span>پشتیبان</span>
+        </a>
+    </div>
+</div>
+
+<div class="section">
+    <div class="charts-grid">
+        <div class="chart-card">
             <div class="chart-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h3 class="chart-title">آخرین فروشها</h3>
-                        <p class="chart-subtitle">فهرست 5 فاکتور آخر</p>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <input type="text" class="form-control form-control-sm" placeholder="جستجو..."
-                            id="recentSalesSearch" style="width: 150px;">
-                        <a href="sales.php" class="btn btn-primary btn-sm">
-                            <i class="fas fa-eye me-1"></i>
-                            مشاهده همه
-                        </a>
-                    </div>
+                <h3 class="chart-title">روند فروش هفتگی</h3>
+                <p class="chart-subtitle">فروش روزانه در 7 روز گذشته</p>
+            </div>
+            <div class="chart">
+                <canvas id="chart-sales"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">محصولات پرفروش</h3>
+                <p class="chart-subtitle">5 محصول برتر</p>
+            </div>
+            <div class="chart">
+                <canvas id="chart-orders"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">روند موجودی</h3>
+                <p class="chart-subtitle">وضعیت موجودی کالاها</p>
+            </div>
+            <div class="chart">
+                <canvas id="chart-inventory"></canvas>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<div class="section">
+    <div class="table-card">
+        <div class="table-header">
+            <div class="action-bar">
+                <div class="action-group">
+                    <h3>آخرین فروشها</h3>
+                </div>
+                <div class="action-group">
+                    <input type="text" class="form-control form-control-sm" placeholder="جستجو..."
+                        id="recentSalesSearch" style="width: 150px;">
+                    <a href="sales.php" class="btn btn-primary btn-sm">
+                        <i class="fas fa-eye me-1"></i>
+                        مشاهده همه
+                    </a>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table table-modern" id="recentSalesTable">
-                    <thead>
-                        <tr>
-                            <th>فاکتور</th>
-                            <th>مشتری</th>
-                            <th>مبلغ</th>
-                            <th>تاریخ</th>
-                            <th>عملیات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $query = "SELECT s.id, c.name as customer_name, s.final_amount, s.created_at 
+        </div>
+        <div class="table-responsive">
+            <table class="table" id="recentSalesTable">
+                <thead>
+                    <tr>
+                        <th>فاکتور</th>
+                        <th>مشتری</th>
+                        <th>مبلغ</th>
+                        <th>تاریخ</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $query = "SELECT s.id, c.name as customer_name, s.final_amount, s.created_at 
                                  FROM sales s 
                                  LEFT JOIN customers c ON s.customer_id = c.id 
                                  WHERE (s.status IS NULL OR s.status != 'returned')
                                  ORDER BY s.created_at DESC LIMIT 5";
-                        $stmt = $db->prepare($query);
-                        $stmt->execute();
+                    $stmt = $db->prepare($query);
+                    $stmt->execute();
 
-                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
-                            <tr>
-                                <td><strong>#<?= sanitizeOutput($row['id']) ?></strong></td>
-                                <td><?= sanitizeOutput($row['customer_name'] ?: 'مشتری نقدی') ?></td>
-                                <td><span class="badge bg-success"><?= number_format($row['final_amount']) ?> افغانی</span>
-                                </td>
-                                <td><?= SettingsHelper::formatDateTime(strtotime($row['created_at']), $db) ?></td>
-                                <td>
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <a href="print_invoice.php?id=<?= $row['id'] ?>" class="btn btn-outline-info btn-sm"
-                                            target="_blank" title="چاپ فاکتور">
-                                            <i class="fas fa-print"></i>
-                                        </a>
-                                        <button onclick="viewSale(<?= $row['id'] ?>)" class="btn btn-outline-primary btn-sm" title="مشاهده جزئیات">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button onclick="editSale(<?= $row['id'] ?>)" class="btn btn-outline-warning btn-sm" title="ویرایش فاکتور">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            </div>
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+                        <tr>
+                            <td><strong>#<?= sanitizeOutput($row['id']) ?></strong></td>
+                            <td><?= sanitizeOutput($row['customer_name'] ?: 'مشتری نقدی') ?></td>
+                            <td><span class="badge bg-success"><?= number_format($row['final_amount']) ?> افغانی</span>
+                            </td>
+                            <td><?= SettingsHelper::formatDateTime(strtotime($row['created_at']), $db) ?></td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="print_invoice.php?id=<?= $row['id'] ?>" class="btn btn-info btn-sm"
+                                        target="_blank" title="چاپ فاکتور">
+                                        <i class="fas fa-print"></i>
+                                    </a>
+                                    <button onclick="viewSale(<?= $row['id'] ?>)" class="btn btn-primary btn-sm"
+                                        title="مشاهده جزئیات">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button onclick="editSale(<?= $row['id'] ?>)" class="btn btn-warning btn-sm"
+                                        title="ویرایش فاکتور">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<!-- کارتهای جدید -->
+<div class="section">
+    <div class="charts-grid">
+        <!-- کارت تقویم -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">تقویم</h3>
+                <p class="chart-subtitle">تاریخ و ساعت جاری</p>
+            </div>
+            <div class="chart" style="text-align: center; padding: 20px;">
+                <div id="currentDate" style="font-size: 18px; font-weight: bold; margin-bottom: 10px;"></div>
+                <div id="currentTime" style="font-size: 24px; color: #4f46e5; margin-bottom: 15px;"></div>
+                <button onclick="toggleCalendar()" style="padding: 8px 15px; background: #4f46e5; color: white; border: none; border-radius: 4px;">نمایش تقویم</button>
+                <div id="calendarView" style="display: none; margin-top: 15px; font-size: 14px;"></div>
+            </div>
+        </div>
+
+        <!-- کارت اوقات شرعی -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">اوقات شرعی</h3>
+                <p class="chart-subtitle">کابل، افغانستان</p>
+            </div>
+            <div class="chart" style="padding: 15px;">
+                <div class="prayer-times">
+                    <div class="prayer-item"><span>فجر:</span> <input type="time" id="fajr" value="05:30" onchange="savePrayerTimes()"></div>
+                    <div class="prayer-item"><span>طلوع:</span> <input type="time" id="sunrise" value="06:45" onchange="savePrayerTimes()"></div>
+                    <div class="prayer-item"><span>ظهر:</span> <input type="time" id="dhuhr" value="12:15" onchange="savePrayerTimes()"></div>
+                    <div class="prayer-item"><span>عصر:</span> <input type="time" id="asr" value="15:30" onchange="savePrayerTimes()"></div>
+                    <div class="prayer-item"><span>مغرب:</span> <input type="time" id="maghrib" value="18:00" onchange="savePrayerTimes()"></div>
+                    <div class="prayer-item"><span>عشاء:</span> <input type="time" id="isha" value="19:30" onchange="savePrayerTimes()"></div>
+                </div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button id="alertToggle" onclick="togglePrayerAlert()" style="padding: 8px 15px; background: #10b981; color: white; border: none; border-radius: 4px;">🔔 فعال کردن هشدار</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- کارت To-Do List -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">کارهای ضروری</h3>
+                <p class="chart-subtitle">To-Do List</p>
+            </div>
+            <div class="chart" style="padding: 15px;">
+                <div class="todo-input" style="margin-bottom: 15px;">
+                    <input type="text" id="todoInput" placeholder="کار ضروری جدید..." style="width: 65%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    <button onclick="addTodo()" style="padding: 8px 12px; background: #10b981; color: white; border: none; border-radius: 4px; margin-right: 5px;">+ افزودن</button>
+                </div>
+                <div style="margin-bottom: 10px; font-size: 12px; color: #666;">کلیک روی متن برای خط زدن</div>
+                <ul id="todoList" style="list-style: none; padding: 0; max-height: 180px; overflow-y: auto;"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<?php include 'includes/footer-modern.php'; ?>
+
+<style>
+.prayer-times {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.prayer-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+.prayer-item input {
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 80px;
+    text-align: center;
+}
+.todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    margin: 5px 0;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+.todo-item.completed {
+    text-decoration: line-through;
+    opacity: 0.6;
+    background: #e8f5e8;
+}
+.todo-item.urgent {
+    border-left: 4px solid #dc3545;
+    background: #fff5f5;
+}
+.todo-text {
+    flex: 1;
+    cursor: pointer;
+}
+.todo-delete {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-top: 10px;
+}
+.calendar-day {
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #eee;
+    font-size: 12px;
+}
+.calendar-day.today {
+    background: #4f46e5;
+    color: white;
+    font-weight: bold;
+}
+</style>
 
 <script src="assets/js/chart.js"></script>
 <script src="assets/js/quick-sale.js"></script>
@@ -578,13 +412,17 @@ include 'includes/header.php';
                         echo $data['total'] . ','; ?>],
                     borderColor: "#4f46e5",
                     backgroundColor: "rgba(79, 70, 229, 0.1)",
-                    borderWidth: 3,
+                    borderWidth: 2,
                     fill: true,
-                    tension: 0.4
+                    tension: 0.2
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: true,
+                animation: {
+                    duration: 0
+                },
                 plugins: {
                     legend: {
                         display: false
@@ -592,10 +430,7 @@ include 'includes/header.php';
                 },
                 scales: {
                     y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0,0,0,0.1)'
-                        }
+                        beginAtZero: true
                     },
                     x: {
                         grid: {
@@ -623,6 +458,10 @@ include 'includes/header.php';
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: true,
+                animation: {
+                    duration: 0
+                },
                 plugins: {
                     legend: {
                         position: "bottom",
@@ -636,7 +475,7 @@ include 'includes/header.php';
             }
         });
     }
-    
+
     // نمودار وضعیت موجودی
     if (document.getElementById("chart-inventory")) {
         const ctx = document.getElementById("chart-inventory").getContext("2d");
@@ -652,6 +491,10 @@ include 'includes/header.php';
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: true,
+                animation: {
+                    duration: 0
+                },
                 plugins: {
                     legend: {
                         display: false
@@ -665,46 +508,8 @@ include 'includes/header.php';
             }
         });
     }
-    
-    // نمودار روند فایده
-    if (document.getElementById("chart-profit")) {
-        const ctx = document.getElementById("chart-profit").getContext("2d");
-        new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: [<?php foreach ($sales_chart_data as $data)
-                    echo "'" . date('m/d', strtotime($data['date'])) . "',"; ?>],
-                datasets: [{
-                    label: "فایده روزانه",
-                    data: [<?php foreach ($sales_chart_data as $data)
-                        echo ($data['total'] * 0.2) . ','; ?>],
-                    borderColor: "#10b981",
-                    backgroundColor: "rgba(16, 185, 129, 0.1)",
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        });
-    }
+
+
 
     // Search functionality for recent sales
     document.getElementById('recentSalesSearch').addEventListener('keyup', function () {
@@ -716,13 +521,214 @@ include 'includes/header.php';
             row.style.display = text.includes(filter) ? '' : 'none';
         });
     });
-    
+
     // Functions for recent sales actions
     function viewSale(id) {
         window.open(`view_sale.php?id=${id}`, '_blank');
     }
-    
+
     function editSale(id) {
         window.open(`edit_sale.php?id=${id}`, '_blank');
     }
+
+    // تاریخ و ساعت با ماههای افغانی
+    const afghanMonths = ['حمل', 'ثور', 'جوزا', 'سرطان', 'اسد', 'سنبله', 'میزان', 'عقرب', 'قوس', 'جدی', 'دلو', 'حوت'];
+    const weekDays = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه', 'شنبه'];
+    
+    function updateDateTime() {
+        const now = new Date();
+        const afghanDate = toAfghanDate(now);
+        document.getElementById('currentDate').textContent = `${weekDays[now.getDay()]} ${afghanDate.day} ${afghanMonths[afghanDate.month-1]} ${afghanDate.year}`;
+        document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', {hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit'});
+    }
+    
+    function toAfghanDate(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return {year: year - 621, month: month, day: day};
+    }
+    
+    function toggleCalendar() {
+        const cal = document.getElementById('calendarView');
+        if (cal.style.display === 'none') {
+            generateCalendar();
+            cal.style.display = 'block';
+        } else {
+            cal.style.display = 'none';
+        }
+    }
+    
+    function generateCalendar() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const today = now.getDate();
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        let html = '<div class="calendar-grid">';
+        ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'].forEach(day => {
+            html += `<div class="calendar-day" style="font-weight: bold;">${day}</div>`;
+        });
+        
+        for (let i = 0; i < firstDay; i++) {
+            html += '<div class="calendar-day"></div>';
+        }
+        
+        for (let day = 1; day <= daysInMonth; day++) {
+            const isToday = day === today ? ' today' : '';
+            html += `<div class="calendar-day${isToday}">${day}</div>`;
+        }
+        
+        html += '</div>';
+        document.getElementById('calendarView').innerHTML = html;
+    }
+    
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+
+    // Prayer Times
+    let prayerAlertEnabled = localStorage.getItem('prayerAlert') === 'true';
+    let lastAlertTime = '';
+    
+    function savePrayerTimes() {
+        const times = {
+            fajr: document.getElementById('fajr').value,
+            sunrise: document.getElementById('sunrise').value,
+            dhuhr: document.getElementById('dhuhr').value,
+            asr: document.getElementById('asr').value,
+            maghrib: document.getElementById('maghrib').value,
+            isha: document.getElementById('isha').value
+        };
+        localStorage.setItem('prayerTimes', JSON.stringify(times));
+    }
+    
+    function loadPrayerTimes() {
+        const saved = localStorage.getItem('prayerTimes');
+        if (saved) {
+            const times = JSON.parse(saved);
+            Object.keys(times).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) element.value = times[key];
+            });
+        }
+        updateAlertButton();
+    }
+    
+    function togglePrayerAlert() {
+        prayerAlertEnabled = !prayerAlertEnabled;
+        localStorage.setItem('prayerAlert', prayerAlertEnabled);
+        updateAlertButton();
+    }
+    
+    function updateAlertButton() {
+        const btn = document.getElementById('alertToggle');
+        if (prayerAlertEnabled) {
+            btn.innerHTML = '🔕 غیرفعال کردن هشدار';
+            btn.style.background = '#dc3545';
+        } else {
+            btn.innerHTML = '🔔 فعال کردن هشدار';
+            btn.style.background = '#10b981';
+        }
+    }
+    
+    function checkPrayerTime() {
+        if (!prayerAlertEnabled) return;
+        
+        const now = new Date();
+        const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        
+        const prayerNames = {fajr: 'فجر', sunrise: 'طلوع', dhuhr: 'ظهر', asr: 'عصر', maghrib: 'مغرب', isha: 'عشاء'};
+        
+        Object.keys(prayerNames).forEach(key => {
+            const element = document.getElementById(key);
+            if (element && element.value === currentTime && lastAlertTime !== currentTime) {
+                playPrayerAlert(prayerNames[key]);
+                lastAlertTime = currentTime;
+            }
+        });
+    }
+    
+    function playPrayerAlert(prayerName) {
+        // ایجاد صدای هشدار
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 2);
+        
+        // نمایش پیام
+        alert(`وقت ${prayerName} فرا رسیده است!`);
+    }
+    
+    // بررسی هر دقیقه
+    setInterval(checkPrayerTime, 60000);
+    
+    // Todo List با قابلیت کارهای ضروری
+    let todos = JSON.parse(localStorage.getItem('todos') || '[]');
+    
+    function renderTodos() {
+        const list = document.getElementById('todoList');
+        list.innerHTML = '';
+        todos.forEach((todo, index) => {
+            const li = document.createElement('li');
+            li.className = 'todo-item' + (todo.completed ? ' completed' : '') + (todo.urgent ? ' urgent' : '');
+            li.innerHTML = `
+                <span class="todo-text" onclick="toggleTodo(${index})" title="کلیک برای خط زدن">${todo.text}</span>
+                <div>
+                    <button onclick="toggleUrgent(${index})" style="background: ${todo.urgent ? '#dc3545' : '#6c757d'}; color: white; border: none; border-radius: 3px; padding: 2px 6px; font-size: 10px; margin-left: 3px;">ضروری</button>
+                    <button class="todo-delete" onclick="deleteTodo(${index})">×</button>
+                </div>
+            `;
+            list.appendChild(li);
+        });
+    }
+    
+    function addTodo() {
+        const input = document.getElementById('todoInput');
+        const text = input.value.trim();
+        if (text) {
+            todos.push({ text, completed: false, urgent: false, date: new Date().toLocaleDateString('fa-IR') });
+            localStorage.setItem('todos', JSON.stringify(todos));
+            input.value = '';
+            renderTodos();
+        }
+    }
+    
+    function toggleTodo(index) {
+        todos[index].completed = !todos[index].completed;
+        localStorage.setItem('todos', JSON.stringify(todos));
+        renderTodos();
+    }
+    
+    function toggleUrgent(index) {
+        todos[index].urgent = !todos[index].urgent;
+        localStorage.setItem('todos', JSON.stringify(todos));
+        renderTodos();
+    }
+    
+    function deleteTodo(index) {
+        todos.splice(index, 1);
+        localStorage.setItem('todos', JSON.stringify(todos));
+        renderTodos();
+    }
+    
+    document.getElementById('todoInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') addTodo();
+    });
+    
+    loadPrayerTimes();
+    renderTodos();
+    checkPrayerTime();
 </script>

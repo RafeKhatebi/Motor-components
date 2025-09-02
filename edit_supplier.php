@@ -1,13 +1,18 @@
 <?php
-session_start();
+require_once 'init_security.php';
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
 }
 
 require_once 'config/database.php';
+require_once 'includes/functions.php';
+require_once 'includes/SettingsHelper.php';
 $database = new Database();
 $db = $database->getConnection();
+SettingsHelper::loadSettings($db);
+
+$page_title = 'ویرایش تأمینکننده';
 
 $id = $_GET['id'] ?? 0;
 if (!$id) {
@@ -28,95 +33,92 @@ if (!$supplier) {
 
 // Handle form submission
 if ($_POST) {
-    $update_query = "UPDATE suppliers SET name = ?, phone = ?, address = ? WHERE id = ?";
-    $update_stmt = $db->prepare($update_query);
-
-    if ($update_stmt->execute([$_POST['name'], $_POST['phone'], $_POST['address'], $id])) {
-        $success_message = "تأمینکننده با موفقیت بروزرسانی شد";
-        // Refresh supplier data
-        $stmt->execute([$id]);
-        $supplier = $stmt->fetch(PDO::FETCH_ASSOC);
+    // CSRF protection
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])) {
+        $error_message = 'درخواست نامعتبر';
     } else {
-        $error_message = "خطا در بروزرسانی تأمینکننده";
+        $update_query = "UPDATE suppliers SET name = ?, phone = ?, address = ? WHERE id = ?";
+        $update_stmt = $db->prepare($update_query);
+
+        if ($update_stmt->execute([sanitizeInput($_POST['name']), sanitizeInput($_POST['phone']), sanitizeInput($_POST['address']), $id])) {
+            $success_message = "تأمینکننده با موفقیت بروزرسانی شد";
+            // Refresh supplier data
+            $stmt->execute([$id]);
+            $supplier = $stmt->fetch(PDO::FETCH_ASSOC);
+        } else {
+            $error_message = "خطا در بروزرسانی تأمینکننده";
+        }
     }
 }
+
+// Generate CSRF token
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+include 'includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>ویرایش تأمین کننده - مدیریت فروشگاه موتور</title>
-    <link rel="stylesheet" href="assets/css/bootstrap.rtl.min.css">
-    <link rel="stylesheet" href="assets/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/argon-dashboard-rtl.css">
-</head>
+<?php if (isset($success_message)): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <?= sanitizeOutput($success_message) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
 
-<body>
-    <?php include 'includes/header.php'; ?>
+<?php if (isset($error_message)): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <?= sanitizeOutput($error_message) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
 
-    <div class="container-fluid mt-4">
-        <?php if (isset($success_message)): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle ml-2"></i>
-                <?= $success_message ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
-
-        <?php if (isset($error_message)): ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle ml-2"></i>
-                <?= $error_message ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
-
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow">
-                    <div class="card-header border-0">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h3 class="mb-0">ویرایش تأمین کننده</h3>
-                            </div>
-                            <div class="col text-left">
-                                <a href="suppliers.php" class="btn btn-secondary btn-sm">
-                                    <i class="fas fa-arrow-right"></i> بازگشت
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST">
-                            <div class="form-group mb-3">
-                                <label class="form-control-label">نام تأمین کننده</label>
-                                <input type="text" name="name" class="form-control" value="<?= $supplier['name'] ?>"
-                                    required>
-                            </div>
-                            <div class="form-group mb-3">
-                                <label class="form-control-label">شماره تلفن</label>
-                                <input type="text" name="phone" class="form-control" value="<?= $supplier['phone'] ?>">
-                            </div>
-                            <div class="form-group mb-3">
-                                <label class="form-control-label">آدرس</label>
-                                <textarea name="address" class="form-control"
-                                    rows="3"><?= $supplier['address'] ?></textarea>
-                            </div>
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save"></i> بروزرسانی تأمین کننده
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+<div class="section">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-edit me-2"></i>
+                    ویرایش تأمینکننده
+                </h5>
+                <a href="suppliers.php" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-right me-1"></i>بازگشت
+                </a>
             </div>
         </div>
+        <div class="card-body">
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?= sanitizeOutput($_SESSION['csrf_token']) ?>">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label">نام تأمینکننده</label>
+                            <input type="text" name="name" class="form-control" value="<?= sanitizeOutput($supplier['name']) ?>" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label">شماره تلفن</label>
+                            <input type="text" name="phone" class="form-control" value="<?= sanitizeOutput($supplier['phone']) ?>">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">آدرس</label>
+                    <textarea name="address" class="form-control" rows="3"><?= sanitizeOutput($supplier['address']) ?></textarea>
+                </div>
+                <div class="d-flex justify-content-center gap-2">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-1"></i>بروزرسانی
+                    </button>
+                    <a href="suppliers.php" class="btn btn-secondary">
+                        <i class="fas fa-times me-1"></i>انصراف
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
-    <?php include 'includes/footer.php'; ?>
-</body>
-
-</html>
+<?php include 'includes/footer-modern.php'; ?>

@@ -1,47 +1,36 @@
 <?php
-require_once '../init_security.php';
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['success' => false, 'message' => 'دسترسی غیرمجاز']);
-    exit;
-}
-
 require_once '../config/database.php';
-
-$database = new Database();
-$pdo = $database->getConnection();
+require_once '../includes/functions.php';
 
 header('Content-Type: application/json');
 
+$database = new Database();
+$db = $database->getConnection();
+
 try {
-    // دریافت تمام تراکنشات مالی
-    $query = "SELECT ft.*, tt.name as type_name 
-              FROM expense_transactions ft 
-              JOIN transaction_types tt ON ft.type_id = tt.id 
-              ORDER BY ft.transaction_date DESC, ft.created_at DESC";
+    // Get purchases as expenses
+    $query = "SELECT p.id, 'expense' as transaction_type, 'خرید' as type_name,
+                     p.total_amount as amount, s.name as person_name,
+                     p.created_at as transaction_date, CONCAT('خرید شماره ', p.id) as description,
+                     CONCAT('PUR-', LPAD(p.id, 6, '0')) as transaction_code
+              FROM purchases p
+              LEFT JOIN suppliers s ON p.supplier_id = s.id
+              WHERE p.status != 'returned'
+              ORDER BY p.created_at DESC";
     
-    $stmt = $pdo->prepare($query);
+    $stmt = $db->prepare($query);
     $stmt->execute();
     $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // محاسبه خلاصه
-    $total_expenses = 0;
-    $total_withdrawals = 0;
-    
-    foreach ($transactions as $transaction) {
-        if ($transaction['transaction_type'] === 'expense') {
-            $total_expenses += $transaction['amount'];
-        } else {
-            $total_withdrawals += $transaction['amount'];
-        }
-    }
-    
+
+    // Calculate summary
+    $total_expenses = array_sum(array_column($transactions, 'amount'));
+    $total_withdrawals = 0; // No withdrawals in current system
+
     $summary = [
         'total_expenses' => $total_expenses,
-        'total_withdrawals' => $total_withdrawals,
-        'total_transactions' => $total_expenses + $total_withdrawals,
-        'transaction_count' => count($transactions)
+        'total_withdrawals' => $total_withdrawals
     ];
-    
+
     echo json_encode([
         'success' => true,
         'transactions' => $transactions,
@@ -49,5 +38,6 @@ try {
     ]);
 
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => 'خطا در بارگذاری گزارش: ' . $e->getMessage()]);
 }
+?>

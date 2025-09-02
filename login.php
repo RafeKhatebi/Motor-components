@@ -97,99 +97,167 @@ if (!isset($_SESSION['csrf_token'])) {
     <link rel="icon" href="assets/img/brand/favicon.png" type="image/png">
 
     <!-- Fonts -->
-    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet"> -->
     <link rel="stylesheet" href="assets/webfonts/">
 
     <!-- Icons -->
     <link rel="stylesheet" href="assets/css/all.min.css">
-    <!-- Bootstrap RTL CSS -->
-    <link rel="stylesheet" href="assets/css/bootstrap.rtl.min.css">
-    <!-- Login Styles -->
-    <link rel="stylesheet" href="assets/css/login.css">
+    <!-- Unified Design System -->
+    <link rel="stylesheet" href="assets/css/unified-system.css">
+    <!-- Modern Login Styles -->
+    <link rel="stylesheet" href="assets/css/modern-login.css">
 </head>
 
-<body>
+<body class="modern-login-page">
+    <!-- Background Animation -->
+    <div class="login-background">
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+            <div class="shape shape-5"></div>
+        </div>
+    </div>
+
     <div class="login-container">
-        <div class="login-card">
-            <!-- Header -->
-            <div class="login-header">
-                <div class="login-logo">
-                    <?php if (SettingsHelper::hasCustomLogo()): ?>
-                        <img src="<?= htmlspecialchars(SettingsHelper::getShopLogo(), ENT_QUOTES, 'UTF-8') ?>" alt="<?= sanitizeOutput(SettingsHelper::getShopName()) ?>" 
-                             style="width: 60px; height: 60px; object-fit: contain; border-radius: 50%;">
-                    <?php else: ?>
-                        <i class="fas fa-motorcycle"></i>
-                    <?php endif; ?>
+        <div class="login-card-modern">
+            <!-- Left Side - Branding -->
+            <div class="login-brand-section">
+                <div class="brand-content">
+                    <div class="brand-logo">
+                        <?php if (SettingsHelper::hasCustomLogo()): ?>
+                            <img src="<?= htmlspecialchars(SettingsHelper::getShopLogo(), ENT_QUOTES, 'UTF-8') ?>" alt="<?= sanitizeOutput(SettingsHelper::getShopName()) ?>">
+                        <?php else: ?>
+                            <div class="default-logo">
+                                <i class="fas fa-motorcycle"></i>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    <h1 class="brand-title"><?= sanitizeOutput(SettingsHelper::getShopName()) ?></h1>
+                    <p class="brand-subtitle">سیستم مدیریت فروشگاه قطعات موتورسیکلت</p>
+                    <div class="brand-features">
+                        <div class="feature-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>امنیت بالا</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-chart-line"></i>
+                            <span>گزارشگیری پیشرفته</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-users"></i>
+                            <span>مدیریت کاربران</span>
+                        </div>
+                    </div>
                 </div>
-                <h1 class="login-title">خوش آمدید</h1>
-                <p class="login-subtitle"><?= sanitizeOutput(SettingsHelper::getShopName()) ?></p>
             </div>
 
-            <!-- Body -->
-            <div class="login-body">
-                <?php if ($error): ?>
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
-                    </div>
-                <?php endif; ?>
+            <!-- Right Side - Login Form -->
+            <div class="login-form-section">
+                <div class="form-header">
+                    <h2 class="form-title">ورود به سیستم</h2>
+                    <p class="form-subtitle">لطفاً اطلاعات خود را وارد کنید</p>
+                </div>
 
-                <form method="POST">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
-
-                    <div class="form-group">
-                        <label class="form-label">نام کاربری</label>
-                        <div class="input-group">
-                            <input type="text" name="username" id="username" class="form-control with-icon"
-                                placeholder="نام کاربری خود را وارد کنید" value="<?= htmlspecialchars($_COOKIE['remember_username'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
-                            <i class="fas fa-user input-icon"></i>
+                <div class="form-content">
+                    <?php if ($error): ?>
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></span>
                         </div>
-                    </div>
+                    <?php endif; ?>
 
-                    <div class="form-group">
-                        <label class="form-label">رمز عبور</label>
-                        <div class="input-group">
-                            <input type="password" id="password" name="password" class="form-control with-icons"
-                                placeholder="رمز عبور خود را وارد کنید" required>
-                            <i class="fas fa-lock input-icon-left"></i>
-                            <i class="fas fa-eye input-icon-right" id="togglePassword" style="cursor: pointer;"></i>
+                    <form method="POST" class="login-form">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
+
+                        <div class="input-field">
+                            <div class="input-wrapper">
+                                <i class="fas fa-user input-icon"></i>
+                                <input type="text" name="username" id="username" class="modern-input"
+                                   value="<?= htmlspecialchars($_COOKIE['remember_username'] ?? '', ENT_QUOTES, 'UTF-8') ?>"placeholder="نام کاربری" required>
+                                <!-- <label class="input-label">نام کاربری</label> -->
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <div class="form-check">
-                            <input type="checkbox" name="remember_me" id="remember_me" class="form-check-input" <?= isset($_COOKIE['remember_username']) ? 'checked' : '' ?>>
-                            <label class="form-check-label" for="remember_me">
-                                <i class="fas fa-heart me-1"></i>
-                                بخاطر بسپار من را
+                        <div class="input-field">
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="password" name="password" class="modern-input"
+                                   placeholder="رمز عبور" required>
+                                <!-- <label class="input-label">رمز عبور</label> -->
+                                <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox-wrapper">
+                                <input type="checkbox" name="remember_me" id="remember_me" <?= isset($_COOKIE['remember_username']) ? 'checked' : '' ?>>
+                                <span class="checkmark"></span>
+                                <span class="checkbox-text">مرا بخاطر بسپار</span>
                             </label>
                         </div>
-                    </div>
 
-                    <button type="submit" class="btn-login">
-                        <i class="fas fa-sign-in-alt me-2"></i>
-                        ورود به سیستم
-                    </button>
-                </form>
-            </div>
+                        <button type="submit" class="login-btn">
+                            <span class="btn-text">ورود به سیستم</span>
+                            <i class="fas fa-arrow-left btn-icon"></i>
+                        </button>
+                    </form>
+                </div>
 
-            <!-- Footer -->
-            <div class="login-footer">
-                <p class="text-muted mb-0">
-                    &copy; <?= date('Y') ?> <?= sanitizeOutput(SettingsHelper::getShopName()) ?>. تمامی حقوق محفوظ است.
-                </p>
+                <div class="form-footer">
+                    <p>&copy; <?= date('Y') ?> <?= sanitizeOutput(SettingsHelper::getShopName()) ?>. تمامی حقوق محفوظ است.</p>
+                </div>
             </div>
         </div>
     </div>
     <script>
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const password = document.getElementById('password');
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
+        // Minimal login functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Password toggle
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            
+            if (togglePassword && passwordInput) {
+                togglePassword.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            }
+            
+            // Input wrapper click focus
+            document.querySelectorAll('.input-wrapper').forEach(wrapper => {
+                wrapper.addEventListener('click', function() {
+                    const input = this.querySelector('.modern-input');
+                    if (input) input.focus();
+                });
+            });
+            
+            // Label animation
+            document.querySelectorAll('.modern-input').forEach(input => {
+                function updateLabel() {
+                    const label = input.nextElementSibling;
+                    if (label && label.classList.contains('input-label')) {
+                        if (input.value.trim() !== '' || input === document.activeElement) {
+                            label.style.transform = 'translateY(-35px) scale(0.85)';
+                            label.style.color = '#4f46e5';
+                            label.style.background = 'white';
+                            label.style.padding = '0 8px';
+                        } else {
+                            label.style.transform = 'translateY(-50%) scale(1)';
+                            label.style.color = '#6b7280';
+                            label.style.background = 'transparent';
+                            label.style.padding = '0';
+                        }
+                    }
+                }
+                
+                input.addEventListener('input', updateLabel);
+                input.addEventListener('focus', updateLabel);
+                input.addEventListener('blur', updateLabel);
+                updateLabel();
+            });
         });
     </script>
 </body>
