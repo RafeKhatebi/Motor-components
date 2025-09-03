@@ -27,6 +27,18 @@ try {
     $products_stmt->execute();
     $products = $products_stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Pagination
+    $items_per_page = 30;
+    $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+    $offset = ($page - 1) * $items_per_page;
+
+    // Count total purchases
+    $count_query = "SELECT COUNT(*) as total FROM purchases";
+    $count_stmt = $db->prepare($count_query);
+    $count_stmt->execute();
+    $total_items = $count_stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    $total_pages = ceil($total_items / $items_per_page);
+
     $purchases_query = "SELECT p.*, s.name as supplier_name, 
                         COALESCE(p.status, 'completed') as status,
                         COALESCE(p.payment_type, 'cash') as payment_type,
@@ -35,8 +47,10 @@ try {
                         COALESCE(p.payment_status, 'paid') as payment_status
                         FROM purchases p 
                         LEFT JOIN suppliers s ON p.supplier_id = s.id 
-                        ORDER BY p.created_at DESC";
+                        ORDER BY p.created_at DESC LIMIT :limit OFFSET :offset";
     $purchases_stmt = $db->prepare($purchases_query);
+    $purchases_stmt->bindValue(':limit', $items_per_page, PDO::PARAM_INT);
+    $purchases_stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $purchases_stmt->execute();
     $purchases = $purchases_stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -44,6 +58,8 @@ try {
     $suppliers = [];
     $products = [];
     $purchases = [];
+    $total_items = 0;
+    $total_pages = 0;
 }
 
 $extra_css = '
@@ -350,7 +366,7 @@ include ABSPATH . 'includes/header.php';
                 <tbody>
                     <?php foreach ($purchases as $index => $purchase): ?>
                         <tr>
-                            <td class="text-center"><?= $index + 1 ?></td>
+                            <td class="text-center"><?= $offset + $index + 1 ?></td>
                             <td class="text-center">
                                 <span class="badge bg-primary">#<?= $purchase['id'] ?></span>
                             </td>
@@ -417,6 +433,56 @@ include ABSPATH . 'includes/header.php';
                 </tbody>
             </table>
         </div>
+        
+        <!-- Pagination -->
+        <?php if ($total_pages > 1): ?>
+            <div class="card-footer py-4">
+                <nav aria-label="صفحهبندی">
+                    <ul class="pagination justify-content-center mb-0">
+                        <?php if ($page > 1): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?= $page - 1 ?>">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                        <?php else: ?>
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-angle-right"></i></span>
+                            </li>
+                        <?php endif; ?>
+
+                        <?php
+                        $start = max(1, $page - 2);
+                        $end = min($total_pages, $page + 2);
+
+                        for ($i = $start; $i <= $end; $i++): ?>
+                            <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+
+                        <?php if ($page < $total_pages): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?= $page + 1 ?>">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                        <?php else: ?>
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-angle-left"></i></span>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            نمایش <?= $offset + 1 ?> تا <?= min($offset + $items_per_page, $total_items) ?> از
+                            <?= $total_items ?> خرید
+                        </small>
+                    </div>
+                </nav>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 

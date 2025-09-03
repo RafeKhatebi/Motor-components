@@ -47,14 +47,32 @@ if ($filter_date_to) {
 
 $where_clause = $where_conditions ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
 
+// Pagination
+$items_per_page = 30;
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($page - 1) * $items_per_page;
+
+// Count total transactions
+$count_query = "SELECT COUNT(*) as total FROM expense_transactions ft JOIN transaction_types tt ON ft.type_id = tt.id $where_clause";
+$count_stmt = $db->prepare($count_query);
+$count_stmt->execute($params);
+$total_items = $count_stmt->fetch(PDO::FETCH_ASSOC)['total'];
+$total_pages = ceil($total_items / $items_per_page);
+
 $query = "SELECT ft.*, tt.name as type_name 
           FROM expense_transactions ft 
           JOIN transaction_types tt ON ft.type_id = tt.id 
           $where_clause 
-          ORDER BY ft.transaction_date DESC, ft.created_at DESC";
+          ORDER BY ft.transaction_date DESC, ft.created_at DESC
+          LIMIT :limit OFFSET :offset";
 
 $stmt = $db->prepare($query);
-$stmt->execute($params);
+foreach ($params as $key => $value) {
+    $stmt->bindValue($key + 1, $value);
+}
+$stmt->bindValue(':limit', $items_per_page, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->execute();
 $transactions = $stmt->fetchAll();
 
 // محاسبه مجموع
@@ -263,6 +281,56 @@ include __DIR__ . '/includes/header.php';
                         </tbody>
                     </table>
                 </div>
+                
+                <!-- Pagination -->
+                <?php if ($total_pages > 1): ?>
+                    <div class="card-footer py-4">
+                        <nav aria-label="صفحهبندی">
+                            <ul class="pagination justify-content-center mb-0">
+                                <?php if ($page > 1): ?>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<?= $page - 1 ?>&filter_type=<?= urlencode($filter_type) ?>&filter_person=<?= urlencode($filter_person) ?>&filter_date_from=<?= urlencode($filter_date_from) ?>&filter_date_to=<?= urlencode($filter_date_to) ?>">
+                                            <i class="fas fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                <?php else: ?>
+                                    <li class="page-item disabled">
+                                        <span class="page-link"><i class="fas fa-angle-right"></i></span>
+                                    </li>
+                                <?php endif; ?>
+
+                                <?php
+                                $start = max(1, $page - 2);
+                                $end = min($total_pages, $page + 2);
+
+                                for ($i = $start; $i <= $end; $i++): ?>
+                                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $i ?>&filter_type=<?= urlencode($filter_type) ?>&filter_person=<?= urlencode($filter_person) ?>&filter_date_from=<?= urlencode($filter_date_from) ?>&filter_date_to=<?= urlencode($filter_date_to) ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <?php if ($page < $total_pages): ?>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<?= $page + 1 ?>&filter_type=<?= urlencode($filter_type) ?>&filter_person=<?= urlencode($filter_person) ?>&filter_date_from=<?= urlencode($filter_date_from) ?>&filter_date_to=<?= urlencode($filter_date_to) ?>">
+                                            <i class="fas fa-angle-left"></i>
+                                        </a>
+                                    </li>
+                                <?php else: ?>
+                                    <li class="page-item disabled">
+                                        <span class="page-link"><i class="fas fa-angle-left"></i></span>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+
+                            <div class="text-center mt-3">
+                                <small class="text-muted">
+                                    نمایش <?= $offset + 1 ?> تا <?= min($offset + $items_per_page, $total_items) ?> از
+                                    <?= $total_items ?> هزینه
+                                </small>
+                            </div>
+                        </nav>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

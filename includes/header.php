@@ -28,6 +28,8 @@ foreach ($allowed_files as $file) {
     <!-- Icons -->
     <link rel="stylesheet" href="assets/css/all.min.css">
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Unified Design System -->
     <link rel="stylesheet" href="assets/css/unified-system.css">
     <!-- Theme Enhancements -->

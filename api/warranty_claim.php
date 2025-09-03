@@ -36,7 +36,11 @@ try {
     $db = $database->getConnection();
     
     // بررسی وضعیت گارانتی
-    $warranty_check = "SELECT * FROM warranties WHERE id = ? AND status = 'active' AND warranty_end >= CURDATE()";
+    $warranty_check = "SELECT w.*, p.name as product_name, c.name as customer_name 
+                       FROM warranties w
+                       LEFT JOIN products p ON w.product_id = p.id
+                       LEFT JOIN customers c ON w.customer_id = c.id
+                       WHERE w.id = ? AND w.status = 'active' AND w.warranty_end >= CURDATE()";
     $warranty_stmt = $db->prepare($warranty_check);
     $warranty_stmt->execute([$warranty_id]);
     $warranty = $warranty_stmt->fetch(PDO::FETCH_ASSOC);
@@ -49,12 +53,17 @@ try {
     $db->beginTransaction();
     
     // ثبت درخواست گارانتی
-    $claim_query = "INSERT INTO warranty_claims (warranty_id, claim_date, issue_description, claim_type) 
-                    VALUES (?, CURDATE(), ?, ?)";
+    $claim_query = "INSERT INTO warranty_claims (warranty_id, claim_date, issue_description, claim_type, status) 
+                    VALUES (?, CURDATE(), ?, ?, 'pending')";
     $claim_stmt = $db->prepare($claim_query);
     $claim_stmt->execute([$warranty_id, $issue_description, $claim_type]);
     
     $claim_id = $db->lastInsertId();
+    
+    // بروزرسانی وضعیت گارانتی
+    $update_warranty = "UPDATE warranties SET status = 'claimed' WHERE id = ?";
+    $update_stmt = $db->prepare($update_warranty);
+    $update_stmt->execute([$warranty_id]);
     
     // ثبت تاریخچه
     $history_query = "INSERT INTO warranty_history (warranty_id, action, description, performed_by) 
@@ -62,7 +71,7 @@ try {
     $history_stmt = $db->prepare($history_query);
     $history_stmt->execute([
         $warranty_id,
-        "درخواست گارانتی ثبت شد - نوع: {$claim_type}",
+        "درخواست گارانتی ثبت شد - نوع: {$claim_type} - توضیحات: {$issue_description}",
         $_SESSION['user_id']
     ]);
     

@@ -327,6 +327,8 @@ ol {
   box-shadow: var(--shadow);
   overflow: hidden;
   transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
 }
 
 .card:hover {
@@ -769,6 +771,7 @@ ol {
   font-size: var(--font-sm);
   position: relative;
   overflow: hidden;
+  z-index: 1;
 }
 
 .alert::before {

@@ -179,88 +179,56 @@ include $header_file;
         color: #1f2937;
         padding: 18px;
         text-align: center;
-        position: relative;
         border-bottom: 1px solid #e5e7eb;
-    }
-
-    .menu-header::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.1) 100%);
     }
 
     .menu-header h2 {
         margin: 0;
         font-size: 1.8rem;
         font-weight: 700;
-        position: relative;
-        z-index: 1;
     }
 
     .menu-header .subtitle {
         margin: 8px 0 0 0;
         opacity: 0.9;
         font-size: 1rem;
-        position: relative;
-        z-index: 1;
     }
 
     .menu-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 0;
         padding: 0;
     }
 
     .menu-item {
-        padding: 25px;
+        padding: 25px 20px;
         border: none;
         background: white;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         text-decoration: none;
         color: #374151;
         display: flex;
+        flex-direction: column;
         align-items: center;
+        text-align: center;
         gap: 15px;
         border-bottom: 1px solid #e5e7eb;
         border-right: 1px solid #e5e7eb;
         position: relative;
-        overflow: hidden;
     }
 
-    .menu-item:last-child,
-    .menu-item:nth-child(even) {
+    .menu-item:nth-child(4n) {
         border-right: none;
     }
 
-    .menu-item:nth-last-child(-n+2) {
+    .menu-item:nth-last-child(-n+4) {
         border-bottom: none;
-    }
-
-    .menu-item::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
-        transition: left 0.5s ease;
-    }
-
-    .menu-item:hover::before {
-        left: 100%;
     }
 
     .menu-item:hover {
         background: #f8fafc;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         color: #1f2937;
     }
 
@@ -275,14 +243,10 @@ include $header_file;
         color: white;
         font-size: 1.3rem;
         flex-shrink: 0;
-        position: relative;
-        z-index: 1;
     }
 
     .menu-content {
         flex: 1;
-        position: relative;
-        z-index: 1;
     }
 
     .menu-title {
@@ -300,37 +264,15 @@ include $header_file;
     }
 
     .menu-arrow {
-        font-size: 1.2rem;
-        color: #9ca3af;
-        transition: all 0.3s ease;
-        position: relative;
-        z-index: 1;
-    }
-
-    .menu-item:hover .menu-arrow {
-        color: #667eea;
-        transform: translateX(-5px);
+        display: none;
     }
 
     .report-section {
         display: none;
-        animation: fadeIn 0.5s ease;
     }
 
     .report-section.active {
         display: block;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
     }
 
     .back-button {
@@ -343,7 +285,7 @@ include $header_file;
         font-size: 0.9rem;
         font-weight: 500;
         margin-bottom: 20px;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -352,6 +294,16 @@ include $header_file;
     .back-button:hover {
         background: linear-gradient(135deg, #4b5563, #374151);
         transform: translateY(-2px);
+    }
+
+    @media (max-width: 1200px) {
+        .menu-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .summary-cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
 
     @media (max-width: 768px) {
@@ -363,92 +315,138 @@ include $header_file;
             border-right: none;
             border-bottom: 1px solid #e5e7eb;
             padding: 20px;
+            flex-direction: row;
+            text-align: left;
         }
 
         .menu-header h2 {
             font-size: 1.5rem;
         }
 
-        .section {
-            padding: 0 var(--space-2);
-        }
-
-        .content-wrapper {
-            padding: var(--space-3);
+        .summary-cards {
+            grid-template-columns: 1fr;
         }
     }
 
     .report-card {
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e5e7eb;
-        margin-bottom: 20px;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        border: none;
+        margin-bottom: 30px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .report-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
     }
 
     .report-header {
-        padding: 20px;
-        border-bottom: 1px solid #e5e7eb;
+        padding: 30px;
+        border-bottom: 1px solid #f1f5f9;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        background: linear-gradient(135deg, #fafbfc 0%, #f8fafc 100%);
     }
 
     .report-title {
-        font-size: 1.25rem;
-        font-weight: 700;
+        font-size: 1.5rem;
+        font-weight: 800;
         color: #1f2937;
         margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .report-title::before {
+        content: "";
+        width: 4px;
+        height: 30px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 2px;
     }
 
     .report-actions {
         display: flex;
-        gap: 8px;
+        gap: 12px;
+        flex-wrap: wrap;
     }
 
     .btn-report {
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        border: 1px solid #d1d5db;
+        padding: 12px 20px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border: 2px solid transparent;
         background: white;
         color: #374151;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-report::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn-report:hover::before {
+        left: 100%;
     }
 
     .btn-report:hover {
-        background: #1f2937;
-        color: white;
-        border-color: #1f2937;
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     }
 
     .btn-print {
-        color: #059669;
-        border-color: #059669;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
     }
 
     .btn-excel {
-        color: #0891b2;
-        border-color: #0891b2;
+        background: linear-gradient(135deg, #06b6d4, #0891b2);
+        color: white;
+        box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3);
     }
 
     .btn-pdf {
-        color: #dc2626;
-        border-color: #dc2626;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
     }
 
     .btn-print:hover {
-        background: #059669;
+        box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4);
     }
 
     .btn-excel:hover {
-        background: #0891b2;
+        box-shadow: 0 12px 35px rgba(6, 182, 212, 0.4);
     }
 
     .btn-pdf:hover {
-        background: #dc2626;
+        box-shadow: 0 12px 35px rgba(239, 68, 68, 0.4);
     }
 
     .filter-section {
@@ -506,58 +504,70 @@ include $header_file;
 
     .summary-cards {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 20px;
         margin-bottom: 25px;
     }
 
     .summary-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        background: var(--bg-primary);
+        color: #1f2937;
         padding: 25px;
-        border-radius: 15px;
+        border-radius: var(--radius-lg);
         text-align: center;
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.3s ease;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        transition: var(--transition);
         position: relative;
-        overflow: hidden;
-    }
-
-    .summary-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.1) 100%);
-        pointer-events: none;
     }
 
     .summary-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
     }
 
-    .summary-card:nth-child(1) {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    .summary-card:nth-child(1)::before {
+        background: linear-gradient(90deg, #667eea, #764ba2);
     }
 
-    .summary-card:nth-child(2) {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        box-shadow: 0 8px 25px rgba(240, 147, 251, 0.3);
+    .summary-card:nth-child(2)::before {
+        background: linear-gradient(90deg, #f093fb, #f5576c);
     }
 
-    .summary-card:nth-child(3) {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
+    .summary-card:nth-child(3)::before {
+        background: linear-gradient(90deg, #4facfe, #00f2fe);
     }
 
-    .summary-card:nth-child(4) {
-        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-        box-shadow: 0 8px 25px rgba(67, 233, 123, 0.3);
+    .summary-card:nth-child(4)::before {
+        background: linear-gradient(90deg, #43e97b, #38f9d7);
+    }
+
+    .summary-card:nth-child(5)::before {
+        background: linear-gradient(90deg, #fa709a, #fee140);
+    }
+
+    .summary-card:nth-child(6)::before {
+        background: linear-gradient(90deg, #a8edea, #fed6e3);
+    }
+
+    .summary-card:nth-child(7)::before {
+        background: linear-gradient(90deg, #d299c2, #fef9d7);
+    }
+
+    .summary-card:nth-child(8)::before {
+        background: linear-gradient(90deg, #89f7fe, #66a6ff);
+    }
+
+    .summary-card:nth-child(9)::before {
+        background: linear-gradient(90deg, #fdbb2d, #22c1c3);
+    }
+
+    .summary-card:nth-child(10)::before {
+        background: linear-gradient(90deg, #e0c3fc, #9bb5ff);
+    }
+
+    .summary-card:nth-child(11)::before {
+        background: linear-gradient(90deg, #ffecd2, #fcb69f);
     }
 
     /* Detailed Stats Cards */
@@ -718,21 +728,16 @@ include $header_file;
         margin: 0 0 15px 0;
         font-size: 1rem;
         font-weight: 600;
-        opacity: 0.95;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-        position: relative;
-        z-index: 1;
+        color: #6b7280;
     }
 
     .summary-card .value {
         font-size: 2rem;
         font-weight: 800;
         margin: 0;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        position: relative;
-        z-index: 1;
         line-height: 1.2;
         word-break: break-word;
+        color: #1f2937;
     }
 
     .summary-card .icon {
@@ -741,13 +746,13 @@ include $header_file;
         right: 20px;
         width: 40px;
         height: 40px;
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(102, 126, 234, 0.1);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1.2rem;
-        backdrop-filter: blur(10px);
+        color: #667eea;
     }
 
     .table-summary {
@@ -796,9 +801,7 @@ include $header_file;
         }
 
         .summary-cards {
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: var(--space-4);
+            grid-template-columns: 1fr;
         }
 
         .summary-card {
@@ -2079,8 +2082,11 @@ include $footer_file;
         const todayJalali = convertToJalali(today.toISOString().split('T')[0]);
         const thirtyDaysAgoJalali = convertToJalali(thirtyDaysAgo.toISOString().split('T')[0]);
 
-        document.getElementById('endDate').value = todayJalali;
-        document.getElementById('startDate').value = thirtyDaysAgoJalali;
+        const endDateEl = document.getElementById('endDate');
+        const startDateEl = document.getElementById('startDate');
+        
+        if (endDateEl && !endDateEl.value) endDateEl.value = todayJalali;
+        if (startDateEl && !startDateEl.value) startDateEl.value = thirtyDaysAgoJalali;
 
         // نمایش منوی اصلی در ابتدا
         showMenu();
@@ -2100,6 +2106,12 @@ include $footer_file;
         const jalaliInputs = document.querySelectorAll('.jalali-date');
         
         jalaliInputs.forEach(input => {
+            // Set current Jalali date as default
+            if (!input.value) {
+                const today = new Date();
+                input.value = convertToJalali(today.toISOString().split('T')[0]);
+            }
+            
             input.addEventListener('input', function(e) {
                 let value = e.target.value.replace(/[^0-9]/g, '');
                 
@@ -2200,49 +2212,53 @@ include $footer_file;
     }
     
     function jalaliToGregorian(jy, jm, jd) {
-        const jy0 = jy - 979;
-        const jp = 33 * Math.floor(jy0 / 1029) + 4 * Math.floor((jy0 % 1029) / 33) + Math.floor(((jy0 % 1029) % 33 + 3) / 4);
+        jy += 1595;
+        let days = 365 * jy + Math.floor(jy / 33) * 8 + Math.floor(((jy % 33) + 3) / 4);
         
-        let j_day_no = 365 * jy + jp + (jm < 7 ? (jm - 1) * 31 : (jm - 7) * 30 + 186) + jd - 1;
+        for (let i = 0; i < jm; ++i) {
+            days += (i < 6) ? 31 : 30;
+        }
         
-        const g_day_no = j_day_no + 79;
+        if (jm > 6) days += jd;
+        else days += jd;
         
-        const gy = 1600 + 400 * Math.floor(g_day_no / 146097);
-        let gd_no = g_day_no % 146097;
+        let gy = 400 * Math.floor(days / 146097);
+        days %= 146097;
         
         let leap = true;
-        if (gd_no >= 36525) {
-            gd_no--;
-            const gy2 = gy + 100 * Math.floor(gd_no / 36524);
-            gd_no = gd_no % 36524;
-            if (gd_no >= 365) gd_no++;
-            leap = false;
+        if (days >= 36525) {
+            days--;
+            gy += 100 * Math.floor(days / 36524);
+            days %= 36524;
+            if (days >= 365) days++;
+            else leap = false;
         }
         
-        const gy3 = gy + 4 * Math.floor(gd_no / 1461);
-        gd_no %= 1461;
+        gy += 4 * Math.floor(days / 1461);
+        days %= 1461;
         
-        if (gd_no >= 366) {
+        if (days >= 366) {
             leap = false;
-            gd_no--;
-            const gy4 = gy3 + Math.floor(gd_no / 365);
-            gd_no = gd_no % 365;
+            days--;
+            gy += Math.floor(days / 365);
+            days = days % 365;
         }
         
-        let gm, gd;
-        const sal_a = [0, 31, leap ? 60 : 59, leap ? 91 : 90, leap ? 121 : 120, leap ? 152 : 151, leap ? 182 : 181, leap ? 213 : 212, leap ? 244 : 243, leap ? 274 : 273, leap ? 305 : 304, leap ? 335 : 334, leap ? 366 : 365];
+        let gd = days + 1;
         
+        const sal_a = [0, 31, (leap ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        let gm;
         for (gm = 0; gm < 13; gm++) {
-            if (gd_no < sal_a[gm]) break;
+            const v = sal_a[gm];
+            if (gd <= v) break;
+            gd -= v;
         }
         
-        gd = gd_no - (gm > 0 ? sal_a[gm - 1] : 0) + 1;
-        
-        return [gy3 + (gy4 || 0), gm, gd];
+        return [gy + 1600, gm, gd];
     }
     
     function convertJalaliToGregorian(jalaliDate) {
-        if (!jalaliDate || !jalaliDate.match(/^\d{4}\/\d{2}\/\d{2}$/)) {
+        if (!jalaliDate || !jalaliDate.match(/^\d{4}\/\d{1,2}\/\d{1,2}$/)) {
             return null;
         }
         
@@ -2250,6 +2266,11 @@ include $footer_file;
         const jy = parseInt(parts[0]);
         const jm = parseInt(parts[1]);
         const jd = parseInt(parts[2]);
+        
+        // Validate Jalali date
+        if (jy < 1300 || jy > 1500 || jm < 1 || jm > 12 || jd < 1 || jd > 31) {
+            return null;
+        }
         
         const gregorian = jalaliToGregorian(jy, jm, jd);
         return `${gregorian[0]}-${gregorian[1].toString().padStart(2, '0')}-${gregorian[2].toString().padStart(2, '0')}`;

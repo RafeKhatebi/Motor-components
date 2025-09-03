@@ -5,6 +5,7 @@ $allowed_files = [
     'config/database.php' => realpath(__DIR__ . '/config/database.php'),
     'includes/functions.php' => realpath(__DIR__ . '/includes/functions.php'),
     'includes/SettingsHelper.php' => realpath(__DIR__ . '/includes/SettingsHelper.php'),
+    'includes/BarcodeGenerator.php' => realpath(__DIR__ . '/includes/BarcodeGenerator.php'),
     'includes/header.php' => realpath(__DIR__ . '/includes/header.php')
 ];
 
@@ -22,7 +23,7 @@ if (!isset($_SESSION['user_id'])) {
     return;
 }
 
-foreach (['config/database.php', 'includes/functions.php', 'includes/SettingsHelper.php'] as $file) {
+foreach (['config/database.php', 'includes/functions.php', 'includes/SettingsHelper.php', 'includes/BarcodeGenerator.php'] as $file) {
     $real_path = $allowed_files[$file];
     if ($real_path && file_exists($real_path)) {
         require_once $real_path;
@@ -37,13 +38,27 @@ SettingsHelper::loadSettings($db);
 
 $page_title = 'مدیریت بارکد';
 
+// Pagination
+$items_per_page = 30;
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($page - 1) * $items_per_page;
+
+// Count total products
+$count_query = "SELECT COUNT(*) as total FROM products";
+$count_stmt = $db->prepare($count_query);
+$count_stmt->execute();
+$total_items = $count_stmt->fetch(PDO::FETCH_ASSOC)['total'];
+$total_pages = ceil($total_items / $items_per_page);
+
 // دریافت محصولات و بارکدها
 $products_query = "SELECT p.*, pb.barcode as custom_barcode, pb.barcode_type, c.name as category_name
                    FROM products p
                    LEFT JOIN product_barcodes pb ON p.id = pb.product_id AND pb.is_primary = TRUE
                    LEFT JOIN categories c ON p.category_id = c.id
-                   ORDER BY p.name";
+                   ORDER BY p.name LIMIT :limit OFFSET :offset";
 $products_stmt = $db->prepare($products_query);
+$products_stmt->bindValue(':limit', $items_per_page, PDO::PARAM_INT);
+$products_stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $products_stmt->execute();
 $products = $products_stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -98,7 +113,16 @@ if ($real_path && file_exists($real_path)) {
                                 </td>
                                 <td><?= sanitizeOutput($product['category_name']) ?></td>
                                 <td>
-                                    <code><?= sanitizeOutput($product['custom_barcode'] ?: $product['barcode']) ?></code>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div>
+                                            <code class="d-block"><?= sanitizeOutput($product['custom_barcode'] ?: $product['barcode']) ?></code>
+                                            <?php if ($product['custom_barcode'] ?: $product['barcode']): ?>
+                                                <div class="barcode-preview mt-1" style="max-width: 100px; font-size: 0;">
+                                                    <?= BarcodeGenerator::generateSVG($product['custom_barcode'] ?: $product['barcode'], 1, 15) ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
                                     <span class="badge bg-info"><?= $product['barcode_type'] ?: 'CODE128' ?></span>
@@ -117,6 +141,56 @@ if ($real_path && file_exists($real_path)) {
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination -->
+            <?php if ($total_pages > 1): ?>
+                <div class="card-footer py-4">
+                    <nav aria-label="صفحهبندی">
+                        <ul class="pagination justify-content-center mb-0">
+                            <?php if ($page > 1): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?= $page - 1 ?>">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                </li>
+                            <?php else: ?>
+                                <li class="page-item disabled">
+                                    <span class="page-link"><i class="fas fa-angle-right"></i></span>
+                                </li>
+                            <?php endif; ?>
+
+                            <?php
+                            $start = max(1, $page - 2);
+                            $end = min($total_pages, $page + 2);
+
+                            for ($i = $start; $i <= $end; $i++): ?>
+                                <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                                </li>
+                            <?php endfor; ?>
+
+                            <?php if ($page < $total_pages): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?= $page + 1 ?>">
+                                        <i class="fas fa-angle-left"></i>
+                                    </a>
+                                </li>
+                            <?php else: ?>
+                                <li class="page-item disabled">
+                                    <span class="page-link"><i class="fas fa-angle-left"></i></span>
+                                </li>
+                            <?php endif; ?>
+                        </ul>
+
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                نمایش <?= $offset + 1 ?> تا <?= min($offset + $items_per_page, $total_items) ?> از
+                                <?= $total_items ?> محصول
+                            </small>
+                        </div>
+                    </nav>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -202,42 +276,34 @@ if ($real_path && file_exists($real_path)) {
         }
     }
 
-    function generateBarcode(productId) {
-        const newBarcode = 'MP' + String(productId).padStart(8, '0') + String(Date.now()).slice(-4);
-        if (confirm('بارکد جدید تولید شود؟\n' + newBarcode)) {
-            showAlert('بارکد جدید تولید شد', 'success');
+    async function generateBarcode(productId) {
+        if (!confirm('بارکد جدید تولید شود؟')) return;
+        
+        try {
+            const formData = new FormData();
+            formData.append('product_id', productId);
+            formData.append('barcode_type', 'CODE128');
+            
+            const response = await fetch('api/generate_barcode.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showAlert('بارکد جدید تولید شد: ' + result.barcode, 'success');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showAlert(result.message, 'error');
+            }
+        } catch (error) {
+            showAlert('خطا در تولید بارکد', 'error');
         }
     }
 
     function printBarcode(barcode) {
-        const printWindow = window.open('', '_blank', 'width=400,height=300');
-        const htmlContent = `
-        <html>
-        <head>
-            <title>چاپ بارکد</title>
-            <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"><\/script>
-        </head>
-        <body style="text-align: center; font-family: Arial;">
-            <h3>بارکد محصول</h3>
-            <div style="margin: 20px;">
-                <svg id="barcode"></svg>
-            </div>
-            <script>
-                JsBarcode("#barcode", "${barcode}", {
-                    format: "CODE128",
-                    width: 2,
-                    height: 50,
-                    displayValue: true
-                });
-                window.print();
-                window.close();
-            <\/script>
-        </body>
-        </html>
-    `;
-        printWindow.document.open();
-        printWindow.document.write(htmlContent);
-        printWindow.document.close();
+        window.open(`print_barcode.php?barcode=${encodeURIComponent(barcode)}`, '_blank', 'width=400,height=300');
     }
 </script>
 

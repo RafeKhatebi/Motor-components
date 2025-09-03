@@ -38,6 +38,18 @@ SettingsHelper::loadSettings($db);
 
 $page_title = 'مدیریت گارانتی';
 
+// Pagination
+$items_per_page = 30;
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($page - 1) * $items_per_page;
+
+// Count total warranties
+$count_query = "SELECT COUNT(*) as total FROM warranties";
+$count_stmt = $db->prepare($count_query);
+$count_stmt->execute();
+$total_items = $count_stmt->fetch(PDO::FETCH_ASSOC)['total'];
+$total_pages = ceil($total_items / $items_per_page);
+
 // دریافت گارانتیها
 $warranties_query = "SELECT w.*, p.name as product_name, c.name as customer_name, 
                      CASE 
@@ -48,8 +60,10 @@ $warranties_query = "SELECT w.*, p.name as product_name, c.name as customer_name
                      FROM warranties w
                      LEFT JOIN products p ON w.product_id = p.id
                      LEFT JOIN customers c ON w.customer_id = c.id
-                     ORDER BY w.created_at DESC";
+                     ORDER BY w.created_at DESC LIMIT :limit OFFSET :offset";
 $warranties_stmt = $db->prepare($warranties_query);
+$warranties_stmt->bindValue(':limit', $items_per_page, PDO::PARAM_INT);
+$warranties_stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $warranties_stmt->execute();
 $warranties = $warranties_stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -110,14 +124,17 @@ if ($real_path && file_exists($real_path)) {
                                 </span>
                             </td>
                             <td>
-                                <button class="btn btn-info btn-sm" onclick="viewWarranty(<?= $warranty['id'] ?>)">
+                                <button class="btn btn-info btn-sm" onclick="viewWarranty(<?= $warranty['id'] ?>)" title="مشاهده جزئیات">
                                     <i class="fas fa-eye"></i>
                                 </button>
                                 <?php if ($warranty['warranty_status'] === 'active'): ?>
-                                <button class="btn btn-warning btn-sm" onclick="claimWarranty(<?= $warranty['id'] ?>)">
+                                <button class="btn btn-warning btn-sm" onclick="claimWarranty(<?= $warranty['id'] ?>)" title="درخواست گارانتی">
                                     <i class="fas fa-exclamation-triangle"></i>
                                 </button>
                                 <?php endif; ?>
+                                <button class="btn btn-success btn-sm" onclick="printWarranty(<?= $warranty['id'] ?>)" title="چاپ گارانتی">
+                                    <i class="fas fa-print"></i>
+                                </button>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -129,43 +146,114 @@ if ($real_path && file_exists($real_path)) {
 </div>
 
 <!-- مودال درخواست گارانتی -->
-<div class="modal fade" id="claimWarrantyModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">درخواست گارانتی</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="claimWarrantyForm">
-                    <input type="hidden" id="claimWarrantyId" name="warranty_id">
-                    <div class="form-group mb-3">
-                        <label class="form-label">نوع درخواست</label>
-                        <select name="claim_type" class="form-select" required>
-                            <option value="repair">تعمیر</option>
-                            <option value="replace">تعویض</option>
-                            <option value="refund">بازپرداخت</option>
-                        </select>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">شرح مشکل</label>
-                        <textarea name="issue_description" class="form-control" rows="4" required></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
-                <button type="button" class="btn btn-primary" onclick="submitWarrantyClaim()">ثبت درخواست</button>
-            </div>
+<div id="claimWarrantyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 0; border-radius: 10px; max-width: 500px; margin: 20px; max-height: 90vh; overflow-y: auto;">
+        <div style="padding: 20px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+            <h5 style="margin: 0; color: #1f2937;">درخواست گارانتی</h5>
+            <button onclick="closeClaimModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #6b7280;">&times;</button>
         </div>
+        <div style="padding: 20px;">
+            <form id="claimWarrantyForm">
+                <input type="hidden" id="claimWarrantyId" name="warranty_id">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">نوع درخواست</label>
+                    <select name="claim_type" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 5px;" required>
+                        <option value="repair">تعمیر</option>
+                        <option value="replace">تعویض</option>
+                        <option value="refund">بازپرداخت</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">شرح مشکل</label>
+                    <textarea name="issue_description" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 5px; resize: vertical;" rows="4" required></textarea>
+                </div>
+            </form>
+        </div>
+        <div style="padding: 20px; border-top: 1px solid #e5e7eb; display: flex; gap: 10px; justify-content: flex-end;">
+            <button onclick="closeClaimModal()" style="background: #6b7280; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">انصراف</button>
+            <button onclick="submitWarrantyClaim()" style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">ثبت درخواست</button>
+        </div>
+    </div>
+</div>
+
+<!-- مودال مشاهده جزئیات گارانتی -->
+<div id="viewWarrantyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 0; border-radius: 10px; max-width: 700px; margin: 20px; max-height: 90vh; overflow-y: auto;">
+        <div style="padding: 20px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+            <h5 style="margin: 0; color: #1f2937;">جزئیات گارانتی</h5>
+            <button onclick="closeViewModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #6b7280;">&times;</button>
+        </div>
+        <div id="warrantyDetails" style="padding: 20px;">
+            <!-- جزئیات گارانتی اینجا نمایش داده میشود -->
+        </div>
+        <div style="padding: 20px; border-top: 1px solid #e5e7eb; text-align: center;">
+            <button onclick="closeViewModal()" style="background: #6b7280; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">بستن</button>
+        </div>
+        
+        <!-- Pagination -->
+        <?php if ($total_pages > 1): ?>
+            <div class="card-footer py-4">
+                <nav aria-label="صفحهبندی">
+                    <ul class="pagination justify-content-center mb-0">
+                        <?php if ($page > 1): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?= $page - 1 ?>">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                        <?php else: ?>
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-angle-right"></i></span>
+                            </li>
+                        <?php endif; ?>
+
+                        <?php
+                        $start = max(1, $page - 2);
+                        $end = min($total_pages, $page + 2);
+
+                        for ($i = $start; $i <= $end; $i++): ?>
+                            <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+
+                        <?php if ($page < $total_pages): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?= $page + 1 ?>">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                        <?php else: ?>
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-angle-left"></i></span>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            نمایش <?= $offset + 1 ?> تا <?= min($offset + $items_per_page, $total_items) ?> از
+                            <?= $total_items ?> گارانتی
+                        </small>
+                    </div>
+                </nav>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 
 <script>
 function claimWarranty(warrantyId) {
     document.getElementById('claimWarrantyId').value = warrantyId;
-    const modal = new bootstrap.Modal(document.getElementById('claimWarrantyModal'));
-    modal.show();
+    document.getElementById('claimWarrantyModal').style.display = 'flex';
+}
+
+function closeClaimModal() {
+    document.getElementById('claimWarrantyModal').style.display = 'none';
+}
+
+function closeViewModal() {
+    document.getElementById('viewWarrantyModal').style.display = 'none';
 }
 
 async function submitWarrantyClaim() {
@@ -182,7 +270,7 @@ async function submitWarrantyClaim() {
         
         if (result.success) {
             showAlert('درخواست گارانتی ثبت شد', 'success');
-            bootstrap.Modal.getInstance(document.getElementById('claimWarrantyModal')).hide();
+            closeClaimModal();
             setTimeout(() => location.reload(), 1000);
         } else {
             showAlert(result.message, 'error');
@@ -192,22 +280,73 @@ async function submitWarrantyClaim() {
     }
 }
 
-function showAlert(message, type) {
-    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-    const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>`;
-    document.body.insertAdjacentHTML('afterbegin', alertHtml);
+async function viewWarranty(warrantyId) {
+    try {
+        const response = await fetch(`api/get_warranty.php?id=${warrantyId}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            const warranty = result.warranty;
+            const detailsHtml = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <h6 style="color: #374151; margin-bottom: 10px;">اطلاعات محصول</h6>
+                        <p><strong>نام محصول:</strong> ${warranty.product_name || 'نامشخص'}</p>
+                        <p><strong>مشتری:</strong> ${warranty.customer_name || 'نامشخص'}</p>
+                        <p><strong>نوع گارانتی:</strong> ${warranty.warranty_type || 'فروشگاه'}</p>
+                    </div>
+                    <div>
+                        <h6 style="color: #374151; margin-bottom: 10px;">اطلاعات گارانتی</h6>
+                        <p><strong>شروع گارانتی:</strong> ${warranty.warranty_start || '-'}</p>
+                        <p><strong>پایان گارانتی:</strong> ${warranty.warranty_end || '-'}</p>
+                        <p><strong>مدت (ماه):</strong> ${warranty.warranty_months || '0'}</p>
+                        <p><strong>وضعیت:</strong> <span style="background: ${warranty.status === 'active' ? '#10b981' : '#f59e0b'}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px;">${warranty.status || 'نامشخص'}</span></p>
+                    </div>
+                </div>
+                ${warranty.notes ? `<div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e7eb;"><h6 style="color: #374151;">یادداشتها</h6><p>${warranty.notes}</p></div>` : ''}
+            `;
+            document.getElementById('warrantyDetails').innerHTML = detailsHtml;
+            document.getElementById('viewWarrantyModal').style.display = 'flex';
+        } else {
+            showAlert(result.message || 'خطا در دریافت اطلاعات', 'error');
+        }
+    } catch (error) {
+        showAlert('خطا در دریافت اطلاعات', 'error');
+    }
 }
+
+function printWarranty(warrantyId) {
+    window.open(`print_warranty.php?id=${warrantyId}`, '_blank', 'width=800,height=600');
+}
+
+function showAlert(message, type) {
+    const alertColor = type === 'success' ? '#10b981' : '#ef4444';
+    const alertHtml = `<div style="background: ${alertColor}; color: white; padding: 15px; margin-bottom: 20px; border-radius: 5px; position: relative;">
+        ${message}
+        <button onclick="this.parentElement.remove()" style="position: absolute; top: 10px; left: 10px; background: none; border: none; color: white; font-size: 18px; cursor: pointer;">&times;</button>
+    </div>`;
+    
+    const contentWrapper = document.querySelector('.content-wrapper');
+    if (contentWrapper) {
+        contentWrapper.insertAdjacentHTML('afterbegin', alertHtml);
+    }
+    
+    setTimeout(() => {
+        const alert = document.querySelector('[style*="background: ' + alertColor + '"]');
+        if (alert) alert.remove();
+    }, 3000);
+}
+
+document.addEventListener('click', function(e) {
+    if (e.target.id === 'claimWarrantyModal') {
+        closeClaimModal();
+    }
+    if (e.target.id === 'viewWarrantyModal') {
+        closeViewModal();
+    }
+});
 </script>
 
 <?php 
-$real_path = $allowed_files['includes/footer-modern.php'];
-if ($real_path && file_exists($real_path)) {
-    include $real_path;
-} else {
-    http_response_code(500);
-    exit('Security error: Invalid file path');
-}
+require_once 'includes/footer-modern.php';
 ?>

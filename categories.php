@@ -14,8 +14,22 @@ SettingsHelper::loadSettings($db);
 
 $page_title = 'مدیریت دسته بندی ها';
 
-$query = "SELECT * FROM categories ORDER BY name";
+// Pagination
+$items_per_page = 30;
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($page - 1) * $items_per_page;
+
+// Count total categories
+$count_query = "SELECT COUNT(*) as total FROM categories";
+$count_stmt = $db->prepare($count_query);
+$count_stmt->execute();
+$total_items = $count_stmt->fetch(PDO::FETCH_ASSOC)['total'];
+$total_pages = ceil($total_items / $items_per_page);
+
+$query = "SELECT * FROM categories ORDER BY name LIMIT :limit OFFSET :offset";
 $stmt = $db->prepare($query);
+$stmt->bindValue(':limit', $items_per_page, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -88,7 +102,7 @@ include 'includes/header.php';
                         <tbody>
                             <?php foreach ($categories as $index => $category): ?>
                                 <tr>
-                                    <td><?= $index + 1 ?></td>
+                                    <td><?= $offset + $index + 1 ?></td>
                                     <td><?= sanitizeOutput($category['name']) ?></td>
                                     <td><?= sanitizeOutput($category['description']) ?></td>
                                     <td><?= SettingsHelper::formatDate(strtotime($category['created_at']), $db) ?></td>
@@ -109,6 +123,57 @@ include 'includes/header.php';
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                </div>
+                
+                <!-- Pagination -->
+                <?php if ($total_pages > 1): ?>
+                    <div class="card-footer py-4">
+                        <nav aria-label="صفحهبندی">
+                            <ul class="pagination justify-content-center mb-0">
+                                <?php if ($page > 1): ?>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<?= $page - 1 ?>">
+                                            <i class="fas fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                <?php else: ?>
+                                    <li class="page-item disabled">
+                                        <span class="page-link"><i class="fas fa-angle-right"></i></span>
+                                    </li>
+                                <?php endif; ?>
+
+                                <?php
+                                $start = max(1, $page - 2);
+                                $end = min($total_pages, $page + 2);
+
+                                for ($i = $start; $i <= $end; $i++): ?>
+                                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <?php if ($page < $total_pages): ?>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<?= $page + 1 ?>">
+                                            <i class="fas fa-angle-left"></i>
+                                        </a>
+                                    </li>
+                                <?php else: ?>
+                                    <li class="page-item disabled">
+                                        <span class="page-link"><i class="fas fa-angle-left"></i></span>
+                                    </li>
+                                <?php endif; ?>
+                            </ul>
+
+                            <div class="text-center mt-3">
+                                <small class="text-muted">
+                                    نمایش <?= $offset + 1 ?> تا <?= min($offset + $items_per_page, $total_items) ?> از
+                                    <?= $total_items ?> دستهبندی
+                                </small>
+                            </div>
+                        </nav>
+                    </div>
+                <?php endif; ?>
         </div>
     </div>
 </div>
