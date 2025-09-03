@@ -1,13 +1,25 @@
 <?php
-require_once '../init_security.php';
-require_once '../config/database.php';
+// Secure file inclusion with path validation
+$allowed_files = [
+    '../init_security.php' => realpath(__DIR__ . '/../init_security.php'),
+    '../config/database.php' => realpath(__DIR__ . '/../config/database.php')
+];
+
+foreach ($allowed_files as $file => $real_path) {
+    if ($real_path && file_exists($real_path)) {
+        require_once $real_path;
+    } else {
+        http_response_code(500);
+        exit('Security error: Invalid file path');
+    }
+}
 
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'غیر مجاز']);
-    exit();
+    return;
 }
 
 $warranty_id = filter_input(INPUT_POST, 'warranty_id', FILTER_VALIDATE_INT);
@@ -16,7 +28,7 @@ $issue_description = trim($_POST['issue_description'] ?? '');
 
 if (!$warranty_id || !$claim_type || !$issue_description) {
     echo json_encode(['success' => false, 'message' => 'اطلاعات ناکافی']);
-    exit();
+    return;
 }
 
 try {
@@ -31,7 +43,7 @@ try {
     
     if (!$warranty) {
         echo json_encode(['success' => false, 'message' => 'گارانتی معتبر نیست یا منقضی شده']);
-        exit();
+        return;
     }
     
     $db->beginTransaction();

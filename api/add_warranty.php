@@ -1,19 +1,33 @@
 <?php
-require_once '../init_security.php';
-require_once '../config/database.php';
+// Secure file inclusion with path validation
+$allowed_files = [
+    '../init_security.php' => realpath(__DIR__ . '/../init_security.php'),
+    '../config/database.php' => realpath(__DIR__ . '/../config/database.php')
+];
+
+foreach ($allowed_files as $file => $real_path) {
+    if ($real_path && file_exists($real_path)) {
+        require_once $real_path;
+    } else {
+        http_response_code(500);
+        exit('Security error: Invalid file path');
+    }
+}
 
 header('Content-Type: application/json');
 
+function sendResponse($data, $code = 200) {
+    http_response_code($code);
+    echo json_encode($data);
+    return;
+}
+
 if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
-    echo json_encode(['success' => false, 'message' => 'غیر مجاز']);
-    exit();
+    return sendResponse(['success' => false, 'message' => 'غیر مجاز'], 401);
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'درخواست نامعتبر']);
-    exit();
+    return sendResponse(['success' => false, 'message' => 'درخواست نامعتبر'], 405);
 }
 
 $sale_item_id = filter_input(INPUT_POST, 'sale_item_id', FILTER_VALIDATE_INT);
@@ -22,8 +36,7 @@ $serial_number = trim($_POST['serial_number'] ?? '');
 $warranty_type = in_array($_POST['warranty_type'] ?? 'shop', ['manufacturer', 'shop', 'extended']) ? $_POST['warranty_type'] : 'shop';
 
 if (!$sale_item_id || !$warranty_months) {
-    echo json_encode(['success' => false, 'message' => 'اطلاعات ناکافی']);
-    exit();
+    return sendResponse(['success' => false, 'message' => 'اطلاعات ناکافی'], 400);
 }
 
 try {
@@ -40,8 +53,7 @@ try {
     $sale_item = $sale_stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$sale_item) {
-        echo json_encode(['success' => false, 'message' => 'آیتم فروش یافت نشد']);
-        exit();
+        return sendResponse(['success' => false, 'message' => 'آیتم فروش یافت نشد'], 404);
     }
     
     $warranty_start = date('Y-m-d', strtotime($sale_item['sale_date']));

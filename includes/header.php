@@ -20,13 +20,14 @@ foreach ($allowed_files as $file) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title><?= sanitizeOutput($page_title ?? SettingsHelper::getShopName()) ?> -
-        <?= sanitizeOutput(SettingsHelper::getShopName()) ?></title>
+        <?= sanitizeOutput(SettingsHelper::getShopName()) ?>
+    </title>
 
     <!-- Favicon -->
     <link rel="icon" href="assets/img/brand/favicon.png" type="image/png">
     <!-- Icons -->
     <link rel="stylesheet" href="assets/css/all.min.css">
-    
+
     <!-- Unified Design System -->
     <link rel="stylesheet" href="assets/css/unified-system.css">
     <!-- Theme Enhancements -->
@@ -53,11 +54,12 @@ foreach ($allowed_files as $file) {
                     <span><?= sanitizeOutput($shop_name) ?></span>
                 </a>
             </div>
-            
+
             <nav class="sidebar-nav">
                 <div class="nav-section">
                     <div class="nav-item">
-                        <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : '' ?>" href="dashboard.php">
+                        <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : '' ?>"
+                            href="dashboard.php">
                             <i class="fas fa-tachometer-alt"></i>
                             <span>داشبورد</span>
                         </a>
@@ -74,11 +76,13 @@ foreach ($allowed_files as $file) {
                             <i class="fas fa-chevron-left nav-arrow"></i>
                         </div>
                         <div class="nav-dropdown" id="inventory">
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'products.php' ? 'active' : '' ?>" href="products.php">
+                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'products.php' ? 'active' : '' ?>"
+                                href="products.php">
                                 <i class="fas fa-box"></i>
                                 <span>اجناس</span>
                             </a>
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'categories.php' ? 'active' : '' ?>" href="categories.php">
+                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'categories.php' ? 'active' : '' ?>"
+                                href="categories.php">
                                 <i class="fas fa-tags"></i>
                                 <span>دسته بندی</span>
                             </a>
@@ -96,15 +100,18 @@ foreach ($allowed_files as $file) {
                             <i class="fas fa-chevron-left nav-arrow"></i>
                         </div>
                         <div class="nav-dropdown" id="transactions">
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'sales.php' ? 'active' : '' ?>" href="sales.php">
+                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'sales.php' ? 'active' : '' ?>"
+                                href="sales.php">
                                 <i class="fas fa-shopping-cart"></i>
                                 <span>فروش</span>
                             </a>
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'purchases.php' ? 'active' : '' ?>" href="purchases.php">
+                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'purchases.php' ? 'active' : '' ?>"
+                                href="purchases.php">
                                 <i class="fas fa-shopping-bag"></i>
                                 <span>خرید</span>
                             </a>
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'transactions.php' ? 'active' : '' ?>" href="transactions.php">
+                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'transactions.php' ? 'active' : '' ?>"
+                                href="transactions.php">
                                 <i class="fas fa-money-bill-wave"></i>
                                 <span>مصارف</span>
                             </a>
@@ -122,15 +129,18 @@ foreach ($allowed_files as $file) {
                             <i class="fas fa-chevron-left nav-arrow"></i>
                         </div>
                         <div class="nav-dropdown" id="relations">
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'customers.php' ? 'active' : '' ?>" href="customers.php">
+                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'customers.php' ? 'active' : '' ?>"
+                                href="customers.php">
                                 <i class="fas fa-user-friends"></i>
                                 <span>مشتریان</span>
                             </a>
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'suppliers.php' ? 'active' : '' ?>" href="suppliers.php">
+                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'suppliers.php' ? 'active' : '' ?>"
+                                href="suppliers.php">
                                 <i class="fas fa-building"></i>
                                 <span>تأمین کنندگان</span>
                             </a>
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'debts.php' ? 'active' : '' ?>" href="debts.php">
+                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'debts.php' ? 'active' : '' ?>"
+                                href="debts.php">
                                 <i class="fas fa-money-bill-wave"></i>
                                 <span>قرض ها</span>
                             </a>
@@ -138,59 +148,70 @@ foreach ($allowed_files as $file) {
                     </div>
                 </div>
 
+
+
                 <div class="nav-section">
                     <div class="nav-item">
-                        <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : '' ?>" href="reports.php">
+                        <div class="nav-link nav-parent" data-dropdown="services">
+                            <div>
+                                <i class="fas fa-tools"></i>
+                                <span>خدمات</span>
+                            </div>
+                            <i class="fas fa-chevron-left nav-arrow"></i>
+                        </div>
+                        <div class="nav-dropdown" id="services">
+                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'warranties.php' ? 'active' : '' ?>"
+                                href="warranties.php">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>گارانتی</span>
+                            </a>
+                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'barcodes.php' ? 'active' : '' ?>"
+                                href="barcodes.php">
+                                <i class="fas fa-qrcode"></i>
+                                <span>بارکد</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-item">
+                        <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : '' ?>"
+                            href="reports.php">
                             <i class="fas fa-chart-line"></i>
                             <span>گزارشات</span>
                         </a>
                     </div>
                 </div>
-                
-                <div class="nav-section">
-                    <div class="nav-item">
-                        <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'warranties.php' ? 'active' : '' ?>" href="warranties.php">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>گارانتی</span>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="nav-section">
-                    <div class="nav-item">
-                        <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'barcodes.php' ? 'active' : '' ?>" href="barcodes.php">
-                            <i class="fas fa-qrcode"></i>
-                            <span>بارکد</span>
-                        </a>
-                    </div>
-                </div>
 
                 <?php if ($_SESSION['role'] === 'admin'): ?>
-                <div class="nav-section">
-                    <div class="nav-item">
-                        <div class="nav-link nav-parent" data-dropdown="management">
-                            <div>
-                                <i class="fas fa-cog"></i>
-                                <span>مدیریت</span>
+                    <div class="nav-section">
+                        <div class="nav-item">
+                            <div class="nav-link nav-parent" data-dropdown="management">
+                                <div>
+                                    <i class="fas fa-cog"></i>
+                                    <span>مدیریت</span>
+                                </div>
+                                <i class="fas fa-chevron-left nav-arrow"></i>
                             </div>
-                            <i class="fas fa-chevron-left nav-arrow"></i>
-                        </div>
-                        <div class="nav-dropdown" id="management">
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'users.php' ? 'active' : '' ?>" href="users.php">
-                                <i class="fas fa-users-cog"></i>
-                                <span>کاربران</span>
-                            </a>
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'backup.php' ? 'active' : '' ?>" href="backup.php">
-                                <i class="fas fa-database"></i>
-                                <span>پشتیبان</span>
-                            </a>
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : '' ?>" href="settings.php">
-                                <i class="fas fa-sliders-h"></i>
-                                <span>تنظیمات</span>
-                            </a>
+                            <div class="nav-dropdown" id="management">
+                                <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'users.php' ? 'active' : '' ?>"
+                                    href="users.php">
+                                    <i class="fas fa-users-cog"></i>
+                                    <span>کاربران</span>
+                                </a>
+                                <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'backup.php' ? 'active' : '' ?>"
+                                    href="backup.php">
+                                    <i class="fas fa-database"></i>
+                                    <span>پشتیبان</span>
+                                </a>
+                                <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : '' ?>"
+                                    href="settings.php">
+                                    <i class="fas fa-sliders-h"></i>
+                                    <span>تنظیمات</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
                 <?php endif; ?>
                 <div class="nav-section">
                     <div class="nav-item">
@@ -202,7 +223,8 @@ foreach ($allowed_files as $file) {
                             <i class="fas fa-chevron-left nav-arrow"></i>
                         </div>
                         <div class="nav-dropdown" id="user">
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : '' ?>" href="profile.php">
+                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : '' ?>"
+                                href="profile.php">
                                 <i class="fas fa-user"></i>
                                 <span>پروفایل</span>
                             </a>
@@ -215,17 +237,14 @@ foreach ($allowed_files as $file) {
                 </div>
             </nav>
         </aside>
-        
+
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- نمایش هشدار لایسنس -->
-    <?php if (function_exists('showLicenseWarning'))
-        showLicenseWarning(); ?>
+        <!-- نمایش هشدار لایسنس -->
+        <?php if (function_exists('showLicenseWarning'))
+            showLicenseWarning(); ?>
 
-    <!-- تاریخ و ساعت دری -->
-    <div class="dari-datetime" id="dari-datetime">
-        <!-- محتوا توسط JavaScript پر میشود -->
-    </div>
+
 
         <!-- Main Content -->
         <main class="main-content">

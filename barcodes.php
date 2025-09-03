@@ -1,13 +1,36 @@
 <?php
-require_once 'init_security.php';
+// Secure file inclusion with path validation
+$allowed_files = [
+    'init_security.php' => realpath(__DIR__ . '/init_security.php'),
+    'config/database.php' => realpath(__DIR__ . '/config/database.php'),
+    'includes/functions.php' => realpath(__DIR__ . '/includes/functions.php'),
+    'includes/SettingsHelper.php' => realpath(__DIR__ . '/includes/SettingsHelper.php'),
+    'includes/header.php' => realpath(__DIR__ . '/includes/header.php')
+];
+
+foreach (['init_security.php'] as $required_file) {
+    $real_path = $allowed_files[$required_file];
+    if ($real_path && file_exists($real_path)) {
+        require_once $real_path;
+    } else {
+        http_response_code(500);
+        exit('Security error: Invalid file path');
+    }
+}
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
-    exit();
+    return;
 }
 
-require_once 'config/database.php';
-require_once 'includes/functions.php';
-require_once 'includes/SettingsHelper.php';
+foreach (['config/database.php', 'includes/functions.php', 'includes/SettingsHelper.php'] as $file) {
+    $real_path = $allowed_files[$file];
+    if ($real_path && file_exists($real_path)) {
+        require_once $real_path;
+    } else {
+        http_response_code(500);
+        exit('Security error: Invalid file path');
+    }
+}
 $database = new Database();
 $db = $database->getConnection();
 SettingsHelper::loadSettings($db);
@@ -24,7 +47,13 @@ $products_stmt = $db->prepare($products_query);
 $products_stmt->execute();
 $products = $products_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-include 'includes/header.php';
+$real_path = $allowed_files['includes/header.php'];
+if ($real_path && file_exists($real_path)) {
+    include $real_path;
+} else {
+    http_response_code(500);
+    exit('Security error: Invalid file path');
+}
 ?>
 
 <div class="section">
@@ -136,7 +165,8 @@ include 'includes/header.php';
     </div>
 </div>
 
-<!-- <script>
+
+<script>
     document.getElementById('testBarcode').addEventListener('keypress', function (event) {
         if (event.key === 'Enter') {
             event.preventDefault();
@@ -174,38 +204,11 @@ include 'includes/header.php';
 
     function generateBarcode(productId) {
         const newBarcode = 'MP' + String(productId).padStart(8, '0') + String(Date.now()).slice(-4);
-
         if (confirm('بارکد جدید تولید شود؟\n' + newBarcode)) {
             showAlert('بارکد جدید تولید شد', 'success');
         }
     }
 
-    function printBarcode(barcode) {
-        const printWindow = window.open('', '_blank', 'width=400,height=300');
-        const htmlContent = '<html>' +
-            '<head><title>چاپ بارکد</title></head>' +
-            '<body style="text-align: center; font-family: Arial;">' +
-            '<h3>بارکد محصول</h3>' +
-            '<div style="font-size: 24px; font-family: monospace; margin: 20px;">' + barcode + '</div>' +
-            '<div style="margin: 20px;">' +
-            '<svg width="200" height="50">' +
-            '<rect width="2" height="50" x="10" fill="black"></rect>' +
-            '<rect width="1" height="50" x="15" fill="black"></rect>' +
-            '<rect width="3" height="50" x="20" fill="black"></rect>' +
-            '<rect width="1" height="50" x="27" fill="black"></rect>' +
-            '<rect width="2" height="50" x="32" fill="black"></rect>' +
-            '</svg>' +
-            '</div>' +
-            '<script>window.print(); window.close();</script>' +
-'</body>' +
-'
-
-</html>';
-
-// printWindow.document.write(htmlContent);
-}
-</script> -->
-<script>
     function printBarcode(barcode) {
         const printWindow = window.open('', '_blank', 'width=400,height=300');
         const htmlContent = `
@@ -232,7 +235,6 @@ include 'includes/header.php';
         </body>
         </html>
     `;
-
         printWindow.document.open();
         printWindow.document.write(htmlContent);
         printWindow.document.close();
@@ -240,4 +242,12 @@ include 'includes/header.php';
 </script>
 
 
-<?php include 'includes/footer-modern.php'; ?>
+<?php 
+$footer_path = $allowed_files['includes/footer-modern.php'] ?? realpath(__DIR__ . '/includes/footer-modern.php');
+if ($footer_path && file_exists($footer_path)) {
+    include $footer_path;
+} else {
+    http_response_code(500);
+    exit('Security error: Invalid file path');
+}
+?>

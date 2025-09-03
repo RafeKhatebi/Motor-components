@@ -26,9 +26,7 @@
     </footer>
 
     <!-- Essential Scripts -->
-    <script src="assets/js/datetime.js"></script>
     <script src="assets/js/persian-datepicker.js"></script>
-    <script src="assets/js/date-converter.js"></script>
     
     <!-- Unified System JavaScript -->
     <script src="assets/js/unified-system.js"></script>

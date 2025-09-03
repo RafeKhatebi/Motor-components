@@ -1,13 +1,37 @@
 <?php
-require_once 'init_security.php';
+// Secure file inclusion with path validation
+$allowed_files = [
+    'init_security.php' => realpath(__DIR__ . '/init_security.php'),
+    'config/database.php' => realpath(__DIR__ . '/config/database.php'),
+    'includes/functions.php' => realpath(__DIR__ . '/includes/functions.php'),
+    'includes/SettingsHelper.php' => realpath(__DIR__ . '/includes/SettingsHelper.php'),
+    'includes/header.php' => realpath(__DIR__ . '/includes/header.php'),
+    'includes/footer-modern.php' => realpath(__DIR__ . '/includes/footer-modern.php')
+];
+
+foreach (['init_security.php'] as $required_file) {
+    $real_path = $allowed_files[$required_file];
+    if ($real_path && file_exists($real_path)) {
+        require_once $real_path;
+    } else {
+        http_response_code(500);
+        exit('Security error: Invalid file path');
+    }
+}
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
-    exit();
+    return;
 }
 
-require_once 'config/database.php';
-require_once 'includes/functions.php';
-require_once 'includes/SettingsHelper.php';
+foreach (['config/database.php', 'includes/functions.php', 'includes/SettingsHelper.php'] as $file) {
+    $real_path = $allowed_files[$file];
+    if ($real_path && file_exists($real_path)) {
+        require_once $real_path;
+    } else {
+        http_response_code(500);
+        exit('Security error: Invalid file path');
+    }
+}
 $database = new Database();
 $db = $database->getConnection();
 SettingsHelper::loadSettings($db);
@@ -29,7 +53,13 @@ $warranties_stmt = $db->prepare($warranties_query);
 $warranties_stmt->execute();
 $warranties = $warranties_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-include 'includes/header.php';
+$real_path = $allowed_files['includes/header.php'];
+if ($real_path && file_exists($real_path)) {
+    include $real_path;
+} else {
+    http_response_code(500);
+    exit('Security error: Invalid file path');
+}
 ?>
 
 <div class="section">
@@ -172,4 +202,12 @@ function showAlert(message, type) {
 }
 </script>
 
-<?php include 'includes/footer-modern.php'; ?>
+<?php 
+$real_path = $allowed_files['includes/footer-modern.php'];
+if ($real_path && file_exists($real_path)) {
+    include $real_path;
+} else {
+    http_response_code(500);
+    exit('Security error: Invalid file path');
+}
+?>
