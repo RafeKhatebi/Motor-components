@@ -15,8 +15,45 @@ SettingsHelper::loadSettings($db);
 $page_title = 'مدیریت هزینه ها مالی';
 
 // دریافت انواع  هزینه ها
-$stmt = $db->query("SELECT * FROM transaction_types ORDER BY type, name");
-$transaction_types = $stmt->fetchAll();
+try {
+    $stmt = $db->query("SELECT * FROM transaction_types ORDER BY type, name");
+    $transaction_types = $stmt->fetchAll();
+} catch (PDOException $e) {
+    // Create tables if they don't exist
+    $db->exec("CREATE TABLE IF NOT EXISTS transaction_types (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        type ENUM('expense', 'withdrawal') NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+    
+    $db->exec("CREATE TABLE IF NOT EXISTS expense_transactions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        transaction_code VARCHAR(50) UNIQUE,
+        type_id INT,
+        transaction_type ENUM('expense', 'withdrawal') NOT NULL,
+        amount DECIMAL(10,2) NOT NULL,
+        person_name VARCHAR(255) NOT NULL,
+        transaction_date DATE NOT NULL,
+        description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (type_id) REFERENCES transaction_types(id)
+    )");
+    
+    // Insert default transaction types
+    $db->exec("INSERT IGNORE INTO transaction_types (type, name) VALUES 
+        ('expense', 'کرایه'),
+        ('expense', 'برق'),
+        ('expense', 'آب'),
+        ('expense', 'تلفن'),
+        ('expense', 'حقوق'),
+        ('expense', 'متفرقه'),
+        ('withdrawal', 'برداشت شخصی'),
+        ('withdrawal', 'سرمایهگذاری')");
+    
+    $stmt = $db->query("SELECT * FROM transaction_types ORDER BY type, name");
+    $transaction_types = $stmt->fetchAll();
+}
 
 // دریافت فیلترها
 $filter_type = $_GET['filter_type'] ?? '';
@@ -47,15 +84,20 @@ if ($filter_date_to) {
 
 $where_clause = $where_conditions ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
 
-$query = "SELECT ft.*, tt.name as type_name 
-          FROM expense_transactions ft 
-          JOIN transaction_types tt ON ft.type_id = tt.id 
-          $where_clause 
-          ORDER BY ft.transaction_date DESC, ft.created_at DESC";
-
-$stmt = $db->prepare($query);
-$stmt->execute($params);
-$transactions = $stmt->fetchAll();
+try {
+    $query = "SELECT ft.*, tt.name as type_name 
+              FROM expense_transactions ft 
+              JOIN transaction_types tt ON ft.type_id = tt.id 
+              $where_clause 
+              ORDER BY ft.transaction_date DESC, ft.created_at DESC";
+    
+    $stmt = $db->prepare($query);
+    $stmt->execute($params);
+    $transactions = $stmt->fetchAll();
+} catch (PDOException $e) {
+    $transactions = [];
+    error_log('Transaction query error: ' . $e->getMessage());
+}
 
 // محاسبه مجموع
 $total_expenses = 0;

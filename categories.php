@@ -40,7 +40,8 @@ include 'includes/header.php';
             </h5>
         </div>
         <div class="card-body">
-            <form id="addCategoryForm" onsubmit="event.preventDefault(); submitForm('addCategoryForm', 'api/add_category.php');">
+            <form id="addCategoryForm"
+                onsubmit="event.preventDefault(); submitForm('addCategoryForm', 'api/add_category.php');">
                 <div class="d-flex gap-3 align-items-end">
                     <div class="form-group" style="flex: 2;">
                         <label class="form-label">نام دسته بندی</label>
@@ -69,8 +70,8 @@ include 'includes/header.php';
                     <h3><?= __('list_title') ?> <?= __('categories') ?></h3>
                 </div>
                 <div class="action-group">
-                    <input type="text" class="form-control form-control-sm" placeholder="جستجو..."
-                        id="searchInput" style="width: 200px;">
+                    <input type="text" class="form-control form-control-sm" placeholder="جستجو..." id="searchInput"
+                        style="width: 200px;">
                 </div>
             </div>
         </div>
@@ -85,30 +86,30 @@ include 'includes/header.php';
                         <th><?= __('actions') ?></th>
                     </tr>
                 </thead>
-                        <tbody>
-                            <?php foreach ($categories as $index => $category): ?>
-                                <tr>
-                                    <td><?= $index + 1 ?></td>
-                                    <td><?= sanitizeOutput($category['name']) ?></td>
-                                    <td><?= sanitizeOutput($category['description']) ?></td>
-                                    <td><?= SettingsHelper::formatDate(strtotime($category['created_at']), $db) ?></td>
-                                    <td class="text-left">
-                                        <div class="btn-group" role="group">
-                                            <button onclick="editCategory(<?= $category['id'] ?>)"
-                                                class="btn btn-warning btn-sm" title="ویرایش">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button
-                                                onclick="confirmDelete(<?= $category['id'] ?>, 'api/delete_category.php', <?= htmlspecialchars(json_encode($category['name']), ENT_QUOTES, 'UTF-8') ?>)"
-                                                class="btn btn-danger btn-sm" title="حذف">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                <tbody>
+                    <?php foreach ($categories as $index => $category): ?>
+                        <tr>
+                            <td><?= $index + 1 ?></td>
+                            <td><?= sanitizeOutput($category['name']) ?></td>
+                            <td><?= sanitizeOutput($category['description']) ?></td>
+                            <td><?= SettingsHelper::formatDate(strtotime($category['created_at']), $db) ?></td>
+                            <td class="text-left">
+                                <div class="btn-group" role="group">
+                                    <button onclick="editCategory(<?= $category['id'] ?>)" class="btn btn-warning btn-sm"
+                                        title="ویرایش">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button
+                                        onclick="confirmDelete(<?= $category['id'] ?>, 'api/delete_category.php', <?= htmlspecialchars(json_encode($category['name']), ENT_QUOTES, 'UTF-8') ?>)"
+                                        class="btn btn-danger btn-sm" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

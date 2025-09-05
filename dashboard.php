@@ -123,42 +123,7 @@ include 'includes/header.php';
     </div>
 </div>
 
-<div class="section">
-    <div class="quick-actions-grid">
-        <a href="sales.php" class="quick-action">
-            <i class="fas fa-shopping-cart"></i>
-            <span>فروش سریع</span>
-        </a>
-        <a href="products.php" class="quick-action">
-            <i class="fas fa-plus"></i>
-            <span>محصول جدید</span>
-        </a>
-        <a href="customers.php" class="quick-action">
-            <i class="fas fa-user-plus"></i>
-            <span>مشتری جدید</span>
-        </a>
-        <a href="purchases.php" class="quick-action">
-            <i class="fas fa-shopping-bag"></i>
-            <span>خرید جدید</span>
-        </a>
-        <a href="transactions.php" class="quick-action">
-            <i class="fas fa-money-bill-wave"></i>
-            <span>مصارف</span>
-        </a>
-        <a href="reports.php" class="quick-action">
-            <i class="fas fa-warehouse"></i>
-            <span>موجودی کم</span>
-        </a>
-        <a href="reports.php" class="quick-action">
-            <i class="fas fa-chart-line"></i>
-            <span>گزارشات</span>
-        </a>
-        <a href="backup.php" class="quick-action">
-            <i class="fas fa-database"></i>
-            <span>پشتیبان</span>
-        </a>
-    </div>
-</div>
+
 
 <div class="section">
     <div class="charts-grid">

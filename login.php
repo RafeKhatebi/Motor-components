@@ -4,8 +4,7 @@ $allowed_files = [
     'init_security.php' => __DIR__ . '/init_security.php',
     'config/database.php' => __DIR__ . '/config/database.php',
     'includes/functions.php' => __DIR__ . '/includes/functions.php',
-    'includes/SettingsHelper.php' => __DIR__ . '/includes/SettingsHelper.php',
-    'includes/setup_helper.php' => __DIR__ . '/includes/setup_helper.php'
+    'includes/SettingsHelper.php' => __DIR__ . '/includes/SettingsHelper.php'
 ];
 
 foreach ($allowed_files as $file_path) {
@@ -27,62 +26,48 @@ try {
 $error = '';
 
 if ($_POST) {
-    // CSRF protection
-    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])) {
-        $error = 'درخواست نامعتبر';
-    } else {
-        $username = $_POST['username'] ?? '';
-        $password = $_POST['password'] ?? '';
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-        if ($username && $password && $db) {
-            try {
-                $query = "SELECT id, username, password, full_name, role FROM users WHERE username = ?";
-                $stmt = $db->prepare($query);
-                $stmt->execute([$username]);
-            } catch (PDOException $e) {
-                error_log('Database query failed: ' . $e->getMessage());
-                $error = 'خطا در بررسی اطلاعات کاربری';
-                $stmt = null;
-            }
+    if ($username && $password && $db) {
+        try {
+            $query = "SELECT id, username, password, full_name, role FROM users WHERE username = ?";
+            $stmt = $db->prepare($query);
+            $stmt->execute([$username]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($stmt && ($user = $stmt->fetch(PDO::FETCH_ASSOC))) {
-                if (password_verify($password, $user['password'])) {
-                    $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['username'] = $user['username'];
-                    $_SESSION['full_name'] = $user['full_name'];
-                    $_SESSION['role'] = $user['role'];
-                    
-                    // Handle Remember Me
-                    if (isset($_POST['remember_me'])) {
-                        setcookie('remember_username', $username, time() + (30 * 24 * 60 * 60), '/', '', false, true);
-                    } else {
-                        setcookie('remember_username', '', time() - 3600, '/', '', false, true);
-                    }
-                    
-                    // Check if this is first login (only super admin exists)
-                    if ($user['role'] === 'admin' && SetupHelper::isFirstLogin($db)) {
-                        header('Location: settings.php?first_login=1');
-                        return;
-                    }
-                    
-                    header('Location: dashboard.php');
-                    return;
+            if ($user && password_verify($password, $user['password'])) {
+                session_regenerate_id(true);
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['full_name'] = $user['full_name'];
+                $_SESSION['role'] = $user['role'];
+                
+                // Handle Remember Me
+                if (isset($_POST['remember_me'])) {
+                    setcookie('remember_username', $username, time() + (30 * 24 * 60 * 60), '/', '', false, true);
+                } else {
+                    setcookie('remember_username', '', time() - 3600, '/', '', false, true);
                 }
+                
+                header('Location: dashboard.php');
+                exit();
+            } else {
+                $error = 'نام کاربری یا رمز عبور اشتباه است';
             }
-            // Log failed login attempt
-            error_log(sprintf('[%s] Failed login attempt - Username: %s, IP: %s', 
-                date('Y-m-d H:i:s'), 
-                $username, 
-                $_SERVER['REMOTE_ADDR'] ?? 'unknown'
-            ));
-            $error = 'نام کاربری یا رمز عبور اشتباه است';
+        } catch (Exception $e) {
+            error_log('Login error: ' . $e->getMessage());
+            $error = 'خطا در سیستم. لطفاً دوباره تلاش کنید.';
         }
+    } else {
+        $error = 'لطفاً تمام فیلدها را پر کنید';
     }
 }
 
-// Generate CSRF token
-if (!isset($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+// Redirect if already logged in
+if (isset($_SESSION['user_id'])) {
+    header('Location: dashboard.php');
+    exit();
 }
 ?>
 <!DOCTYPE html>
@@ -103,8 +88,6 @@ if (!isset($_SESSION['csrf_token'])) {
     <link rel="stylesheet" href="assets/css/all.min.css">
     <!-- Unified Design System -->
     <link rel="stylesheet" href="assets/css/unified-system.css">
-    <!-- Modern Login Styles -->
-    <link rel="stylesheet" href="assets/css/modern-login.css">
 </head>
 
 <body class="modern-login-page">
@@ -168,7 +151,6 @@ if (!isset($_SESSION['csrf_token'])) {
                     <?php endif; ?>
 
                     <form method="POST" class="login-form">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') ?>">
 
                         <div class="input-field">
                             <div class="input-wrapper">

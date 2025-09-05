@@ -204,11 +204,6 @@ foreach ($allowed_files as $file) {
     <?php if (function_exists('showLicenseWarning'))
         showLicenseWarning(); ?>
 
-    <!-- تاریخ و ساعت دری -->
-    <div class="dari-datetime" id="dari-datetime">
-        <!-- محتوا توسط JavaScript پر میشود -->
-    </div>
-
         <!-- Main Content -->
         <main class="main-content">
             <div class="topbar">

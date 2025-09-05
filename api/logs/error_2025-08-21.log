@@ -1,9 +1,0 @@
-[2025-08-21 10:20:54] Error: Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\motor\api\add_user.php on line 16
-[2025-08-21 10:21:16] Error: Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\motor\api\add_user.php on line 16
-[2025-08-21 10:21:23] Error: Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\motor\api\add_user.php on line 16
-[2025-08-21 10:21:23] Error: Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\motor\api\add_user.php on line 16
-[2025-08-21 15:40:00] Error: Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\motor\api\add_supplier.php on line 30
-[2025-08-21 15:40:07] Error: Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\motor\api\add_supplier.php on line 30
-[2025-08-21 15:42:09] Error: Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\motor\api\add_user.php on line 16
-[2025-08-21 15:52:02] Error: Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\motor\api\add_user.php on line 16
-[2025-08-21 15:54:20] Error: Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\motor\api\add_supplier.php on line 30
