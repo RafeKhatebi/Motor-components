@@ -26,8 +26,12 @@
     </footer>
 
     <!-- Essential Scripts -->
+<<<<<<< HEAD
+=======
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+>>>>>>> 0b29c08cc05875c213d1974673aba5bbafef06d9
     <script src="assets/js/persian-datepicker.js"></script>
-    <script src="assets/js/date-converter.js"></script>
     
     <!-- Unified System JavaScript -->
     <script src="assets/js/unified-system.js"></script>

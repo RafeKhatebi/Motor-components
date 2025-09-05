@@ -14,8 +14,22 @@ SettingsHelper::loadSettings($db);
 
 $page_title = 'مدیریت دسته بندی ها';
 
-$query = "SELECT * FROM categories ORDER BY name";
+// Pagination
+$items_per_page = 30;
+$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($page - 1) * $items_per_page;
+
+// Count total categories
+$count_query = "SELECT COUNT(*) as total FROM categories";
+$count_stmt = $db->prepare($count_query);
+$count_stmt->execute();
+$total_items = $count_stmt->fetch(PDO::FETCH_ASSOC)['total'];
+$total_pages = ceil($total_items / $items_per_page);
+
+$query = "SELECT * FROM categories ORDER BY name LIMIT :limit OFFSET :offset";
 $stmt = $db->prepare($query);
+$stmt->bindValue(':limit', $items_per_page, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -86,30 +100,30 @@ include 'includes/header.php';
                         <th><?= __('actions') ?></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <?php foreach ($categories as $index => $category): ?>
-                        <tr>
-                            <td><?= $index + 1 ?></td>
-                            <td><?= sanitizeOutput($category['name']) ?></td>
-                            <td><?= sanitizeOutput($category['description']) ?></td>
-                            <td><?= SettingsHelper::formatDate(strtotime($category['created_at']), $db) ?></td>
-                            <td class="text-left">
-                                <div class="btn-group" role="group">
-                                    <button onclick="editCategory(<?= $category['id'] ?>)" class="btn btn-warning btn-sm"
-                                        title="ویرایش">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button
-                                        onclick="confirmDelete(<?= $category['id'] ?>, 'api/delete_category.php', <?= htmlspecialchars(json_encode($category['name']), ENT_QUOTES, 'UTF-8') ?>)"
-                                        class="btn btn-danger btn-sm" title="حذف">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                        <tbody>
+                            <?php foreach ($categories as $index => $category): ?>
+                                <tr>
+                                    <td><?= $index + 1 ?></td>
+                                    <td><?= sanitizeOutput($category['name']) ?></td>
+                                    <td><?= sanitizeOutput($category['description']) ?></td>
+                                    <td><?= SettingsHelper::formatDate(strtotime($category['created_at']), $db) ?></td>
+                                    <td class="text-left">
+                                        <div class="btn-group" role="group">
+                                            <button onclick="editCategory(<?= $category['id'] ?>)"
+                                                class="btn btn-warning btn-sm" title="ویرایش">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button
+                                                onclick="confirmDelete(<?= $category['id'] ?>, 'api/delete_category.php', <?= htmlspecialchars(json_encode($category['name']), ENT_QUOTES, 'UTF-8') ?>)"
+                                                class="btn btn-danger btn-sm" title="حذف">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
         </div>
     </div>
 </div>

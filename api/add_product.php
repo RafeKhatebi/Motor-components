@@ -25,10 +25,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $code = trim($_POST['code'] ?? '');
     $category_id = filter_input(INPUT_POST, 'category_id', FILTER_VALIDATE_INT);
+    $oem_number = trim($_POST['oem_number'] ?? '');
+    $brand = trim($_POST['brand'] ?? '');
+    $motor_model = trim($_POST['motor_model'] ?? '');
+    $year_from = !empty($_POST['year_from']) ? (int)$_POST['year_from'] : null;
+    $year_to = !empty($_POST['year_to']) ? (int)$_POST['year_to'] : null;
     $buy_price = filter_input(INPUT_POST, 'buy_price', FILTER_VALIDATE_FLOAT);
     $sell_price = filter_input(INPUT_POST, 'sell_price', FILTER_VALIDATE_FLOAT);
     $stock_quantity = filter_input(INPUT_POST, 'stock_quantity', FILTER_VALIDATE_INT) ?: 0;
     $min_stock = filter_input(INPUT_POST, 'min_stock', FILTER_VALIDATE_INT) ?: 5;
+    $weight = filter_input(INPUT_POST, 'weight', FILTER_VALIDATE_FLOAT);
+    $warranty_months = filter_input(INPUT_POST, 'warranty_months', FILTER_VALIDATE_INT) ?: 0;
+    $shelf_location = trim($_POST['shelf_location'] ?? '');
+    $part_type = in_array($_POST['part_type'] ?? 'aftermarket', ['original', 'aftermarket', 'used']) ? $_POST['part_type'] : 'aftermarket';
     $description = trim($_POST['description'] ?? '');
     
     // Validation
@@ -66,9 +75,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $db->beginTransaction();
         
-        $query = "INSERT INTO products (name, code, category_id, buy_price, sell_price, stock_quantity, min_stock, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO products (name, code, category_id, oem_number, brand, motor_model, year_from, year_to, buy_price, sell_price, stock_quantity, min_stock, weight, warranty_months, shelf_location, part_type, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $db->prepare($query);
-        $stmt->execute([$name, $code, $category_id, $buy_price, $sell_price, $stock_quantity, $min_stock, $description]);
+        $stmt->execute([$name, $code, $category_id, $oem_number, $brand, $motor_model, $year_from, $year_to, $buy_price, $sell_price, $stock_quantity, $min_stock, $weight, $warranty_months, $shelf_location, $part_type, $description]);
         
         // Update sequence number if code follows PRD-XXXX pattern
         if (preg_match('/^PRD-(\d+)$/', $code, $matches)) {

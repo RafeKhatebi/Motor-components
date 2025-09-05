@@ -154,7 +154,9 @@ include 'includes/header.php';
         <div class="card-body">
             <form id="addCustomerForm" onsubmit="event.preventDefault(); submitForm('addCustomerForm', 'api/add_customer.php');">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-                <div class="d-flex gap-3 align-items-end">
+                
+                <!-- ردیف اول: اطلاعات پایه -->
+                <div class="d-flex gap-3 align-items-end mb-3">
                     <div class="form-group" style="flex: 2;">
                         <label class="form-label">نام مشتری</label>
                         <input type="text" name="name" class="form-control" required>
@@ -170,9 +172,30 @@ include 'includes/header.php';
                         <label class="form-label">آدرس</label>
                         <input type="text" name="address" class="form-control">
                     </div>
+                </div>
+                
+                <!-- ردیف دوم: اطلاعات تجاری -->
+                <div class="d-flex gap-3 align-items-end">
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">نوع مشتری</label>
+                        <select name="customer_type" class="form-select">
+                            <option value="retail">خرده فروشی</option>
+                            <option value="wholesale">عمده فروشی</option>
+                            <option value="garage">تعمیرگاه</option>
+                            <option value="dealer">نمایندگی</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">درصد تخفیف</label>
+                        <input type="number" name="discount_percentage" class="form-control" min="0" max="50" step="0.1" value="0">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">حد اعتبار</label>
+                        <input type="number" name="credit_limit" class="form-control" min="0" value="0">
+                    </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-success">
-                            <i class="fas fa-check me-1"></i>ثبت
+                            <i class="fas fa-check me-1"></i>ثبت مشتری
                         </button>
                     </div>
                 </div>
