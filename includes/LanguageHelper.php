@@ -1,16 +1,18 @@
 <?php
-class LanguageHelper {
+class LanguageHelper
+{
     private static $lang = null;
     private static $current_language = 'fa';
-    
-    public static function loadLanguage($language = null) {
+
+    public static function loadLanguage($language = null)
+    {
         // اگر زبان مشخص نشده، از تنظیمات بخوان
         if ($language === null) {
             $language = self::getSystemLanguage();
         }
-        
+
         self::$current_language = $language;
-        
+
         $lang_file = __DIR__ . "/lang_{$language}.php";
         if (file_exists($lang_file)) {
             include $lang_file;
@@ -26,8 +28,9 @@ class LanguageHelper {
             }
         }
     }
-    
-    private static function getSystemLanguage() {
+
+    private static function getSystemLanguage()
+    {
         try {
             if (class_exists('SettingsHelper')) {
                 return SettingsHelper::getSetting('language', 'fa');
@@ -37,20 +40,23 @@ class LanguageHelper {
         }
         return 'fa';
     }
-    
-    public static function get($key, $default = null) {
+
+    public static function get($key, $default = null)
+    {
         if (self::$lang === null) {
             self::loadLanguage(self::$current_language);
         }
-        
+
         return self::$lang[$key] ?? $default ?? $key;
     }
-    
-    public static function getCurrentLanguage() {
+
+    public static function getCurrentLanguage()
+    {
         return self::$current_language;
     }
-    
-    public static function getDirection() {
+
+    public static function getDirection()
+    {
         return in_array(self::$current_language, ['fa', 'ps']) ? 'rtl' : 'ltr';
     }
 }

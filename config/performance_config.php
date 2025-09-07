@@ -1,17 +1,19 @@
 <?php
 // تنظیمات بهینهسازی عملکرد
-class PerformanceConfig {
-    
+class PerformanceConfig
+{
+
     // تنظیمات Cache
     const CACHE_ENABLED = true;
     const CACHE_DURATION = 300; // 5 دقیقه
-    
+
     // تنظیمات Pagination
     const DEFAULT_PAGE_SIZE = 50;
     const MAX_PAGE_SIZE = 200;
-    
+
     // تنظیمات دیتابیس
-    public static function getDatabaseConfig() {
+    public static function getDatabaseConfig()
+    {
         return [
             'charset' => 'utf8mb4',
             'options' => [
@@ -23,9 +25,10 @@ class PerformanceConfig {
             ]
         ];
     }
-    
+
     // کوئریهای بهینه شده
-    public static function getOptimizedQueries() {
+    public static function getOptimizedQueries()
+    {
         return [
             'dashboard_stats' => "
                 SELECT 

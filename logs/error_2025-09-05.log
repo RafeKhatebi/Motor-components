@@ -5,3 +5,8 @@
 [2025-09-05 16:00:14] Exception: Class "SetupHelper" not found in C:\xampp\htdocs\motor\login.php on line 63
 [2025-09-05 16:06:46] Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'admin_motor_shop.transaction_types' doesn't exist in C:\xampp\htdocs\motor\transactions.php on line 18
 [2025-09-05 16:07:45] Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'admin_motor_shop.transaction_types' doesn't exist in C:\xampp\htdocs\motor\transactions.php on line 18
+[2025-09-05 18:55:27] Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'admin_motor_shop.warranties' doesn't exist in C:\xampp\htdocs\motor\warranties.php on line 49
+[2025-09-05 19:24:00] Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'admin_motor_shop.warranties' doesn't exist in C:\xampp\htdocs\motor\warranties.php on line 49
+[2025-09-05 19:24:05] Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'admin_motor_shop.product_barcodes' doesn't exist in C:\xampp\htdocs\motor\barcodes.php on line 62
+[2025-09-05 19:34:21] Exception: Class "SettingsHelper" not found in C:\xampp\htdocs\motor\includes\header.php on line 23
+[2025-09-05 20:20:43] Exception: Class "SettingsHelper" not found in C:\xampp\htdocs\motor\includes\header.php on line 23

@@ -84,10 +84,16 @@ if (isset($_SESSION['user_id'])) {
     <!-- Fonts -->
     <link rel="stylesheet" href="assets/webfonts/">
 
-    <!-- Icons -->
-    <link rel="stylesheet" href="assets/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Vibrant Modern Theme -->
+    <link rel="stylesheet" href="assets/css/vibrant-theme.css">
     <!-- Unified Design System -->
     <link rel="stylesheet" href="assets/css/unified-system.css">
+    <!-- Login RTL Fixes -->
+    <link rel="stylesheet" href="assets/css/login-fix.css">
 </head>
 
 <body class="modern-login-page">
@@ -156,8 +162,7 @@ if (isset($_SESSION['user_id'])) {
                             <div class="input-wrapper">
                                 <i class="fas fa-user input-icon"></i>
                                 <input type="text" name="username" id="username" class="modern-input"
-                                   value="<?= htmlspecialchars($_COOKIE['remember_username'] ?? '', ENT_QUOTES, 'UTF-8') ?>"placeholder="نام کاربری" required>
-                                <!-- <label class="input-label">نام کاربری</label> -->
+                                   value="<?= htmlspecialchars($_COOKIE['remember_username'] ?? '', ENT_QUOTES, 'UTF-8') ?>" placeholder="نام کاربری" required>
                             </div>
                         </div>
 
@@ -166,7 +171,6 @@ if (isset($_SESSION['user_id'])) {
                                 <i class="fas fa-lock input-icon"></i>
                                 <input type="password" id="password" name="password" class="modern-input"
                                    placeholder="رمز عبور" required>
-                                <!-- <label class="input-label">رمز عبور</label> -->
                                 <i class="fas fa-eye toggle-password" id="togglePassword"></i>
                             </div>
                         </div>

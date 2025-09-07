@@ -168,22 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update_stock_stmt = $db->prepare($update_stock_query);
             $update_stock_stmt->execute([$item['quantity'], $item['product_id']]);
             
-            // ایجاد گارانتی خودکار اگر محصول گارانتی دارد
-            $warranty_check = "SELECT warranty_months FROM products WHERE id = ? AND warranty_months > 0";
-            $warranty_stmt = $db->prepare($warranty_check);
-            $warranty_stmt->execute([$item['product_id']]);
-            $product_warranty = $warranty_stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($product_warranty && $product_warranty['warranty_months'] > 0) {
-                $warranty_months = $product_warranty['warranty_months'];
-                $warranty_start = date('Y-m-d');
-                $warranty_end = date('Y-m-d', strtotime("+{$warranty_months} months"));
-                
-                $warranty_query = "INSERT INTO warranties (sale_item_id, product_id, customer_id, warranty_start, warranty_end, warranty_months, warranty_type) 
-                                  VALUES (?, ?, ?, ?, ?, ?, 'shop')";
-                $warranty_insert = $db->prepare($warranty_query);
-                $warranty_insert->execute([$sale_item_id, $item['product_id'], $customer_id, $warranty_start, $warranty_end, $warranty_months]);
-            }
+            // Skip warranty creation for now
         }
 
         // Skip audit logging for now

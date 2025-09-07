@@ -476,7 +476,7 @@ include 'includes/header.php';
 
     function showAlert(message, type) {
         const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-        const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+        const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>`;

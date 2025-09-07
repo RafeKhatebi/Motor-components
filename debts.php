@@ -78,19 +78,11 @@ include 'includes/header.php';
                             <div class="form-group" style="flex: 1;">
                                 <label class="form-label">مبلغ پرداخت</label>
                                 <input type="number" name="amount" class="form-control" min="1" step="0.01" required>
-                                <small class="form-text text-muted">حداکثر: <span id="maxAmountDisplay">-</span> افغانی</small>
-                            </div>
-                            <div class="form-group" style="flex: 1;">
-                                <label class="form-label">روش پرداخت</label>
-                                <select name="payment_method" class="form-control">
-                                    <option value="cash">نقدی</option>
-                                    <option value="bank">بانکی</option>
-                                    <option value="check">چک</option>
-                                </select>
                             </div>
                             <div class="form-group" style="flex: 1;">
                                 <label class="form-label">تاریخ پرداخت</label>
-                                <input type="date" name="payment_date" class="form-control" value="<?= date('Y-m-d') ?>" required>
+                                <input type="date" name="payment_date" class="form-control" value="<?= date('Y-m-d') ?>"
+                                    required>
                             </div>
                             <div class="form-group" style="flex: 1;">
                                 <label class="form-label">یادداشت</label>
@@ -230,7 +222,7 @@ include 'includes/header.php';
         form.querySelector('input[name="amount"]').max = maxAmount;
         form.querySelector('input[name="amount"]').value = maxAmount;
         document.getElementById('maxAmountDisplay').textContent = maxAmount.toLocaleString();
-        
+
         // Scroll to form
         form.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }

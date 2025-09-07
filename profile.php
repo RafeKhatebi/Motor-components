@@ -57,9 +57,10 @@ if ($_POST && isset($_POST['action'])) {
 include 'includes/header.php';
 ?>
 
-<div class="container-fluid mt-4">
+<!-- Page content -->
+<div class="container-fluid mt--7">
     <?php if (isset($success_message)): ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">
             <i class="fas fa-check-circle ml-2"></i>
             <?= sanitizeOutput($success_message) ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -67,70 +68,68 @@ include 'includes/header.php';
     <?php endif; ?>
 
     <?php if (isset($error_message)): ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">
             <i class="fas fa-exclamation-circle ml-2"></i>
             <?= sanitizeOutput($error_message) ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif; ?>
 
-    <div class="row">
+    <div class="row mt-5">
         <!-- کارت پروفایل -->
-        <div class="col-md-4 mb-4">
-            <div class="card">
+        <div class="col-xl-4 mb-4">
+            <div class="card shadow">
                 <div class="card-body text-center">
-                    <div class="mb-3">
-                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                            <i class="fas fa-user fa-2x"></i>
+                    <div class="mb-4">
+                        <div class="bg-gradient-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                            <i class="fas fa-user fa-3x"></i>
                         </div>
                     </div>
-                    <h4 class="mb-1"><?= sanitizeOutput($user['full_name']) ?></h4>
-                    <p class="text-muted mb-2">
+                    <h3 class="mb-2"><?= sanitizeOutput($user['full_name']) ?></h3>
+                    <p class="text-muted mb-3">
                         <?php
                         $roles = ['admin' => 'مدیر سیستم', 'manager' => 'مدیر فروش', 'employee' => 'کارمند'];
                         echo sanitizeOutput($roles[$user['role']] ?? $user['role']);
                         ?>
                     </p>
-                    <small class="text-muted">عضویت: <?= sanitizeOutput(SettingsHelper::formatDate(strtotime($user['created_at']), $db)) ?></small>
+                    <div class="border-top pt-3">
+                        <small class="text-muted d-block">نام کاربری: <?= sanitizeOutput($user['username']) ?></small>
+                        <small class="text-muted d-block">عضویت: <?= sanitizeOutput(SettingsHelper::formatDate(strtotime($user['created_at']), $db)) ?></small>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- فرم بروزرسانی پروفایل -->
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-user-edit me-2"></i>
+        <!-- فرم‌های بروزرسانی -->
+        <div class="col-xl-8">
+            <!-- فرم بروزرسانی پروفایل -->
+            <div class="card shadow mb-4">
+                <div class="card-header border-0">
+                    <h3 class="mb-0">
+                        <i class="fas fa-user-edit ml-2"></i>
                         بروزرسانی پروفایل
-                    </h5>
+                    </h3>
                 </div>
                 <div class="card-body">
                     <form method="POST">
                         <input type="hidden" name="action" value="update_profile">
-                        <div class="d-flex gap-3 mb-3">
-                            <div style="flex: 1;">
-                                <label class="form-label">نام کاربری</label>
-                                <input type="text" name="username" class="form-control" value="<?= sanitizeOutput($user['username']) ?>" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">نام کاربری</label>
+                                    <input type="text" name="username" class="form-control" value="<?= sanitizeOutput($user['username']) ?>" required>
+                                </div>
                             </div>
-                            <div style="flex: 1;">
-                                <label class="form-label">نام کامل</label>
-                                <input type="text" name="full_name" class="form-control" value="<?= sanitizeOutput($user['full_name']) ?>" required>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-3 mb-3">
-                            <div style="flex: 1;">
-                                <label class="form-label">نقش</label>
-                                <input type="text" class="form-control" value="<?= sanitizeOutput($roles[$user['role']] ?? $user['role']) ?>" disabled>
-                            </div>
-                            <div style="flex: 1;">
-                                <label class="form-label">تاریخ عضویت</label>
-                                <input type="text" class="form-control" value="<?= sanitizeOutput(SettingsHelper::formatDate(strtotime($user['created_at']), $db)) ?>" disabled>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">نام کامل</label>
+                                    <input type="text" name="full_name" class="form-control" value="<?= sanitizeOutput($user['full_name']) ?>" required>
+                                </div>
                             </div>
                         </div>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-save ml-2"></i>
                                 بروزرسانی پروفایل
                             </button>
                         </div>
@@ -139,33 +138,37 @@ include 'includes/header.php';
             </div>
 
             <!-- فرم تغییر رمز عبور -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-key me-2"></i>
+            <div class="card shadow">
+                <div class="card-header border-0">
+                    <h3 class="mb-0">
+                        <i class="fas fa-key ml-2"></i>
                         تغییر رمز عبور
-                    </h5>
+                    </h3>
                 </div>
                 <div class="card-body">
                     <form method="POST">
                         <input type="hidden" name="action" value="change_password">
-                        <div class="mb-3">
+                        <div class="form-group mb-4">
                             <label class="form-label">رمز عبور فعلی</label>
                             <input type="password" name="current_password" class="form-control" required>
                         </div>
-                        <div class="d-flex gap-3 mb-3">
-                            <div style="flex: 1;">
-                                <label class="form-label">رمز عبور جدید</label>
-                                <input type="password" name="new_password" class="form-control" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">رمز عبور جدید</label>
+                                    <input type="password" name="new_password" class="form-control" required>
+                                </div>
                             </div>
-                            <div style="flex: 1;">
-                                <label class="form-label">تکرار رمز عبور</label>
-                                <input type="password" name="confirm_password" class="form-control" required>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">تکرار رمز عبور</label>
+                                    <input type="password" name="confirm_password" class="form-control" required>
+                                </div>
                             </div>
                         </div>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-warning">
-                                <i class="fas fa-lock me-2"></i>
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="fas fa-lock ml-2"></i>
                                 تغییر رمز عبور
                             </button>
                         </div>

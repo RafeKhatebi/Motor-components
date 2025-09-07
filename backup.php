@@ -34,11 +34,11 @@ if ($_POST && isset($_POST['action'])) {
                 // بررسی وجود جدول
                 $checkTable = $db->prepare("SHOW TABLES LIKE ?");
                 $checkTable->execute([$table]);
-                
+
                 if ($checkTable->rowCount() == 0) {
                     continue; // جدول وجود ندارد
                 }
-                
+
                 $query = "SELECT * FROM $table";
                 $stmt = $db->prepare($query);
                 $stmt->execute();
@@ -90,7 +90,7 @@ include 'includes/header.php';
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif; ?>
-    
+
     <?php if (isset($error_message)): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="fas fa-exclamation-triangle ml-2"></i>

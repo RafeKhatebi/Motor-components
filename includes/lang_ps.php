@@ -13,7 +13,7 @@ $lang = [
     'users' => 'کاروونکي',
     'backup' => 'بیک اپ',
     'settings' => 'تنظیمات',
-    
+
     // Common
     'add' => 'اضافه کول',
     'edit' => 'سمون',
@@ -35,7 +35,7 @@ $lang = [
     'quantity' => 'مقدار',
     'status' => 'حالت',
     'actions' => 'عملیات',
-    
+
     // Dashboard
     'total_products' => 'ټول توکي',
     'total_customers' => 'ټول پیرودونکي',
@@ -43,7 +43,7 @@ $lang = [
     'low_stock' => 'لږ موجود',
     'sales_chart' => 'د پلورنې چارټ',
     'top_products' => 'غوره توکي',
-    
+
     // Products
     'product_management' => 'د توکو مدیریت',
     'new_product' => 'نوی توکی',
@@ -57,7 +57,7 @@ $lang = [
     'available' => 'موجود',
     'low_stock_item' => 'لږ موجود',
     'out_of_stock' => 'نشته',
-    
+
     // Sales
     'sales_management' => 'د پلورنې مدیریت',
     'new_invoice' => 'نوی فاکتور',
@@ -70,7 +70,7 @@ $lang = [
     'total_amount' => 'ټول مقدار',
     'final_amount' => 'وروستی مقدار',
     'submit_invoice' => 'فاکتور ثبت کول',
-    
+
     // Users
     'user_management' => 'د کاروونکو مدیریت',
     'new_user' => 'نوی کاروونکی',
@@ -82,7 +82,7 @@ $lang = [
     'manager' => 'د پلورنې مدیر',
     'employee' => 'کارمند',
     'registration_date' => 'د ثبت نیټه',
-    
+
     // Settings
     'system_settings' => 'د سیسټم تنظیمات',
     'shop_info' => 'د پلورنځي معلومات',
@@ -95,7 +95,7 @@ $lang = [
     'auto_backup' => 'اتوماتیک بیک اپ',
     'notifications' => 'خبرتیاوې',
     'save_settings' => 'تنظیمات ساتل',
-    
+
     // Messages
     'success' => 'بریالیتوب',
     'error' => 'تیروتنه',
@@ -105,7 +105,7 @@ $lang = [
     'invalid_request' => 'غلط غوښتنه',
     'access_denied' => 'لاسرسی منع',
     'confirm_delete' => 'ایا تاسو د ړنګولو څخه ډاډه یاست؟',
-    
+
     // Backup
     'backup_management' => 'د بیک اپ مدیریت',
     'create_backup' => 'بیک اپ جوړول',
@@ -113,7 +113,7 @@ $lang = [
     'file_name' => 'د فایل نوم',
     'creation_date' => 'د جوړولو نیټه',
     'file_size' => 'د فایل اندازه',
-    
+
     // Purchases
     'purchase_management' => 'د پیرودنې مدیریت',
     'new_purchase' => 'نوی پیرود',
@@ -123,18 +123,18 @@ $lang = [
     'new_product_name' => 'د نوي توکي نوم',
     'new_product_code' => 'د نوي توکي کوډ',
     'select_category' => 'ډول غوره کړئ',
-    
+
     // Reports
     'reports_management' => 'د راپورونو مدیریت',
     'sales_report' => 'د پلورنې راپور',
     'products_report' => 'د توکو راپور',
     'customers_report' => 'د پیرودونکو راپور',
-    
+
     // Currency
     'afghani' => 'افغانۍ',
     'toman' => 'تومان',
     'rial' => 'ریال',
-    
+
     // Forms
     'select_option' => 'غوره کړئ',
     'required_fields' => 'ټول ډکونه اړین دي',
@@ -167,7 +167,7 @@ $lang = [
     'system_operations' => 'د سیسټم عملیات',
     'shop_management' => 'د پلورنځي اداره',
     'motorcycle_parts_shop' => 'د موټرسایکل د برخو پلورنځی',
-    
+
     // Additional translations
     'from_last_month' => 'د تیرې میاشتې څخه',
     'from_last_week' => 'د تیرې اونۍ څخه',
@@ -204,7 +204,7 @@ $lang = [
     'automatic_backup' => 'اتوماتیک بیک اپ',
     'system_notifications' => 'د سیسټم خبرتیاوې',
     'save_changes' => 'بدلونونه وساتئ',
-    
+
     // Dashboard specific
     'today_expenses' => 'نن لګښتونه',
     'today_net_profit' => 'نن خالصه ګٹه',
@@ -231,7 +231,7 @@ $lang = [
     'print_invoice' => 'فاکتور چاپ کړئ',
     'view_details' => 'جزئیات وګورئ',
     'edit_invoice' => 'فاکتور سمون',
-    
+
     // More translations
     'code' => 'کوډ',
     'stock' => 'موجود',
@@ -266,50 +266,50 @@ $lang = [
     'money_bill' => 'پیسې بل',
     'cancel_button' => 'لغوه کول',
     'submit_invoice_button' => 'فاکتور وسپارئ',
-    
+
     // Categories
     'category_management' => 'د ډولونو اداره',
     'new_category' => 'نوی ډول',
     'category_name' => 'د ډول نوم',
     'category_description' => 'د ډول تشریح',
-    
+
     // Customers
     'customer_management' => 'د پیرودونکو اداره',
     'new_customer' => 'نوی پیرودونکی',
     'customer_phone' => 'د پیرودونکي تلیفون',
     'customer_address' => 'د پیرودونکي پته',
-    
+
     // Suppliers
     'supplier_management' => 'د چمتو کوونکو اداره',
     'new_supplier' => 'نوی چمتو کوونکی',
     'supplier_phone' => 'د چمتو کوونکي تلیفون',
     'supplier_address' => 'د چمتو کوونکي پته',
-    
+
     // Purchases
     'purchase_invoice' => 'د پیرود فاکتور',
     'purchase_date' => 'د پیرود نیټه',
     'purchase_total' => 'د پیرود ٹول',
-    
+
     // Reports
     'reports_title' => 'راپورونه',
     'sales_reports' => 'د پلورنې راپورونه',
     'product_reports' => 'د توکو راپورونه',
     'customer_reports' => 'د پیرودونکو راپورونه',
-    
+
     // Login
     'login_title' => 'سیسټم ته د ننوتلو',
     'username_label' => 'د کاروونکي نوم',
     'password_label' => 'پټ نوم',
     'login_button' => 'ننوتل',
     'remember_me' => 'زه مې سته وساته',
-    
+
     // Profile
     'profile_title' => 'د کاروونکي پروفایل',
     'change_password' => 'پټ نوم بدلول',
     'current_password' => 'اوسنی پټ نوم',
     'new_password' => 'نوی پټ نوم',
     'confirm_password' => 'د پټ نوم تایید',
-    
+
     // Common form elements
     'required_field' => 'اړین ډک',
     'optional_field' => 'اختیاري',
@@ -321,7 +321,7 @@ $lang = [
     'edit_item' => 'سمون',
     'delete_item' => 'ړنګول',
     'view_item' => 'کتل',
-    
+
     // Complete translations for all remaining texts
     'welcome' => 'په راغلاست!',
     'login_with_credentials' => 'د کاروونکي معلوماتو سره ننوتل',

@@ -30,10 +30,12 @@ foreach ($allowed_files as $file) {
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Vibrant Modern Theme - Dynamic Colors -->
+    <link rel="stylesheet" href="assets/css/vibrant-theme.css">
     <!-- Unified Design System -->
     <link rel="stylesheet" href="assets/css/unified-system.css">
-    <!-- Theme Enhancements -->
-    <link rel="stylesheet" href="assets/css/theme-enhancements.css">
     <?= $extra_css ?? '' ?>
 </head>
 
@@ -152,29 +154,7 @@ foreach ($allowed_files as $file) {
 
 
 
-                <div class="nav-section">
-                    <div class="nav-item">
-                        <div class="nav-link nav-parent" data-dropdown="services">
-                            <div>
-                                <i class="fas fa-tools"></i>
-                                <span>خدمات</span>
-                            </div>
-                            <i class="fas fa-chevron-left nav-arrow"></i>
-                        </div>
-                        <div class="nav-dropdown" id="services">
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'warranties.php' ? 'active' : '' ?>"
-                                href="warranties.php">
-                                <i class="fas fa-shield-alt"></i>
-                                <span>گارانتی</span>
-                            </a>
-                            <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'barcodes.php' ? 'active' : '' ?>"
-                                href="barcodes.php">
-                                <i class="fas fa-qrcode"></i>
-                                <span>بارکد</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="nav-section">
                     <div class="nav-item">
                         <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : '' ?>"
@@ -245,12 +225,6 @@ foreach ($allowed_files as $file) {
         <!-- نمایش هشدار لایسنس -->
         <?php if (function_exists('showLicenseWarning'))
             showLicenseWarning(); ?>
-
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 0b29c08cc05875c213d1974673aba5bbafef06d9
         <!-- Main Content -->
         <main class="main-content">
             <div class="topbar">

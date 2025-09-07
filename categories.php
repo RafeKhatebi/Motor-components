@@ -100,30 +100,30 @@ include 'includes/header.php';
                         <th><?= __('actions') ?></th>
                     </tr>
                 </thead>
-                        <tbody>
-                            <?php foreach ($categories as $index => $category): ?>
-                                <tr>
-                                    <td><?= $index + 1 ?></td>
-                                    <td><?= sanitizeOutput($category['name']) ?></td>
-                                    <td><?= sanitizeOutput($category['description']) ?></td>
-                                    <td><?= SettingsHelper::formatDate(strtotime($category['created_at']), $db) ?></td>
-                                    <td class="text-left">
-                                        <div class="btn-group" role="group">
-                                            <button onclick="editCategory(<?= $category['id'] ?>)"
-                                                class="btn btn-warning btn-sm" title="ویرایش">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button
-                                                onclick="confirmDelete(<?= $category['id'] ?>, 'api/delete_category.php', <?= htmlspecialchars(json_encode($category['name']), ENT_QUOTES, 'UTF-8') ?>)"
-                                                class="btn btn-danger btn-sm" title="حذف">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                <tbody>
+                    <?php foreach ($categories as $index => $category): ?>
+                        <tr>
+                            <td><?= $index + 1 ?></td>
+                            <td><?= sanitizeOutput($category['name']) ?></td>
+                            <td><?= sanitizeOutput($category['description']) ?></td>
+                            <td><?= SettingsHelper::formatDate(strtotime($category['created_at']), $db) ?></td>
+                            <td class="text-left">
+                                <div class="btn-group" role="group">
+                                    <button onclick="editCategory(<?= $category['id'] ?>)" class="btn btn-warning btn-sm"
+                                        title="ویرایش">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button
+                                        onclick="confirmDelete(<?= $category['id'] ?>, 'api/delete_category.php', <?= htmlspecialchars(json_encode($category['name']), ENT_QUOTES, 'UTF-8') ?>)"
+                                        class="btn btn-danger btn-sm" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -145,7 +145,17 @@ include 'includes/header.php';
                 credentials: 'same-origin'
             });
 
-            const result = await response.json();
+            const responseText = await response.text();
+
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch (e) {
+                console.error('JSON Parse Error:', e);
+                console.error('Response Text:', responseText);
+                showAlert('خطا در پردازش پاسخ سرور', 'error');
+                return;
+            }
 
             if (result.success) {
                 showAlert('دسته بندی با موفقیت اضافه شد', 'success');
@@ -155,6 +165,7 @@ include 'includes/header.php';
                 showAlert(result.message || 'خطا در انجام عملیات', 'error');
             }
         } catch (error) {
+            console.error('Fetch Error:', error);
             showAlert('خطا در ارتباط با سرور', 'error');
         }
     }
@@ -203,7 +214,7 @@ include 'includes/header.php';
 
     function showAlert(message, type) {
         const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-        const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+        const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>`;

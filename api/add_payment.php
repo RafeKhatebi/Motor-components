@@ -23,7 +23,6 @@ $type = $_POST['type'] ?? ''; // 'sale' or 'purchase'
 $id = (int)($_POST['id'] ?? 0);
 $amount = (float)($_POST['amount'] ?? 0);
 $payment_date = $_POST['payment_date'] ?? date('Y-m-d');
-$payment_method = $_POST['payment_method'] ?? 'cash';
 $notes = $_POST['notes'] ?? '';
 
 if (!in_array($type, ['sale', 'purchase']) || $id <= 0 || $amount <= 0) {
@@ -50,9 +49,9 @@ try {
         }
         
         // ثبت پرداخت
-        $payment_query = "INSERT INTO sale_payments (sale_id, amount, payment_date, payment_method, notes) VALUES (?, ?, ?, ?, ?)";
+        $payment_query = "INSERT INTO sale_payments (sale_id, amount, payment_date, notes) VALUES (?, ?, ?, ?)";
         $payment_stmt = $db->prepare($payment_query);
-        $payment_stmt->execute([$id, $amount, $payment_date, $payment_method, $notes]);
+        $payment_stmt->execute([$id, $amount, $payment_date, $notes]);
         
         // بروزرسانی وضعیت فروش
         $new_remaining = $sale['remaining_amount'] - $amount;
@@ -78,9 +77,9 @@ try {
         }
         
         // ثبت پرداخت
-        $payment_query = "INSERT INTO purchase_payments (purchase_id, amount, payment_date, payment_method, notes) VALUES (?, ?, ?, ?, ?)";
+        $payment_query = "INSERT INTO purchase_payments (purchase_id, amount, payment_date, notes) VALUES (?, ?, ?, ?)";
         $payment_stmt = $db->prepare($payment_query);
-        $payment_stmt->execute([$id, $amount, $payment_date, $payment_method, $notes]);
+        $payment_stmt->execute([$id, $amount, $payment_date, $notes]);
         
         // بروزرسانی وضعیت خرید
         $new_remaining = $purchase['remaining_amount'] - $amount;

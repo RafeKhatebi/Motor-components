@@ -47,8 +47,10 @@ include 'includes/header.php';
                 <!-- Add User Form -->
                 <div class="card-header border-0">
                     <h5 class="mb-3"><i class="fas fa-user-plus"></i> افزودن کاربر جدید</h5>
-                    <form id="addUserForm" onsubmit="event.preventDefault(); submitForm('addUserForm', 'api/add_user.php');">
-                        <?php if (!isset($_SESSION['csrf_token'])) $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); ?>
+                    <form id="addUserForm"
+                        onsubmit="event.preventDefault(); submitForm('addUserForm', 'api/add_user.php');">
+                        <?php if (!isset($_SESSION['csrf_token']))
+                            $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); ?>
                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                         <div class="d-flex gap-2 align-items-end mb-3">
                             <div class="form-group" style="flex: 1;">
@@ -76,9 +78,7 @@ include 'includes/header.php';
                                     <i class="fas fa-plus"></i> افزودن
                                 </button>
                             </div>
-                            <div class="form-group" style="flex: 1;">
-                                <input type="text" class="form-control" placeholder="جستجو..." id="searchInput">
-                            </div>
+
                         </div>
                     </form>
                 </div>
@@ -103,8 +103,8 @@ include 'includes/header.php';
                                     <td><?= $offset + $index + 1 ?></td>
                                     <td>
                                         <div class="media align-items-center">
-                                            <div class="avatar rounded-circle ml-3">
-                                                <i class="fas fa-user"></i>
+                                            <div class="ml-3">
+                                                <i class="fas fa-user" style="color: white;"></i>
                                             </div>
                                             <div class="media-body">
                                                 <span class="mb-0 text-sm"><?= sanitizeOutput($user['username']) ?></span>
@@ -122,7 +122,8 @@ include 'includes/header.php';
                                             <?= sanitizeOutput($roles[$user['role']] ?? $user['role']) ?>
                                         </span>
                                     </td>
-                                    <td><?= sanitizeOutput(SettingsHelper::formatDate(strtotime($user['created_at']), $db)) ?></td>
+                                    <td><?= sanitizeOutput(SettingsHelper::formatDate(strtotime($user['created_at']), $db)) ?>
+                                    </td>
                                     <td>
                                         <?php if ($user['id'] != $_SESSION['user_id']): ?>
                                             <button onclick="editUser(<?= sanitizeOutput($user['id']) ?>)"
@@ -141,7 +142,7 @@ include 'includes/header.php';
                         </tbody>
                     </table>
                 </div>
-                
+
                 <!-- Pagination -->
                 <?php if ($total_pages > 1): ?>
                     <div class="card-footer py-4">
@@ -306,7 +307,7 @@ include 'includes/header.php';
             const formData = new FormData();
             formData.append('id', id);
             formData.append('csrf_token', '<?= $_SESSION['csrf_token'] ?? '' ?>');
-            
+
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 body: formData
@@ -327,7 +328,7 @@ include 'includes/header.php';
 
     function showAlert(message, type) {
         const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-        const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+        const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">
                 ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>`;

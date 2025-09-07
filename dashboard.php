@@ -358,6 +358,21 @@ include 'includes/header.php';
     color: white;
     font-weight: bold;
 }
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.prayer-alert {
+    animation: slideIn 0.5s ease;
+}
 </style>
 
 <script src="assets/js/chart.js"></script>
@@ -526,28 +541,83 @@ include 'includes/header.php';
     
     function generateCalendar() {
         const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth();
-        const today = now.getDate();
-        const firstDay = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const persianDate = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long'
+        }).formatToParts(now);
         
-        let html = '<div class="calendar-grid">';
+        const currentPersianYear = parseInt(persianDate.find(part => part.type === 'year').value);
+        const currentPersianMonth = persianDate.find(part => part.type === 'month').value;
+        const currentPersianDay = parseInt(persianDate.find(part => part.type === 'day').value);
+        
+        let html = `<div style="text-align: center; margin-bottom: 15px; font-weight: bold; color: #4f46e5;">${currentPersianMonth} ${currentPersianYear}</div>`;
+        html += '<div class="calendar-grid">';
+        
         ['ش', 'ی', 'د', 'س', 'چ', 'پ', 'ج'].forEach(day => {
-            html += `<div class="calendar-day" style="font-weight: bold;">${day}</div>`;
+            html += `<div class="calendar-day" style="font-weight: bold; background: #f8f9fa;">${day}</div>`;
         });
         
-        for (let i = 0; i < firstDay; i++) {
+        // محاسبه روزهای ماه فارسی
+        const daysInPersianMonth = getPersianMonthDays(currentPersianYear, getPersianMonthNumber(currentPersianMonth));
+        const firstDayOfMonth = getFirstDayOfPersianMonth(currentPersianYear, getPersianMonthNumber(currentPersianMonth));
+        
+        // روزهای خالی ابتدای ماه
+        for (let i = 0; i < firstDayOfMonth; i++) {
             html += '<div class="calendar-day"></div>';
         }
         
-        for (let day = 1; day <= daysInMonth; day++) {
-            const isToday = day === today ? ' today' : '';
+        // روزهای ماه
+        for (let day = 1; day <= daysInPersianMonth; day++) {
+            const isToday = day === currentPersianDay ? ' today' : '';
             html += `<div class="calendar-day${isToday}">${day}</div>`;
         }
         
         html += '</div>';
+        
+        // اضافه کردن اطلاعات مفید
+        html += `<div style="margin-top: 15px; font-size: 12px; color: #666; text-align: center;">`;
+        html += `<div>امروز: ${persianDate.find(part => part.type === 'weekday').value}</div>`;
+        html += `<div>تاریخ میلادی: ${now.toLocaleDateString('fa-IR')}</div>`;
+        html += `</div>`;
+        
         document.getElementById('calendarView').innerHTML = html;
+    }
+    
+    function getPersianMonthNumber(monthName) {
+        const months = {'فروردین': 1, 'اردیبهشت': 2, 'خرداد': 3, 'تیر': 4, 'مرداد': 5, 'شهریور': 6, 'مهر': 7, 'آبان': 8, 'آذر': 9, 'دی': 10, 'بهمن': 11, 'اسفند': 12};
+        return months[monthName] || 1;
+    }
+    
+    function getPersianMonthDays(year, month) {
+        if (month <= 6) return 31;
+        if (month <= 11) return 30;
+        return isLeapPersianYear(year) ? 30 : 29;
+    }
+    
+    function isLeapPersianYear(year) {
+        const breaks = [128, 29, 33, 37, 41, 45, 49, 53, 57, 61, 65, 69, 73, 77, 81, 85, 89, 93, 97, 101, 105, 109, 113, 117, 121, 125];
+        let jp = breaks[0];
+        let jump = 0;
+        for (let j = 1; j < breaks.length; j++) {
+            const jm = breaks[j];
+            jump = jm - jp;
+            if (year < jm) break;
+            jp = jm;
+        }
+        let n = year - jp;
+        if (n < jump) {
+            if (jump - n < 6) n = n - jump + ((jump + 4) / 6) * 6;
+        }
+        return ((n + 1) % 33) % 4 === 1;
+    }
+    
+    function getFirstDayOfPersianMonth(year, month) {
+        // تقریبی - برای نمایش بهتر
+        const gregorianDate = new Date();
+        gregorianDate.setDate(1);
+        return (gregorianDate.getDay() + 1) % 7;
     }
     
     updateDateTime();
@@ -603,42 +673,101 @@ include 'includes/header.php';
         
         const now = new Date();
         const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        const alertKey = currentTime + '-' + now.getDate();
         
         const prayerNames = {fajr: 'فجر', sunrise: 'طلوع', dhuhr: 'ظهر', asr: 'عصر', maghrib: 'مغرب', isha: 'عشاء'};
         
         Object.keys(prayerNames).forEach(key => {
             const element = document.getElementById(key);
-            if (element && element.value === currentTime && lastAlertTime !== currentTime) {
-                playPrayerAlert(prayerNames[key]);
-                lastAlertTime = currentTime;
+            if (element && element.value === currentTime) {
+                const lastAlert = localStorage.getItem('lastPrayerAlert');
+                if (lastAlert !== alertKey) {
+                    playPrayerAlert(prayerNames[key]);
+                    localStorage.setItem('lastPrayerAlert', alertKey);
+                }
             }
         });
     }
     
     function playPrayerAlert(prayerName) {
         // ایجاد صدای هشدار
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 2);
+        } catch(e) {
+            console.log('صدا پخش نشد');
+        }
         
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
+        // نمایش نوتیفیکیشن مرورگر
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification(`وقت ${prayerName}`, {
+                body: `وقت ${prayerName} فرا رسیده است!`,
+                icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234f46e5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
+                tag: 'prayer-time'
+            });
+        } else {
+            // فالبک به alert
+            alert(`وقت ${prayerName} فرا رسیده است!`);
+        }
         
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-        oscillator.type = 'sine';
-        
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 2);
-        
-        // نمایش پیام
-        alert(`وقت ${prayerName} فرا رسیده است!`);
+        // نمایش پیام در صفحه
+        showInPageAlert(prayerName);
     }
     
-    // بررسی هر دقیقه
-    setInterval(checkPrayerTime, 60000);
+    function showInPageAlert(prayerName) {
+        const alertDiv = document.createElement('div');
+        alertDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            z-index: 9999;
+            font-weight: bold;
+            animation: slideIn 0.5s ease;
+        `;
+        alertDiv.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-mosque" style="font-size: 20px;"></i>
+                <div>
+                    <div>وقت ${prayerName}</div>
+                    <div style="font-size: 12px; opacity: 0.9;">فرا رسیده است</div>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; font-size: 18px; cursor: pointer; margin-right: 10px;">×</button>
+            </div>
+        `;
+        
+        document.body.appendChild(alertDiv);
+        
+        // حذف خودکار پس از 5 ثانیه
+        setTimeout(() => {
+            if (alertDiv.parentElement) {
+                alertDiv.remove();
+            }
+        }, 5000);
+    }
+    
+    // بررسی هر 30 ثانیه برای دقت بیشتر
+    setInterval(checkPrayerTime, 30000);
+    
+    // بررسی فوری در ابتدا
+    setTimeout(checkPrayerTime, 1000);
     
     // Todo List با قابلیت کارهای ضروری
     let todos = JSON.parse(localStorage.getItem('todos') || '[]');
@@ -692,6 +821,11 @@ include 'includes/header.php';
     document.getElementById('todoInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') addTodo();
     });
+    
+    // درخواست مجوز نوتیفیکیشن
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
     
     loadPrayerTimes();
     renderTodos();

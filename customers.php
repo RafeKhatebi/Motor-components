@@ -152,9 +152,10 @@ include 'includes/header.php';
             </h5>
         </div>
         <div class="card-body">
-            <form id="addCustomerForm" onsubmit="event.preventDefault(); submitForm('addCustomerForm', 'api/add_customer.php');">
+            <form id="addCustomerForm"
+                onsubmit="event.preventDefault(); submitForm('addCustomerForm', 'api/add_customer.php');">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-                
+
                 <!-- ردیف اول: اطلاعات پایه -->
                 <div class="d-flex gap-3 align-items-end mb-3">
                     <div class="form-group" style="flex: 2;">
@@ -163,9 +164,9 @@ include 'includes/header.php';
                     </div>
                     <div class="form-group" style="flex: 2;">
                         <label class="form-label">شماره تلفن</label>
-                        <input type="text" name="phone" id="customerPhone" class="form-control" 
-                               placeholder="07XXXXXXXX" maxlength="10" onblur="checkPhoneUnique('customers', this.value)" 
-                               oninput="validatePhoneFormat(this)">
+                        <input type="text" name="phone" id="customerPhone" class="form-control" placeholder="07XXXXXXXX"
+                            maxlength="10" onblur="checkPhoneUnique('customers', this.value)"
+                            oninput="validatePhoneFormat(this)">
                         <div id="phoneValidation" class="mt-1"></div>
                     </div>
                     <div class="form-group" style="flex: 3;">
@@ -173,7 +174,7 @@ include 'includes/header.php';
                         <input type="text" name="address" class="form-control">
                     </div>
                 </div>
-                
+
                 <!-- ردیف دوم: اطلاعات تجاری -->
                 <div class="d-flex gap-3 align-items-end">
                     <div class="form-group" style="flex: 1;">
@@ -181,17 +182,7 @@ include 'includes/header.php';
                         <select name="customer_type" class="form-select">
                             <option value="retail">خرده فروشی</option>
                             <option value="wholesale">عمده فروشی</option>
-                            <option value="garage">تعمیرگاه</option>
-                            <option value="dealer">نمایندگی</option>
                         </select>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label class="form-label">درصد تخفیف</label>
-                        <input type="number" name="discount_percentage" class="form-control" min="0" max="50" step="0.1" value="0">
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label class="form-label">حد اعتبار</label>
-                        <input type="number" name="credit_limit" class="form-control" min="0" value="0">
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-success">
@@ -211,8 +202,8 @@ include 'includes/header.php';
                     <h3>فهرست مشتریان</h3>
                 </div>
                 <div class="action-group">
-                    <input type="text" class="form-control form-control-sm" placeholder="جستجو..."
-                        id="searchInput" style="width: 200px;">
+                    <input type="text" class="form-control form-control-sm" placeholder="جستجو..." id="searchInput"
+                        style="width: 200px;">
 
                 </div>
             </div>
@@ -220,97 +211,97 @@ include 'includes/header.php';
         <div class="table-responsive">
             <table class="table table-modern" id="customersTable">
                 <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">نام</th>
-                                <th scope="col">تلفن</th>
-                                <th scope="col">آدرس</th>
-                                <th scope="col">تاریخ ثبت</th>
-                                <th scope="col">عملیات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($customers as $index => $customer): ?>
-                                <tr>
-                                    <td><?= $offset + $index + 1 ?></td>
-                                    <td><?= sanitizeOutput($customer['name']) ?></td>
-                                    <td><?= sanitizeOutput($customer['phone']) ?></td>
-                                    <td><?= sanitizeOutput($customer['address']) ?></td>
-                                    <td><?= SettingsHelper::formatDate(strtotime($customer['created_at']), $db) ?></td>
-                                    <td class="text-left">
-                                        <button onclick="editCustomer(<?= $customer['id'] ?>)"
-                                            class="btn btn-professional btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button
-                                            onclick="confirmDelete(<?= $customer['id'] ?>, 'api/delete_customer.php', '<?= sanitizeOutput($customer['name']) ?>')"
-                                            class="btn btn-professional btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                        <tfoot>
-                            <tr class="table-summary">
-                                <th colspan="4" class="text-end">جمع کل مشتریان:</th>
-                                <th id="totalCustomers">0</th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">نام</th>
+                        <th scope="col">تلفن</th>
+                        <th scope="col">آدرس</th>
+                        <th scope="col">تاریخ ثبت</th>
+                        <th scope="col">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($customers as $index => $customer): ?>
+                        <tr>
+                            <td><?= $offset + $index + 1 ?></td>
+                            <td><?= sanitizeOutput($customer['name']) ?></td>
+                            <td><?= sanitizeOutput($customer['phone']) ?></td>
+                            <td><?= sanitizeOutput($customer['address']) ?></td>
+                            <td><?= SettingsHelper::formatDate(strtotime($customer['created_at']), $db) ?></td>
+                            <td class="text-left">
+                                <button onclick="editCustomer(<?= $customer['id'] ?>)"
+                                    class="btn btn-professional btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button
+                                    onclick="confirmDelete(<?= $customer['id'] ?>, 'api/delete_customer.php', '<?= sanitizeOutput($customer['name']) ?>')"
+                                    class="btn btn-professional btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+                    <tr class="table-summary">
+                        <th colspan="4" class="text-end">جمع کل مشتریان:</th>
+                        <th id="totalCustomers">0</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
 
-                <!-- Pagination -->
-                <?php if ($total_pages > 1): ?>
-                    <div class="card-footer py-4">
-                        <nav aria-label="صفحهبندی">
-                            <ul class="pagination justify-content-center mb-0">
-                                <?php if ($page > 1): ?>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=<?= $page - 1 ?>">
-                                            <i class="fas fa-angle-right"></i>
-                                        </a>
-                                    </li>
-                                <?php else: ?>
-                                    <li class="page-item disabled">
-                                        <span class="page-link"><i class="fas fa-angle-right"></i></span>
-                                    </li>
-                                <?php endif; ?>
+        <!-- Pagination -->
+        <?php if ($total_pages > 1): ?>
+            <div class="card-footer py-4">
+                <nav aria-label="صفحهبندی">
+                    <ul class="pagination justify-content-center mb-0">
+                        <?php if ($page > 1): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?= $page - 1 ?>">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                        <?php else: ?>
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-angle-right"></i></span>
+                            </li>
+                        <?php endif; ?>
 
-                                <?php
-                                $start = max(1, $page - 2);
-                                $end = min($total_pages, $page + 2);
+                        <?php
+                        $start = max(1, $page - 2);
+                        $end = min($total_pages, $page + 2);
 
-                                for ($i = $start; $i <= $end; $i++): ?>
-                                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                                        <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-                                    </li>
-                                <?php endfor; ?>
+                        for ($i = $start; $i <= $end; $i++): ?>
+                            <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
 
-                                <?php if ($page < $total_pages): ?>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=<?= $page + 1 ?>">
-                                            <i class="fas fa-angle-left"></i>
-                                        </a>
-                                    </li>
-                                <?php else: ?>
-                                    <li class="page-item disabled">
-                                        <span class="page-link"><i class="fas fa-angle-left"></i></span>
-                                    </li>
-                                <?php endif; ?>
-                            </ul>
+                        <?php if ($page < $total_pages): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?= $page + 1 ?>">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                        <?php else: ?>
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-angle-left"></i></span>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
 
-                            <div class="text-center mt-3">
-                                <small class="text-muted">
-                                    نمایش <?= $offset + 1 ?> تا <?= min($offset + $items_per_page, $total_items) ?> از
-                                    <?= $total_items ?> مشتری
-                                </small>
-                            </div>
-                        </nav>
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            نمایش <?= $offset + 1 ?> تا <?= min($offset + $items_per_page, $total_items) ?> از
+                            <?= $total_items ?> مشتری
+                        </small>
                     </div>
-                <?php endif; ?>
+                </nav>
             </div>
+        <?php endif; ?>
     </div>
+</div>
 </div>
 
 
@@ -330,22 +321,26 @@ include 'includes/header.php';
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                     <div class="form-group">
                         <label class="form-control-label">نام مشتری</label>
-                        <input type="text" id="editCustomerName" name="name" class="form-control form-control-professional" required>
+                        <input type="text" id="editCustomerName" name="name"
+                            class="form-control form-control-professional" required>
                     </div>
                     <div class="form-group">
                         <label class="form-control-label">شماره تلفن</label>
-                        <input type="text" id="editCustomerPhone" name="phone" class="form-control form-control-professional" 
-                               placeholder="07XXXXXXXX" maxlength="10" oninput="validatePhoneFormat(this)">
+                        <input type="text" id="editCustomerPhone" name="phone"
+                            class="form-control form-control-professional" placeholder="07XXXXXXXX" maxlength="10"
+                            oninput="validatePhoneFormat(this)">
                     </div>
                     <div class="form-group">
                         <label class="form-control-label">آدرس</label>
-                        <textarea id="editCustomerAddress" name="address" class="form-control form-control-professional" rows="3"></textarea>
+                        <textarea id="editCustomerAddress" name="address" class="form-control form-control-professional"
+                            rows="3"></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-professional btn-secondary" data-bs-dismiss="modal">انصراف</button>
-                <button type="submit" form="editCustomerForm" class="btn btn-professional btn-warning">بروزرسانی</button>
+                <button type="submit" form="editCustomerForm"
+                    class="btn btn-professional btn-warning">بروزرسانی</button>
             </div>
         </div>
     </div>
@@ -441,14 +436,14 @@ include 'includes/header.php';
         try {
             const response = await fetch(`api/get_customer.php?id=${id}`);
             const result = await response.json();
-            
+
             if (result.success) {
                 // پر کردن فیلدهای فرم ویرایش
                 document.getElementById('editCustomerId').value = id;
                 document.getElementById('editCustomerName').value = result.data.name;
                 document.getElementById('editCustomerPhone').value = result.data.phone;
                 document.getElementById('editCustomerAddress').value = result.data.address;
-                
+
                 // نمایش مودال ویرایش
                 const modalElement = document.getElementById('editCustomerModal');
                 const modal = new bootstrap.Modal(modalElement);
@@ -492,7 +487,7 @@ include 'includes/header.php';
 
     function showAlert(message, type) {
         const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-        const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+        const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>`;

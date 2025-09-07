@@ -157,11 +157,9 @@ if (!preg_match('/^[a-zA-Z0-9_\-\/]+\.php$/', $header_file) || strpos($header_fi
 include $header_file;
 ?>
 
-<<<<<<< HEAD
 <head>
     <link rel="stylesheet" href="./assets/css/reports.css">
 </head>
-=======
 <style>
     .section {
         max-width: 100%;
@@ -201,53 +199,71 @@ include $header_file;
 
     .menu-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0;
-        padding: 0;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding: 20px;
     }
 
     .menu-item {
-        padding: 25px 20px;
+        padding: 30px 25px;
         border: none;
-        background: white;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.9) 100%);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
-        color: #374151;
+        color: #1f2937;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        gap: 15px;
-        border-bottom: 1px solid #e5e7eb;
-        border-right: 1px solid #e5e7eb;
+        gap: 20px;
         position: relative;
+        overflow: hidden;
     }
 
-    .menu-item:nth-child(4n) {
-        border-right: none;
+    .menu-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(93, 135, 255, 0.1), transparent);
+        transition: left 0.5s ease;
     }
 
-    .menu-item:nth-last-child(-n+4) {
-        border-bottom: none;
+    .menu-item:hover::before {
+        left: 100%;
     }
 
     .menu-item:hover {
-        background: #f8fafc;
-        color: #1f2937;
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 60px rgba(93, 135, 255, 0.2);
+        border-color: rgba(93, 135, 255, 0.3);
     }
 
     .menu-icon {
-        width: 50px;
-        height: 50px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border-radius: 12px;
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #5d87ff 0%, #4570ea 100%);
+        border-radius: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 1.3rem;
+        font-size: 1.8rem;
         flex-shrink: 0;
+        box-shadow: 0 8px 25px rgba(93, 135, 255, 0.4);
+        transition: all 0.3s ease;
+    }
+
+    .menu-item:hover .menu-icon {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 12px 35px rgba(93, 135, 255, 0.6);
     }
 
     .menu-content {
@@ -255,17 +271,27 @@ include $header_file;
     }
 
     .menu-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin: 0 0 5px 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0 0 8px 0;
         color: #1f2937;
+        transition: color 0.3s ease;
     }
 
     .menu-description {
-        font-size: 0.9rem;
+        font-size: 1rem;
         color: #6b7280;
         margin: 0;
-        line-height: 1.4;
+        line-height: 1.5;
+        transition: color 0.3s ease;
+    }
+
+    .menu-item:hover .menu-title {
+        color: #5d87ff;
+    }
+
+    .menu-item:hover .menu-description {
+        color: #4b5563;
     }
 
     .menu-arrow {
@@ -304,8 +330,9 @@ include $header_file;
     @media (max-width: 1200px) {
         .menu-grid {
             grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
         }
-        
+
         .summary-cards {
             grid-template-columns: repeat(2, 1fr);
         }
@@ -314,14 +341,21 @@ include $header_file;
     @media (max-width: 768px) {
         .menu-grid {
             grid-template-columns: 1fr;
+            gap: 15px;
+            padding: 15px;
         }
 
         .menu-item {
-            border-right: none;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 20px;
+            padding: 25px 20px;
             flex-direction: row;
-            text-align: left;
+            text-align: right;
+            gap: 15px;
+        }
+
+        .menu-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
         }
 
         .menu-header h2 {
@@ -470,6 +504,25 @@ include $header_file;
         border-radius: 6px;
         font-size: 0.875rem;
         min-width: 150px;
+        background: white;
+        color: #374151;
+    }
+    
+    .filter-input[type="date"] {
+        cursor: pointer;
+        position: relative;
+        padding-left: 40px;
+    }
+    
+    .filter-input[type="date"] {
+        cursor: pointer;
+        background: white;
+        color: #374151;
+    }
+    
+    .filter-input[type="date"]::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: 1;
     }
 
     .date-range-form {
@@ -531,7 +584,7 @@ include $header_file;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
     }
 
-    .summary-card:nth-child(1)::before {
+    /* .summary-card:nth-child(1)::before {
         background: linear-gradient(90deg, #667eea, #764ba2);
     }
 
@@ -573,7 +626,7 @@ include $header_file;
 
     .summary-card:nth-child(11)::before {
         background: linear-gradient(90deg, #ffecd2, #fcb69f);
-    }
+    } */
 
     /* Detailed Stats Cards */
     .detailed-stats-cards {
@@ -833,9 +886,6 @@ include $header_file;
         }
     }
 </style>
-
->>>>>>> 0b29c08cc05875c213d1974673aba5bbafef06d9
-
 <div class="section">
     <!-- منوی اصلی گزارشات -->
     <div class="reports-menu" id="reportsMenu">
@@ -937,13 +987,21 @@ include $header_file;
                 <div class="form-row">
                     <div class="form-group">
                         <label>تاریخ شروع:</label>
-                        <input type="text" id="startDate" class="filter-input jalali-date" placeholder="1404/01/01"
-                            maxlength="10" required>
+                        <div class="date-picker-wrapper">
+                            <input type="date" id="startDate" class="filter-input" required>
+                            <button type="button" class="date-picker-btn" onclick="openDatePicker('startDate')">
+                                <i class="fas fa-calendar"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>تاریخ پایان:</label>
-                        <input type="text" id="endDate" class="filter-input jalali-date" placeholder="1404/12/29"
-                            maxlength="10" required>
+                        <div class="date-picker-wrapper">
+                            <input type="date" id="endDate" class="filter-input" required>
+                            <button type="button" class="date-picker-btn" onclick="openDatePicker('endDate')">
+                                <i class="fas fa-calendar"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>نوع گزارش:</label>
@@ -1671,51 +1729,48 @@ include $footer_file;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 
-<<<<<<< HEAD
-<script src="./assets/js/reports.js"></script>
-=======
 <script>
-    let reportChart = null;
+        let reportChart = null;
 
-    // مدیریت منو و بخشها
-    function showMenu() {
-        document.getElementById('reportsMenu').style.display = 'block';
-        document.querySelectorAll('.report-section').forEach(section => {
-            section.classList.remove('active');
-            section.style.display = 'none';
-        });
-    }
+        // مدیریت منو و بخشها
+        function showMenu() {
+            document.getElementById('reportsMenu').style.display = 'block';
+            document.querySelectorAll('.report-section').forEach(section => {
+                section.classList.remove('active');
+                section.style.display = 'none';
+            });
+        }
 
-    function showReport(reportType) {
-        document.getElementById('reportsMenu').style.display = 'none';
-        document.querySelectorAll('.report-section').forEach(section => {
-            section.classList.remove('active');
-            section.style.display = 'none';
-        });
+        function showReport(reportType) {
+            document.getElementById('reportsMenu').style.display = 'none';
+            document.querySelectorAll('.report-section').forEach(section => {
+                section.classList.remove('active');
+                section.style.display = 'none';
+            });
 
-        const targetSection = document.getElementById(reportType + 'Report');
-        if (targetSection) {
-            targetSection.style.display = 'block';
-            targetSection.classList.add('active');
+            const targetSection = document.getElementById(reportType + 'Report');
+            if (targetSection) {
+                targetSection.style.display = 'block';
+                targetSection.classList.add('active');
 
-            // بارگذاری گزارش قرض ها
-            if (reportType === 'debts') {
-                loadDebtsReport();
-            }
+                // بارگذاری گزارش قرض ها
+                if (reportType === 'debts') {
+                    loadDebtsReport();
+                }
 
-            // بارگذاری گزارش هزینه ها
-            if (reportType === 'transactions') {
-                loadTransactionsReport();
+                // بارگذاری گزارش هزینه ها
+                if (reportType === 'transactions') {
+                    loadTransactionsReport();
+                }
             }
         }
-    }
 
-    // Print function
-    function printReport(reportId) {
-        const printContent = document.getElementById(reportId).innerHTML;
-        const originalContent = document.body.innerHTML;
+        // Print function
+        function printReport(reportId) {
+            const printContent = document.getElementById(reportId).innerHTML;
+            const originalContent = document.body.innerHTML;
 
-        document.body.innerHTML = `
+            document.body.innerHTML = `
         <div style="direction: rtl; font-family: Tahoma, Arial, sans-serif; padding: 20px;">
             <h2 style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px;">گزارش فروشگاه قطعات موتورسیکلت</h2>
             <p style="text-align: center; margin-bottom: 30px;">تاریخ تولید گزارش: ${new Date().toLocaleDateString('fa-IR')}</p>
@@ -1723,586 +1778,492 @@ include $footer_file;
         </div>
     `;
 
-        window.print();
-        document.body.innerHTML = originalContent;
-        location.reload();
-    }
-
-    // Export to Excel
-    function exportToExcel(reportId, filename) {
-        const table = document.querySelector(`#${reportId} table`);
-        const wb = XLSX.utils.table_to_book(table, { sheet: "گزارش" });
-        XLSX.writeFile(wb, `${filename}-${new Date().toISOString().split('T')[0]}.xlsx`);
-    }
-
-    // Export to PDF
-    function exportToPDF(reportId, filename) {
-        const element = document.getElementById(reportId);
-        const opt = {
-            margin: 0.5,
-            filename: `${filename}-${new Date().toISOString().split('T')[0]}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
-    }
-
-    // Live Search
-    function liveSearch(tableId, searchValue) {
-        const table = document.getElementById(tableId);
-        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-        let visibleCount = 0;
-
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-            const text = row.textContent.toLowerCase();
-            const isVisible = text.includes(searchValue.toLowerCase());
-            row.style.display = isVisible ? '' : 'none';
-            if (isVisible) visibleCount++;
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
         }
 
-        updateSummary(tableId);
-    }
-
-    // Filter by date
-    function filterByDate(tableId, dateValue) {
-        const table = document.getElementById(tableId);
-        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-            const dateCell = row.querySelector('[data-date]');
-            if (dateCell) {
-                const rowDate = new Date(dateCell.getAttribute('data-date')).toISOString().split('T')[0];
-                row.style.display = !dateValue || rowDate === dateValue ? '' : 'none';
-            }
+        // Export to Excel
+        function exportToExcel(reportId, filename) {
+            const table = document.querySelector(`#${reportId} table`);
+            const wb = XLSX.utils.table_to_book(table, { sheet: "گزارش" });
+            XLSX.writeFile(wb, `${filename}-${new Date().toISOString().split('T')[0]}.xlsx`);
         }
 
-        updateSummary(tableId);
-    }
-
-    // Filter by stock level
-    function filterByStock(tableId, stockLevel) {
-        const table = document.getElementById(tableId);
-        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-            const stockCell = row.querySelector('[data-stock]');
-            if (stockCell) {
-                const stock = parseInt(stockCell.getAttribute('data-stock'));
-                let show = true;
-
-                if (stockLevel === 'critical') show = stock <= 5;
-                else if (stockLevel === 'low') show = stock >= 6 && stock <= 10;
-
-                row.style.display = show ? '' : 'none';
-            }
+        // Export to PDF
+        function exportToPDF(reportId, filename) {
+            const element = document.getElementById(reportId);
+            const opt = {
+                margin: 0.5,
+                filename: `${filename}-${new Date().toISOString().split('T')[0]}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
         }
-    }
 
-    // Sort table
-    function sortTable(tableId, sortType) {
-        const table = document.getElementById(tableId);
-        const tbody = table.getElementsByTagName('tbody')[0];
-        const rows = Array.from(tbody.getElementsByTagName('tr'));
+        // Live Search
+        function liveSearch(tableId, searchValue) {
+            const table = document.getElementById(tableId);
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let visibleCount = 0;
 
-        rows.sort((a, b) => {
-            if (sortType.includes('date')) {
-                const dateA = new Date(a.querySelector('[data-date]').getAttribute('data-date'));
-                const dateB = new Date(b.querySelector('[data-date]').getAttribute('data-date'));
-                return sortType.includes('desc') ? dateB - dateA : dateA - dateB;
-            } else if (sortType.includes('amount')) {
-                const amountA = parseFloat(a.querySelector('[data-amount]').getAttribute('data-amount'));
-                const amountB = parseFloat(b.querySelector('[data-amount]').getAttribute('data-amount'));
-                return sortType.includes('desc') ? amountB - amountA : amountA - amountB;
-            } else if (sortType.includes('product')) {
-                const productA = a.querySelector('[data-product]').getAttribute('data-product');
-                const productB = b.querySelector('[data-product]').getAttribute('data-product');
-                return sortType.includes('desc') ? productB.localeCompare(productA) : productA.localeCompare(productB);
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const text = row.textContent.toLowerCase();
+                const isVisible = text.includes(searchValue.toLowerCase());
+                row.style.display = isVisible ? '' : 'none';
+                if (isVisible) visibleCount++;
             }
-        });
 
-        rows.forEach(row => tbody.appendChild(row));
-        updateSummary(tableId);
-    }
+            updateSummary(tableId);
+        }
 
-    // Update summary based on visible rows
-    function updateSummary(tableId) {
-        const table = document.getElementById(tableId);
-        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-        let totalAmount = 0, totalProfit = 0, totalQuantity = 0, visibleRows = 0;
+        // Filter by date
+        function filterByDate(tableId, dateValue) {
+            const table = document.getElementById(tableId);
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-        for (let i = 0; i < rows.length; i++) {
-            const row = rows[i];
-            if (row.style.display !== 'none') {
-                visibleRows++;
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const dateCell = row.querySelector('[data-date]');
+                if (dateCell) {
+                    const rowDate = new Date(dateCell.getAttribute('data-date')).toISOString().split('T')[0];
+                    row.style.display = !dateValue || rowDate === dateValue ? '' : 'none';
+                }
+            }
 
-                const amountCell = row.querySelector('[data-amount]');
-                if (amountCell) totalAmount += parseFloat(amountCell.getAttribute('data-amount'));
+            updateSummary(tableId);
+        }
 
-                const profitCell = row.querySelector('[data-profit]');
-                if (profitCell) totalProfit += parseFloat(profitCell.getAttribute('data-profit'));
+        // Filter by stock level
+        function filterByStock(tableId, stockLevel) {
+            const table = document.getElementById(tableId);
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-                const quantityCell = row.cells[2];
-                if (quantityCell && !isNaN(quantityCell.textContent)) {
-                    totalQuantity += parseInt(quantityCell.textContent);
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const stockCell = row.querySelector('[data-stock]');
+                if (stockCell) {
+                    const stock = parseInt(stockCell.getAttribute('data-stock'));
+                    let show = true;
+
+                    if (stockLevel === 'critical') show = stock <= 5;
+                    else if (stockLevel === 'low') show = stock >= 6 && stock <= 10;
+
+                    row.style.display = show ? '' : 'none';
                 }
             }
         }
 
-        // Update footer
-        const totalAmountEl = document.getElementById('totalAmount');
-        if (totalAmountEl) totalAmountEl.textContent = totalAmount.toLocaleString() + ' افغانی';
+        // Sort table
+        function sortTable(tableId, sortType) {
+            const table = document.getElementById(tableId);
+            const tbody = table.getElementsByTagName('tbody')[0];
+            const rows = Array.from(tbody.getElementsByTagName('tr'));
 
-        const totalProfitEl = document.getElementById('totalProfitAmount');
-        if (totalProfitEl) {
-            totalProfitEl.textContent = totalProfit.toLocaleString() + ' افغانی';
-            totalProfitEl.className = totalProfit > 0 ? 'text-success' : 'text-danger';
-        }
-
-        const totalQuantityEl = document.getElementById('totalQuantity');
-        if (totalQuantityEl) totalQuantityEl.textContent = totalQuantity.toLocaleString();
-    }
-
-    // Save filters
-    function saveFilters(reportType) {
-        const filters = {
-            search: document.getElementById(`${reportType}Search`)?.value || '',
-            date: document.getElementById(`${reportType}DateFilter`)?.value || '',
-            sort: document.getElementById(`${reportType}SortOrder`)?.value || ''
-        };
-
-        localStorage.setItem(`${reportType}_filters`, JSON.stringify(filters));
-        alert('فیلترها ذخیره شد');
-    }
-
-    // Load filters
-    function loadFilters(reportType) {
-        const saved = localStorage.getItem(`${reportType}_filters`);
-        if (saved) {
-            const filters = JSON.parse(saved);
-
-            const searchEl = document.getElementById(`${reportType}Search`);
-            if (searchEl) {
-                searchEl.value = filters.search;
-                liveSearch(`${reportType}-table`, filters.search);
-            }
-
-            const dateEl = document.getElementById(`${reportType}DateFilter`);
-            if (dateEl) {
-                dateEl.value = filters.date;
-                filterByDate(`${reportType}-table`, filters.date);
-            }
-
-            const sortEl = document.getElementById(`${reportType}SortOrder`);
-            if (sortEl) {
-                sortEl.value = filters.sort;
-                sortTable(`${reportType}-table`, filters.sort);
-            }
-
-            alert('فیلترها بارگذاری شد');
-        } else {
-            alert('فیلتر ذخیره شده‌ای یافت نشد');
-        }
-    }
-
-    // Generate custom report
-    async function generateCustomReport(event) {
-        event.preventDefault();
-
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-        const reportType = document.getElementById('reportType').value;
-        const categoryFilter = document.getElementById('categoryFilter').value;
-
-        if (!startDate || !endDate) {
-            alert('لطفاً تاریخ شروع و پایان را انتخاب کنید');
-            return;
-        }
-        
-        // Convert Jalali dates to Gregorian
-        const startDateGregorian = convertJalaliToGregorian(startDate);
-        const endDateGregorian = convertJalaliToGregorian(endDate);
-        
-        if (!startDateGregorian || !endDateGregorian) {
-            alert('فرمت تاریخ نادرست است. لطفاً به فرمت 1404/01/01 وارد کنید');
-            return;
-        }
-
-        try {
-            const response = await fetch('api/custom_report.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    start_date: startDateGregorian,
-                    end_date: endDateGregorian,
-                    report_type: reportType,
-                    category_id: categoryFilter
-                })
+            rows.sort((a, b) => {
+                if (sortType.includes('date')) {
+                    const dateA = new Date(a.querySelector('[data-date]').getAttribute('data-date'));
+                    const dateB = new Date(b.querySelector('[data-date]').getAttribute('data-date'));
+                    return sortType.includes('desc') ? dateB - dateA : dateA - dateB;
+                } else if (sortType.includes('amount')) {
+                    const amountA = parseFloat(a.querySelector('[data-amount]').getAttribute('data-amount'));
+                    const amountB = parseFloat(b.querySelector('[data-amount]').getAttribute('data-amount'));
+                    return sortType.includes('desc') ? amountB - amountA : amountA - amountB;
+                } else if (sortType.includes('product')) {
+                    const productA = a.querySelector('[data-product]').getAttribute('data-product');
+                    const productB = b.querySelector('[data-product]').getAttribute('data-product');
+                    return sortType.includes('desc') ? productB.localeCompare(productA) : productA.localeCompare(productB);
+                }
             });
 
-            const data = await response.json();
+            rows.forEach(row => tbody.appendChild(row));
+            updateSummary(tableId);
+        }
 
-            if (data.success) {
-                displayCustomReport(data.data, reportType, startDate, endDate);
-                updateSummaryCards(data.summary);
-                if (data.detailed_stats && reportType === 'sales') {
-                    updateDetailedStats(data.detailed_stats);
-                } else {
-                    document.getElementById('detailedStatsCards').style.display = 'none';
+        // Update summary based on visible rows
+        function updateSummary(tableId) {
+            const table = document.getElementById(tableId);
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            let totalAmount = 0, totalProfit = 0, totalQuantity = 0, visibleRows = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                if (row.style.display !== 'none') {
+                    visibleRows++;
+
+                    const amountCell = row.querySelector('[data-amount]');
+                    if (amountCell) totalAmount += parseFloat(amountCell.getAttribute('data-amount'));
+
+                    const profitCell = row.querySelector('[data-profit]');
+                    if (profitCell) totalProfit += parseFloat(profitCell.getAttribute('data-profit'));
+
+                    const quantityCell = row.cells[2];
+                    if (quantityCell && !isNaN(quantityCell.textContent)) {
+                        totalQuantity += parseInt(quantityCell.textContent);
+                    }
                 }
+            }
+
+            // Update footer
+            const totalAmountEl = document.getElementById('totalAmount');
+            if (totalAmountEl) totalAmountEl.textContent = totalAmount.toLocaleString() + ' افغانی';
+
+            const totalProfitEl = document.getElementById('totalProfitAmount');
+            if (totalProfitEl) {
+                totalProfitEl.textContent = totalProfit.toLocaleString() + ' افغانی';
+                totalProfitEl.className = totalProfit > 0 ? 'text-success' : 'text-danger';
+            }
+
+            const totalQuantityEl = document.getElementById('totalQuantity');
+            if (totalQuantityEl) totalQuantityEl.textContent = totalQuantity.toLocaleString();
+        }
+
+        // Save filters
+        function saveFilters(reportType) {
+            const filters = {
+                search: document.getElementById(`${reportType}Search`)?.value || '',
+                date: document.getElementById(`${reportType}DateFilter`)?.value || '',
+                sort: document.getElementById(`${reportType}SortOrder`)?.value || ''
+            };
+
+            localStorage.setItem(`${reportType}_filters`, JSON.stringify(filters));
+            alert('فیلترها ذخیره شد');
+        }
+
+        // Load filters
+        function loadFilters(reportType) {
+            const saved = localStorage.getItem(`${reportType}_filters`);
+            if (saved) {
+                const filters = JSON.parse(saved);
+
+                const searchEl = document.getElementById(`${reportType}Search`);
+                if (searchEl) {
+                    searchEl.value = filters.search;
+                    liveSearch(`${reportType}-table`, filters.search);
+                }
+
+                const dateEl = document.getElementById(`${reportType}DateFilter`);
+                if (dateEl) {
+                    dateEl.value = filters.date;
+                    filterByDate(`${reportType}-table`, filters.date);
+                }
+
+                const sortEl = document.getElementById(`${reportType}SortOrder`);
+                if (sortEl) {
+                    sortEl.value = filters.sort;
+                    sortTable(`${reportType}-table`, filters.sort);
+                }
+
+                alert('فیلترها بارگذاری شد');
             } else {
-                alert('خطا در تولید گزارش: ' + data.message);
+                alert('فیلتر ذخیره شده‌ای یافت نشد');
             }
-        } catch (error) {
-            alert('خطا در ارتباط با سرور');
-        }
-    }
-
-    // Display custom report
-    function displayCustomReport(data, reportType, startDate, endDate) {
-        const reportTitle = {
-            'sales': 'گزارش فروش کلی',
-            'bestsellers': 'گزارش محصولات پرفروش',
-            'inventory': 'گزارش موجودی کالاها',
-            'profit': 'گزارش سود و زیان'
-        };
-
-        document.getElementById('customReportTitle').textContent =
-            `${reportTitle[reportType]} از ${startDate} تا ${endDate}`;
-
-        const headers = getReportHeaders(reportType);
-        const headerHtml = '<tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr>';
-        document.getElementById('customReportHeader').innerHTML = headerHtml;
-
-        const bodyHtml = data.map(row => {
-            return '<tr>' + Object.values(row).map(val => `<td>${val}</td>`).join('') + '</tr>';
-        }).join('');
-        document.getElementById('customReportBody').innerHTML = bodyHtml;
-
-        document.getElementById('customReportResult').style.display = 'block';
-    }
-
-    // Get report headers based on type
-    function getReportHeaders(reportType) {
-        const headers = {
-            'sales': ['تاریخ', 'شماره فاکتور', 'مشتری', 'مبلغ کل', 'تخفیف', 'مبلغ نهایی'],
-            'bestsellers': ['نام محصول', 'تعداد فروش', 'درآمد کل', 'سود'],
-            'inventory': ['نام محصول', 'دسته بندی', 'موجودی فعلی', 'حداقل موجودی', 'وضعیت'],
-            'profit': ['تاریخ', 'درآمد', 'هزینه', 'سود خالص', 'درصد سود']
-        };
-        return headers[reportType] || [];
-    }
-
-    // Update summary cards
-    function updateSummaryCards(summary) {
-        document.getElementById('totalSales').textContent = (summary.total_sales || 0).toLocaleString() + ' افغانی';
-        document.getElementById('totalInvoices').textContent = (summary.total_invoices || 0).toLocaleString() + ' عدد';
-        document.getElementById('totalProfit').textContent = (summary.total_profit || 0).toLocaleString() + ' افغانی';
-        document.getElementById('avgInvoice').textContent = (summary.avg_invoice || 0).toLocaleString() + ' افغانی';
-
-        document.getElementById('summaryCards').style.display = 'grid';
-    }
-
-    // Update detailed statistics cards
-    function updateDetailedStats(stats) {
-        if (!stats || Object.keys(stats).length === 0) {
-            document.getElementById('detailedStatsCards').style.display = 'none';
-            return;
         }
 
-        const maxDailySalesEl = document.getElementById('maxDailySales');
-        const avgDailySalesEl = document.getElementById('avgDailySales');
-        const topProductEl = document.getElementById('topProduct');
-        const topProductQtyEl = document.getElementById('topProductQty');
-        const topCustomerEl = document.getElementById('topCustomer');
-        const topCustomerAmountEl = document.getElementById('topCustomerAmount');
-        const minDailySalesEl = document.getElementById('minDailySales');
-        const activeDaysEl = document.getElementById('activeDays');
+        // Generate custom report
+        async function generateCustomReport(event) {
+            event.preventDefault();
 
-        if (maxDailySalesEl) maxDailySalesEl.textContent = (stats.max_daily_sales || 0).toLocaleString() + ' افغانی';
-        if (avgDailySalesEl) avgDailySalesEl.textContent = (stats.avg_daily_sales || 0).toLocaleString() + ' افغانی';
-        if (topProductEl) topProductEl.textContent = stats.top_product || '-';
-        if (topProductQtyEl) topProductQtyEl.textContent = (stats.top_product_qty || 0) + ' عدد';
-        if (topCustomerEl) topCustomerEl.textContent = stats.top_customer || '-';
-        if (topCustomerAmountEl) topCustomerAmountEl.textContent = (stats.top_customer_amount || 0).toLocaleString() + ' افغانی';
-        if (minDailySalesEl) minDailySalesEl.textContent = (stats.min_daily_sales || 0).toLocaleString() + ' افغانی';
-        if (activeDaysEl) activeDaysEl.textContent = (stats.active_days || 0) + ' روز';
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const reportType = document.getElementById('reportType').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
 
-        document.getElementById('detailedStatsCards').style.display = 'grid';
-    }
+            if (!startDate || !endDate) {
+                alert('لطفاً تاریخ شروع و پایان را انتخاب کنید');
+                return;
+            }
 
-    // Create chart
-    function createChart(chartData, reportType) {
-        const ctx = document.getElementById('reportChart').getContext('2d');
+            if (new Date(startDate) > new Date(endDate)) {
+                alert('تاریخ شروع نمی تواند بعد از تاریخ پایان باشد');
+                return;
+            }
 
-        if (reportChart) {
-            reportChart.destroy();
+            try {
+                const response = await fetch('api/custom_report.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        start_date: startDate,
+                        end_date: endDate,
+                        report_type: reportType,
+                        category_id: categoryFilter
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayCustomReport(data.data, reportType, startDate, endDate);
+                    updateSummaryCards(data.summary);
+                } else {
+                    alert('خطا در تولید گزارش: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('خطا در ارتباط با سرور');
+            }
         }
 
-        const chartConfig = {
-            'sales': { type: 'line', label: 'فروش روزانه' },
-            'bestsellers': { type: 'bar', label: 'تعداد فروش' },
-            'inventory': { type: 'doughnut', label: 'وضعیت موجودی' },
-            'profit': { type: 'line', label: 'سود روزانه' }
-        };
+        // Display custom report
+        function displayCustomReport(data, reportType, startDate, endDate) {
+            const reportTitle = {
+                'sales': 'گزارش فروش کلی',
+                'bestsellers': 'گزارش محصولات پرفروش',
+                'inventory': 'گزارش موجودی کالاها',
+                'profit': 'گزارش سود و زیان'
+            };
 
-        const config = chartConfig[reportType];
+            document.getElementById('customReportTitle').textContent =
+                `${reportTitle[reportType]} از ${startDate} تا ${endDate}`;
 
-        reportChart = new Chart(ctx, {
-            type: config.type,
-            data: {
-                labels: chartData.labels || [],
-                datasets: [{
-                    label: config.label,
-                    data: chartData.data || [],
-                    backgroundColor: config.type === 'doughnut' ?
-                        ['#1f2937', '#374151', '#4b5563', '#6b7280', '#9ca3af'] :
-                        'rgba(31, 41, 55, 0.1)',
-                    borderColor: '#1f2937',
-                    borderWidth: 2,
-                    fill: config.type === 'line'
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: config.type === 'doughnut' ? 'bottom' : 'top'
-                    }
+            const headers = getReportHeaders(reportType);
+            const headerHtml = '<tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr>';
+            document.getElementById('customReportHeader').innerHTML = headerHtml;
+
+            const bodyHtml = data.map(row => {
+                return '<tr>' + Object.values(row).map(val => `<td>${val}</td>`).join('') + '</tr>';
+            }).join('');
+            document.getElementById('customReportBody').innerHTML = bodyHtml;
+
+            document.getElementById('customReportResult').style.display = 'block';
+        }
+
+        // Get report headers based on type
+        function getReportHeaders(reportType) {
+            const headers = {
+                'sales': ['تاریخ', 'شماره فاکتور', 'مشتری', 'مبلغ کل', 'تخفیف', 'مبلغ نهایی'],
+                'bestsellers': ['نام محصول', 'تعداد فروش', 'درآمد کل', 'سود'],
+                'inventory': ['نام محصول', 'دسته بندی', 'موجودی فعلی', 'حداقل موجودی', 'وضعیت'],
+                'profit': ['تاریخ', 'درآمد', 'هزینه', 'سود خالص', 'درصد سود']
+            };
+            return headers[reportType] || [];
+        }
+
+        // Update summary cards
+        function updateSummaryCards(summary) {
+            document.getElementById('totalSales').textContent = (summary.total_sales || 0).toLocaleString() + ' افغانی';
+            document.getElementById('totalInvoices').textContent = (summary.total_invoices || 0).toLocaleString() + ' عدد';
+            document.getElementById('totalProfit').textContent = (summary.total_profit || 0).toLocaleString() + ' افغانی';
+            document.getElementById('avgInvoice').textContent = (summary.avg_invoice || 0).toLocaleString() + ' افغانی';
+
+            document.getElementById('summaryCards').style.display = 'grid';
+        }
+
+        // Update detailed statistics cards
+        function updateDetailedStats(stats) {
+            if (!stats || Object.keys(stats).length === 0) {
+                document.getElementById('detailedStatsCards').style.display = 'none';
+                return;
+            }
+
+            const maxDailySalesEl = document.getElementById('maxDailySales');
+            const avgDailySalesEl = document.getElementById('avgDailySales');
+            const topProductEl = document.getElementById('topProduct');
+            const topProductQtyEl = document.getElementById('topProductQty');
+            const topCustomerEl = document.getElementById('topCustomer');
+            const topCustomerAmountEl = document.getElementById('topCustomerAmount');
+            const minDailySalesEl = document.getElementById('minDailySales');
+            const activeDaysEl = document.getElementById('activeDays');
+
+            if (maxDailySalesEl) maxDailySalesEl.textContent = (stats.max_daily_sales || 0).toLocaleString() + ' افغانی';
+            if (avgDailySalesEl) avgDailySalesEl.textContent = (stats.avg_daily_sales || 0).toLocaleString() + ' افغانی';
+            if (topProductEl) topProductEl.textContent = stats.top_product || '-';
+            if (topProductQtyEl) topProductQtyEl.textContent = (stats.top_product_qty || 0) + ' عدد';
+            if (topCustomerEl) topCustomerEl.textContent = stats.top_customer || '-';
+            if (topCustomerAmountEl) topCustomerAmountEl.textContent = (stats.top_customer_amount || 0).toLocaleString() + ' افغانی';
+            if (minDailySalesEl) minDailySalesEl.textContent = (stats.min_daily_sales || 0).toLocaleString() + ' افغانی';
+            if (activeDaysEl) activeDaysEl.textContent = (stats.active_days || 0) + ' روز';
+
+            document.getElementById('detailedStatsCards').style.display = 'grid';
+        }
+
+        // Create chart
+        function createChart(chartData, reportType) {
+            const ctx = document.getElementById('reportChart').getContext('2d');
+
+            if (reportChart) {
+                reportChart.destroy();
+            }
+
+            const chartConfig = {
+                'sales': { type: 'line', label: 'فروش روزانه' },
+                'bestsellers': { type: 'bar', label: 'تعداد فروش' },
+                'inventory': { type: 'doughnut', label: 'وضعیت موجودی' },
+                'profit': { type: 'line', label: 'سود روزانه' }
+            };
+
+            const config = chartConfig[reportType];
+
+            reportChart = new Chart(ctx, {
+                type: config.type,
+                data: {
+                    labels: chartData.labels || [],
+                    datasets: [{
+                        label: config.label,
+                        data: chartData.data || [],
+                        backgroundColor: config.type === 'doughnut' ?
+                            ['#1f2937', '#374151', '#4b5563', '#6b7280', '#9ca3af'] :
+                            'rgba(31, 41, 55, 0.1)',
+                        borderColor: '#1f2937',
+                        borderWidth: 2,
+                        fill: config.type === 'line'
+                    }]
                 },
-                scales: config.type !== 'doughnut' ? {
-                    y: {
-                        beginAtZero: true
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: config.type === 'doughnut' ? 'bottom' : 'top'
+                        }
+                    },
+                    scales: config.type !== 'doughnut' ? {
+                        y: {
+                            beginAtZero: true
+                        }
+                    } : {}
+                }
+            });
+
+            document.getElementById('chartContainer').style.display = 'block';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set default dates
+            const today = new Date();
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(today.getDate() - 30);
+
+            const endDateEl = document.getElementById('endDate');
+            const startDateEl = document.getElementById('startDate');
+
+            if (endDateEl) {
+                endDateEl.value = today.toISOString().split('T')[0];
+                console.log('End date set to:', endDateEl.value);
+            }
+            if (startDateEl) {
+                startDateEl.value = thirtyDaysAgo.toISOString().split('T')[0];
+                console.log('Start date set to:', startDateEl.value);
+            }
+            
+            // Test date picker functionality
+            if (startDateEl) {
+                startDateEl.addEventListener('change', function() {
+                    console.log('Start date changed to:', this.value);
+                });
+            }
+            if (endDateEl) {
+                endDateEl.addEventListener('change', function() {
+                    console.log('End date changed to:', this.value);
+                });
+            }
+
+            showMenu();
+            updateSummary('detailed-sales-table');
+        });
+        
+
+
+
+
+        // Responsive layout initialization
+        function initializeResponsiveLayout() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function () {
+                    if (sidebar) {
+                        sidebar.classList.toggle('open');
+                        if (sidebarOverlay) {
+                            sidebarOverlay.classList.toggle('show');
+                        }
                     }
-                } : {}
+                });
             }
-        });
 
-        document.getElementById('chartContainer').style.display = 'block';
-    }
-
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function () {
-        // Set default Jalali dates
-        const today = new Date();
-        const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
-        
-        const todayJalali = convertToJalali(today.toISOString().split('T')[0]);
-        const thirtyDaysAgoJalali = convertToJalali(thirtyDaysAgo.toISOString().split('T')[0]);
-
-        const endDateEl = document.getElementById('endDate');
-        const startDateEl = document.getElementById('startDate');
-        
-        if (endDateEl && !endDateEl.value) endDateEl.value = todayJalali;
-        if (startDateEl && !startDateEl.value) startDateEl.value = thirtyDaysAgoJalali;
-
-        // نمایش منوی اصلی در ابتدا
-        showMenu();
-
-        // Update summaries on load
-        updateSummary('detailed-sales-table');
-
-        // Initialize responsive layout
-        initializeResponsiveLayout();
-        
-        // Initialize Jalali date inputs
-        initializeJalaliDateInputs();
-    });
-    
-    // Initialize Jalali date inputs
-    function initializeJalaliDateInputs() {
-        const jalaliInputs = document.querySelectorAll('.jalali-date');
-        
-        jalaliInputs.forEach(input => {
-            // Set current Jalali date as default
-            if (!input.value) {
-                const today = new Date();
-                input.value = convertToJalali(today.toISOString().split('T')[0]);
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', function () {
+                    if (sidebar) {
+                        sidebar.classList.remove('open');
+                        sidebarOverlay.classList.remove('show');
+                    }
+                });
             }
-            
-            input.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/[^0-9]/g, '');
-                
-                if (value.length >= 4) {
-                    value = value.substring(0, 4) + '/' + value.substring(4);
-                }
-                if (value.length >= 7) {
-                    value = value.substring(0, 7) + '/' + value.substring(7, 9);
-                }
-                
-                e.target.value = value;
-            });
-            
-            input.addEventListener('blur', function(e) {
-                const value = e.target.value;
-                if (value && !value.match(/^\d{4}\/\d{2}\/\d{2}$/)) {
-                    alert('فرمت تاریخ باید به صورت 1404/01/01 باشد');
-                    e.target.focus();
-                }
-            });
-        });
-    }
 
-    // Responsive layout initialization
-    function initializeResponsiveLayout() {
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', function () {
-                if (sidebar) {
-                    sidebar.classList.toggle('open');
+            // Handle window resize
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 768) {
+                    if (sidebar) {
+                        sidebar.classList.remove('open');
+                    }
                     if (sidebarOverlay) {
-                        sidebarOverlay.classList.toggle('show');
+                        sidebarOverlay.classList.remove('show');
                     }
                 }
             });
         }
 
-        if (sidebarOverlay) {
-            sidebarOverlay.addEventListener('click', function () {
-                if (sidebar) {
-                    sidebar.classList.remove('open');
-                    sidebarOverlay.classList.remove('show');
-                }
-            });
+        // توابع تبدیل تاریخ
+        function convertToJalali(gregorianDate) {
+            if (!gregorianDate) return '';
+            const parts = gregorianDate.split('-');
+            if (parts.length !== 3) return gregorianDate;
+
+            const jalali = gregorianToJalali(parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]));
+            return `${jalali[0]}/${jalali[1].toString().padStart(2, '0')}/${jalali[2].toString().padStart(2, '0')}`;
         }
 
-        // Handle window resize
-        window.addEventListener('resize', function () {
-            if (window.innerWidth > 768) {
-                if (sidebar) {
-                    sidebar.classList.remove('open');
-                }
-                if (sidebarOverlay) {
-                    sidebarOverlay.classList.remove('show');
-                }
+        function gregorianToJalali(gy, gm, gd) {
+            const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+
+            let jy = gy <= 1600 ? 0 : 979;
+            gy -= gy <= 1600 ? 621 : 1600;
+
+            const gy2 = gm > 2 ? gy + 1 : gy;
+            let days = (365 * gy) + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100) +
+                Math.floor((gy2 + 399) / 400) - 80 + gd + g_d_m[gm - 1];
+
+            jy += 33 * Math.floor(days / 12053);
+            days %= 12053;
+
+            jy += 4 * Math.floor(days / 1461);
+            days %= 1461;
+
+            if (days > 365) {
+                jy += Math.floor((days - 1) / 365);
+                days = (days - 1) % 365;
             }
-        });
-    }
 
-    // توابع تبدیل تاریخ
-    function convertToJalali(gregorianDate) {
-        if (!gregorianDate) return '';
-        const parts = gregorianDate.split('-');
-        if (parts.length !== 3) return gregorianDate;
+            const jm = days < 186 ? 1 + Math.floor(days / 31) : 7 + Math.floor((days - 186) / 30);
+            const jd = days < 186 ? 1 + (days % 31) : 1 + ((days - 186) % 30);
 
-        const jalali = gregorianToJalali(parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]));
-        return `${jalali[0]}/${jalali[1].toString().padStart(2, '0')}/${jalali[2].toString().padStart(2, '0')}`;
-    }
-
-    function gregorianToJalali(gy, gm, gd) {
-        const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
-
-        let jy = gy <= 1600 ? 0 : 979;
-        gy -= gy <= 1600 ? 621 : 1600;
-
-        const gy2 = gm > 2 ? gy + 1 : gy;
-        let days = (365 * gy) + Math.floor((gy2 + 3) / 4) - Math.floor((gy2 + 99) / 100) +
-            Math.floor((gy2 + 399) / 400) - 80 + gd + g_d_m[gm - 1];
-
-        jy += 33 * Math.floor(days / 12053);
-        days %= 12053;
-
-        jy += 4 * Math.floor(days / 1461);
-        days %= 1461;
-
-        if (days > 365) {
-            jy += Math.floor((days - 1) / 365);
-            days = (days - 1) % 365;
+            return [jy, jm, jd];
         }
 
-        const jm = days < 186 ? 1 + Math.floor(days / 31) : 7 + Math.floor((days - 186) / 30);
-        const jd = days < 186 ? 1 + (days % 31) : 1 + ((days - 186) % 30);
 
-        return [jy, jm, jd];
-    }
-    
-    function jalaliToGregorian(jy, jm, jd) {
-        jy += 1595;
-        let days = 365 * jy + Math.floor(jy / 33) * 8 + Math.floor(((jy % 33) + 3) / 4);
-        
-        for (let i = 0; i < jm; ++i) {
-            days += (i < 6) ? 31 : 30;
-        }
-        
-        if (jm > 6) days += jd;
-        else days += jd;
-        
-        let gy = 400 * Math.floor(days / 146097);
-        days %= 146097;
-        
-        let leap = true;
-        if (days >= 36525) {
-            days--;
-            gy += 100 * Math.floor(days / 36524);
-            days %= 36524;
-            if (days >= 365) days++;
-            else leap = false;
-        }
-        
-        gy += 4 * Math.floor(days / 1461);
-        days %= 1461;
-        
-        if (days >= 366) {
-            leap = false;
-            days--;
-            gy += Math.floor(days / 365);
-            days = days % 365;
-        }
-        
-        let gd = days + 1;
-        
-        const sal_a = [0, 31, (leap ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-        let gm;
-        for (gm = 0; gm < 13; gm++) {
-            const v = sal_a[gm];
-            if (gd <= v) break;
-            gd -= v;
-        }
-        
-        return [gy + 1600, gm, gd];
-    }
-    
-    function convertJalaliToGregorian(jalaliDate) {
-        if (!jalaliDate || !jalaliDate.match(/^\d{4}\/\d{1,2}\/\d{1,2}$/)) {
-            return null;
-        }
-        
-        const parts = jalaliDate.split('/');
-        const jy = parseInt(parts[0]);
-        const jm = parseInt(parts[1]);
-        const jd = parseInt(parts[2]);
-        
-        // Validate Jalali date
-        if (jy < 1300 || jy > 1500 || jm < 1 || jm > 12 || jd < 1 || jd > 31) {
-            return null;
-        }
-        
-        const gregorian = jalaliToGregorian(jy, jm, jd);
-        return `${gregorian[0]}-${gregorian[1].toString().padStart(2, '0')}-${gregorian[2].toString().padStart(2, '0')}`;
-    }
 
-    // بارگذاری گزارش هزینه ها مالی
-    async function loadTransactionsReport() {
-        try {
-            const response = await fetch('api/transactions_report.php');
-            const data = await response.json();
+        // بارگذاری گزارش هزینه ها مالی
+        async function loadTransactionsReport() {
+            try {
+                const response = await fetch('api/transactions_report.php');
+                const data = await response.json();
 
-            if (data.success) {
-                // بهروزرسانی کارتهای خلاصه
-                document.getElementById('totalExpenses').textContent = data.summary.total_expenses.toLocaleString() + ' افغانی';
-                document.getElementById('totalWithdrawals').textContent = data.summary.total_withdrawals.toLocaleString() + ' افغانی';
-                document.getElementById('totalTransactions').textContent = (data.summary.total_expenses + data.summary.total_withdrawals).toLocaleString() + ' افغانی';
-                document.getElementById('transactionCount').textContent = data.transactions.length.toLocaleString() + ' مورد';
+                if (data.success) {
+                    // بهروزرسانی کارتهای خلاصه
+                    document.getElementById('totalExpenses').textContent = data.summary.total_expenses.toLocaleString() + ' افغانی';
+                    document.getElementById('totalWithdrawals').textContent = data.summary.total_withdrawals.toLocaleString() + ' افغانی';
+                    document.getElementById('totalTransactions').textContent = (data.summary.total_expenses + data.summary.total_withdrawals).toLocaleString() + ' افغانی';
+                    document.getElementById('transactionCount').textContent = data.transactions.length.toLocaleString() + ' مورد';
 
-                // بهروزرسانی جدول هزینه ها
-                const transactionsTableBody = document.getElementById('transactionsTableBody');
-                transactionsTableBody.innerHTML = data.transactions.map(transaction => `
+                    // بهروزرسانی جدول هزینه ها
+                    const transactionsTableBody = document.getElementById('transactionsTableBody');
+                    transactionsTableBody.innerHTML = data.transactions.map(transaction => `
                         <tr data-type="${transaction.transaction_type}" data-person="${transaction.person_name}" data-date="${transaction.transaction_date}" data-amount="${transaction.amount}">
                             <td><code>${transaction.transaction_code}</code></td>
                             <td><span class="badge badge-${transaction.transaction_type === 'expense' ? 'danger' : 'warning'}">${transaction.transaction_type === 'expense' ? 'مصرف' : 'برداشت'}</span></td>
@@ -2314,105 +2275,105 @@ include $footer_file;
                         </tr>
                     `).join('');
 
-                updateTransactionsSummary();
-            } else {
-                alert('خطا در بارگذاری گزارش هزینه ها');
+                    updateTransactionsSummary();
+                } else {
+                    alert('خطا در بارگذاری گزارش هزینه ها');
+                }
+            } catch (error) {
+                alert('خطا در ارتباط با سرور');
             }
-        } catch (error) {
-            alert('خطا در ارتباط با سرور');
         }
-    }
 
-    // فیلتر بر اساس نوع تراکنش
-    function filterTransactionsByType() {
-        const filterValue = document.getElementById('transactionTypeFilter').value;
-        const rows = document.querySelectorAll('#transactionsTable tbody tr');
+        // فیلتر بر اساس نوع تراکنش
+        function filterTransactionsByType() {
+            const filterValue = document.getElementById('transactionTypeFilter').value;
+            const rows = document.querySelectorAll('#transactionsTable tbody tr');
 
-        rows.forEach(row => {
-            const type = row.dataset.type;
-            row.style.display = !filterValue || type === filterValue ? '' : 'none';
-        });
+            rows.forEach(row => {
+                const type = row.dataset.type;
+                row.style.display = !filterValue || type === filterValue ? '' : 'none';
+            });
 
-        updateTransactionsSummary();
-    }
+            updateTransactionsSummary();
+        }
 
-    // فیلتر بر اساس نام شخص
-    function filterTransactionsByPerson() {
-        const filterValue = document.getElementById('transactionPersonFilter').value.toLowerCase();
-        const rows = document.querySelectorAll('#transactionsTable tbody tr');
+        // فیلتر بر اساس نام شخص
+        function filterTransactionsByPerson() {
+            const filterValue = document.getElementById('transactionPersonFilter').value.toLowerCase();
+            const rows = document.querySelectorAll('#transactionsTable tbody tr');
 
-        rows.forEach(row => {
-            const person = row.dataset.person.toLowerCase();
-            row.style.display = !filterValue || person.includes(filterValue) ? '' : 'none';
-        });
+            rows.forEach(row => {
+                const person = row.dataset.person.toLowerCase();
+                row.style.display = !filterValue || person.includes(filterValue) ? '' : 'none';
+            });
 
-        updateTransactionsSummary();
-    }
+            updateTransactionsSummary();
+        }
 
-    // فیلتر بر اساس بازه تاریخ
-    function filterTransactionsByDateRange() {
-        const dateFrom = document.getElementById('transactionDateFrom').value;
-        const dateTo = document.getElementById('transactionDateTo').value;
-        const rows = document.querySelectorAll('#transactionsTable tbody tr');
+        // فیلتر بر اساس بازه تاریخ
+        function filterTransactionsByDateRange() {
+            const dateFrom = document.getElementById('transactionDateFrom').value;
+            const dateTo = document.getElementById('transactionDateTo').value;
+            const rows = document.querySelectorAll('#transactionsTable tbody tr');
 
-        rows.forEach(row => {
-            const rowDate = row.dataset.date;
-            let show = true;
+            rows.forEach(row => {
+                const rowDate = row.dataset.date;
+                let show = true;
 
-            if (dateFrom && rowDate < dateFrom) show = false;
-            if (dateTo && rowDate > dateTo) show = false;
+                if (dateFrom && rowDate < dateFrom) show = false;
+                if (dateTo && rowDate > dateTo) show = false;
 
-            row.style.display = show ? '' : 'none';
-        });
+                row.style.display = show ? '' : 'none';
+            });
 
-        updateTransactionsSummary();
-    }
+            updateTransactionsSummary();
+        }
 
-    // پاک کردن فیلترها
-    function clearTransactionFilters() {
-        document.getElementById('transactionTypeFilter').value = '';
-        document.getElementById('transactionPersonFilter').value = '';
-        document.getElementById('transactionDateFrom').value = '';
-        document.getElementById('transactionDateTo').value = '';
+        // پاک کردن فیلترها
+        function clearTransactionFilters() {
+            document.getElementById('transactionTypeFilter').value = '';
+            document.getElementById('transactionPersonFilter').value = '';
+            document.getElementById('transactionDateFrom').value = '';
+            document.getElementById('transactionDateTo').value = '';
 
-        const rows = document.querySelectorAll('#transactionsTable tbody tr');
-        rows.forEach(row => {
-            row.style.display = '';
-        });
+            const rows = document.querySelectorAll('#transactionsTable tbody tr');
+            rows.forEach(row => {
+                row.style.display = '';
+            });
 
-        updateTransactionsSummary();
-    }
+            updateTransactionsSummary();
+        }
 
-    // بهروزرسانی خلاصه هزینه ها
-    function updateTransactionsSummary() {
-        const visibleRows = document.querySelectorAll('#transactionsTable tbody tr:not([style*="display: none"])');
-        let totalAmount = 0;
+        // بهروزرسانی خلاصه هزینه ها
+        function updateTransactionsSummary() {
+            const visibleRows = document.querySelectorAll('#transactionsTable tbody tr:not([style*="display: none"])');
+            let totalAmount = 0;
 
-        visibleRows.forEach(row => {
-            totalAmount += parseFloat(row.dataset.amount);
-        });
+            visibleRows.forEach(row => {
+                totalAmount += parseFloat(row.dataset.amount);
+            });
 
-        document.getElementById('footerTotalAmount').textContent = totalAmount.toLocaleString() + ' افغانی';
-    }
+            document.getElementById('footerTotalAmount').textContent = totalAmount.toLocaleString() + ' افغانی';
+        }
 
-    // بارگذاری گزارش قرض ها
-    async function loadDebtsReport() {
-        try {
-            const response = await fetch('api/debts_report.php');
-            const data = await response.json();
+        // بارگذاری گزارش قرض ها
+        async function loadDebtsReport() {
+            try {
+                const response = await fetch('api/debts_report.php');
+                const data = await response.json();
 
-            if (data.success) {
-                // بهروزرسانی کارتهای خلاصه
-                document.getElementById('totalCustomerDebt').textContent = data.summary.total_customer_debt.toLocaleString() + ' افغانی';
-                document.getElementById('totalSupplierCredit').textContent = data.summary.total_supplier_credit.toLocaleString() + ' افغانی';
+                if (data.success) {
+                    // بهروزرسانی کارتهای خلاصه
+                    document.getElementById('totalCustomerDebt').textContent = data.summary.total_customer_debt.toLocaleString() + ' افغانی';
+                    document.getElementById('totalSupplierCredit').textContent = data.summary.total_supplier_credit.toLocaleString() + ' افغانی';
 
-                const balance = data.summary.total_supplier_credit - data.summary.total_customer_debt;
-                document.getElementById('financialBalance').textContent = balance.toLocaleString() + ' افغانی';
-                document.getElementById('financialBalance').className = 'value ' + (balance >= 0 ? 'text-success' : 'text-danger');
+                    const balance = data.summary.total_supplier_credit - data.summary.total_customer_debt;
+                    document.getElementById('financialBalance').textContent = balance.toLocaleString() + ' افغانی';
+                    document.getElementById('financialBalance').className = 'value ' + (balance >= 0 ? 'text-success' : 'text-danger');
 
-                // بهروزرسانی جدول قرض مشتریان
-                const customerDebtsBody = document.getElementById('customerDebtsBody');
-                customerDebtsBody.innerHTML = data.customer_debts.map(debt => `
+                    // بهروزرسانی جدول قرض مشتریان
+                    const customerDebtsBody = document.getElementById('customerDebtsBody');
+                    customerDebtsBody.innerHTML = data.customer_debts.map(debt => `
                         <tr>
                             <td>${debt.customer_name}</td>
                             <td class="text-danger fw-bold">${debt.remaining_amount.toLocaleString()} افغانی</td>
@@ -2420,21 +2381,20 @@ include $footer_file;
                         </tr>
                     `).join('');
 
-                // بهروزرسانی جدول طلبتأمین کنندگان
-                const supplierCreditsBody = document.getElementById('supplierCreditsBody');
-                supplierCreditsBody.innerHTML = data.supplier_credits.map(credit => `
+                    // بهروزرسانی جدول طلبتأمین کنندگان
+                    const supplierCreditsBody = document.getElementById('supplierCreditsBody');
+                    supplierCreditsBody.innerHTML = data.supplier_credits.map(credit => `
                         <tr>
                             <td>${credit.supplier_name}</td>
                             <td class="text-success fw-bold">${credit.remaining_amount.toLocaleString()} افغانی</td>
                             <td><span class="badge bg-${credit.payment_status === 'partial' ? 'warning' : 'danger'}">${credit.payment_status === 'partial' ? 'جزئی' : 'بدهکار'}</span></td>
                         </tr>
                     `).join('');
-            } else {
-                alert('خطا در بارگذاری گزارش قرض ها');
+                } else {
+                    alert('خطا در بارگذاری گزارش قرض ها');
+                }
+            } catch (error) {
+                alert('خطا در ارتباط با سرور');
             }
-        } catch (error) {
-            alert('خطا در ارتباط با سرور');
         }
-    }
-</script>
->>>>>>> 0b29c08cc05875c213d1974673aba5bbafef06d9
+    </script>

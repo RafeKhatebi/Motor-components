@@ -1,5 +1,6 @@
 <?php
-class Database {
+class Database
+{
     private $host = 'localhost';
     private $port = '3307';
     private $db_name = 'admin_motor_shop';
@@ -7,13 +8,14 @@ class Database {
     private $password = '';
     public $conn;
 
-    public function getConnection() {
+    public function getConnection()
+    {
         $this->conn = null;
         try {
             $this->conn = new PDO("mysql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name, $this->username, $this->password);
             $this->conn->exec("set names utf8");
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch(PDOException $exception) {
+        } catch (PDOException $exception) {
             error_log("Database connection error: " . $exception->getMessage());
             throw new Exception("Database connection failed: " . $exception->getMessage());
         }

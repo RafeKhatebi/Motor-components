@@ -1,0 +1,150 @@
+/* Login Form RTL Fixes */
+.input-field {
+    margin-bottom: 20px;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.modern-input {
+    width: 100%;
+    padding: 18px 55px 18px 20px !important;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 16px;
+    background: #f9fafb;
+    color: #1f2937;
+    direction: rtl;
+    text-align: right;
+    font-family: 'Vazir', sans-serif;
+}
+
+.modern-input::placeholder {
+    color: #9ca3af;
+    text-align: right;
+    direction: rtl;
+}
+
+.input-icon {
+    position: absolute;
+    right: 18px !important;
+    left: auto !important;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 16px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.toggle-password {
+    position: absolute;
+    left: 18px !important;
+    right: auto !important;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 2;
+}
+
+.toggle-password:hover {
+    color: #2563eb;
+}
+
+.input-wrapper:focus-within .input-icon {
+    color: #2563eb;
+}
+
+.modern-input:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Checkbox Fixes */
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #6b7280;
+    direction: rtl;
+}
+
+.checkbox-text {
+    font-family: 'Vazir', sans-serif;
+}
+
+/* Button Fixes */
+.login-btn {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    padding: 18px 30px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+    font-family: 'Vazir', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Error Message RTL */
+.error-message {
+    direction: rtl;
+    text-align: right;
+    font-family: 'Vazir', sans-serif;
+}
+
+/* Form Header RTL */
+.form-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.form-title {
+    font-family: 'Vazir', sans-serif;
+    direction: rtl;
+}
+
+.form-subtitle {
+    font-family: 'Vazir', sans-serif;
+    direction: rtl;
+}
+
+/* Brand Section RTL */
+.brand-title {
+    font-family: 'Vazir', sans-serif;
+    direction: rtl;
+}
+
+.brand-subtitle {
+    font-family: 'Vazir', sans-serif;
+    direction: rtl;
+}
+
+.feature-item {
+    direction: rtl;
+    font-family: 'Vazir', sans-serif;
+}
+
+.form-footer {
+    direction: rtl;
+    font-family: 'Vazir', sans-serif;
+}

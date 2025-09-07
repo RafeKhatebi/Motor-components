@@ -387,20 +387,9 @@ include __DIR__ . '/includes/header.php';
                             </tr>
                         </tbody>
                         <tfoot>
-                            <tr class="table-info">
-                                <th colspan="2">مجموع:</th>
-                                <th id="totalAmount">0</th>
-                                <th colspan="2"></th>
-                            </tr>
-                            <tr class="table-warning">
-                                <th colspan="2">تخفیف:</th>
-                                <th id="discountAmount">0</th>
-                                <th colspan="2"></th>
-                            </tr>
                             <tr class="table-success">
-                                <th colspan="2">مبلغ نهایی:</th>
-                                <th id="finalAmount">0 افغانی</th>
-                                <th colspan="2"></th>
+                                <th colspan="2">مجموع: <span id="totalAmount">0</span> | تخفیف: <span id="discountAmount">0</span> | مبلغ نهایی: <span id="finalAmount">0 افغانی</span></th>
+                                <th colspan="3"></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -1076,7 +1065,7 @@ include __DIR__ . '/includes/header.php';
     function showAlert(message, type) {
         console.log('Alert:', message, type);
         const alertClass = type === "success" ? "alert-success" : "alert-danger";
-        const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+        const alertHtml = `<div class="alert ${alertClass} alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>`;

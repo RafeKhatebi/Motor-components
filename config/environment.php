@@ -14,33 +14,33 @@ switch (ENVIRONMENT) {
         define('DB_USER', 'root');
         define('DB_PASS', '');
         define('DB_CHARSET', 'utf8mb4');
-        
+
         // Development settings
         define('DEBUG_MODE', true);
         define('LOG_ERRORS', true);
         define('DISPLAY_ERRORS', true);
         break;
-        
+
     case 'production':
         define('DB_HOST', 'localhost');
         define('DB_NAME', 'motor_prod');
         define('DB_USER', 'motor_user');
         define('DB_PASS', 'secure_password_here');
         define('DB_CHARSET', 'utf8mb4');
-        
+
         // Production settings
         define('DEBUG_MODE', false);
         define('LOG_ERRORS', true);
         define('DISPLAY_ERRORS', false);
         break;
-        
+
     case 'testing':
         define('DB_HOST', 'localhost');
         define('DB_NAME', 'motor_test');
         define('DB_USER', 'root');
         define('DB_PASS', '');
         define('DB_CHARSET', 'utf8mb4');
-        
+
         // Testing settings
         define('DEBUG_MODE', true);
         define('LOG_ERRORS', true);

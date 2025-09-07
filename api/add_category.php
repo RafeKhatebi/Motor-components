@@ -1,25 +1,29 @@
 <?php
+ob_start();
 require_once '../init_security.php';
 if (!isset($_SESSION['user_id'])) {
+    ob_clean();
     http_response_code(401);
+    header('Content-Type: application/json');
     echo json_encode(['success' => false, 'message' => 'غیر مجاز']);
-    return;
+    exit();
 }
 
 require_once '../config/database.php';
 
+ob_clean();
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $database = new Database();
     $db = $database->getConnection();
     
-    $name = $_POST['name'] ?? '';
-    $description = $_POST['description'] ?? '';
+    $name = trim($_POST['name'] ?? '');
+    $description = trim($_POST['description'] ?? '');
     
     if (empty($name)) {
         echo json_encode(['success' => false, 'message' => 'نام دستهبندی الزامی است']);
-        return;
+        exit();
     }
     
     try {
