@@ -3,7 +3,7 @@
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-blue?logo=php)](https://www.php.net/)  
 [![MySQL](https://img.shields.io/badge/MySQL-5.7%2B-orange?logo=mysql)](https://www.mysql.com/)  
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.1.3-purple?logo=bootstrap)](https://getbootstrap.com/)  
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+
 
 A modular, role-based **Motorcycle Parts Store Management System** built with PHP (MVC pattern), MySQL, and a Bootstrap/JS frontend. Supports inventory, orders, suppliers, reports, and backups.
 
@@ -93,7 +93,7 @@ motor/
 
 | Dashboard | Invoice | Reports |
 |----------|---------|---------|
-| ![Dashboard](assets/re-img/m%20(1).png) | ![Invoice](assets/re-img/m%20(2).png) | ![Reports](assets/re-img/m%20(3).png) | ![Reports](assets/re-img/m%20(4).png) | ![Reports](assets/re-img/m%20(5).png) | ![Reports](assets/re-img/m%20(6).png) | 
+| ![Dashboard](assets/re-img/m%20(1).png) | ![Invoice](assets/re-img/m%20(2).png) | ![Reports](assets/re-img/m%20(3).png) | ![Reports](assets/re-img/m%20(4).png) | ![Users](assets/re-img/m%20(5).png) | ![Sales](assets/re-img/m%20(6).png) | 
 
 > You can replace these files with your actual screenshots from `assets/re-img/`
 
