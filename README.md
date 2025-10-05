@@ -1,127 +1,120 @@
-# سیستم مدیریت فروشگاه قطعات موتورسیکلت
+# 🏍 Motorcycle Parts Store Management System
 
-## ویژگیهای سیستم
+[![PHP](https://img.shields.io/badge/PHP-7.4%2B-blue?logo=php)](https://www.php.net/)  
+[![MySQL](https://img.shields.io/badge/MySQL-5.7%2B-orange?logo=mysql)](https://www.mysql.com/)  
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.1.3-purple?logo=bootstrap)](https://getbootstrap.com/)  
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-### ✅ قابلیتهای اصلی
-- **احراز هویت امن**: سیستم ورود با سطوح دسترسی (مدیر، مدیر فروش، کارمند)
-- **داشبورد جامع**: نمایش آمار کلی و اطلاعات مهم
-- **مدیریت محصولات**: افزودن، ویرایش، حذف و کنترل موجودی
-- **مدیریت دستهبندیها**: سازماندهی محصولات
-- **مدیریت مشتریان**: ثبت و مدیریت اطلاعات مشتریان
-- **مدیریت تأمینکنندگان**: ثبت اطلاعات تأمینکنندگان
-- **سیستم فروش**: ثبت فاکتور با محاسبه خودکار و کنترل موجودی
-- **سیستم خرید**: ثبت فاکتور خرید و افزایش موجودی
-- **چاپ فاکتور**: امکان چاپ فاکتورهای فروش
-- **گزارشگیری**: گزارشات فروش، محصولات پرفروش و موجودی
-- **مدیریت کاربران**: افزودن و مدیریت کاربران (فقط مدیر)
-- **پشتیبانگیری**: ایجاد و دانلود فایلهای پشتیبان
-
-### 🛠 تکنولوژیهای استفاده شده
-- **Backend**: PHP 7.4+
-- **Database**: MySQL 5.7+
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Framework CSS**: Bootstrap 5.1.3
-- **Framework JS**: Chart.js
-- **Architecture**: MVC Pattern
-
-## ساختار پروژه
-
-```
-motor/
-├── config/
-│   └── database.php          # تنظیمات دیتابیس
-├── assets/
-│   ├── css/
-│   │   └── style.css         # استایلهای اصلی
-│   └── js/
-│       └── main.js           # عملکردهای JavaScript
-├── api/                      # APIهای سیستم
-│   ├── add_product.php
-│   ├── add_customer.php
-│   ├── add_sale.php
-│   ├── add_purchase.php
-│   └── ...
-├── includes/
-│   └── auth.php              # احراز هویت
-├── backups/                  # فایلهای پشتیبان
-├── dashboard.php             # داشبورد اصلی
-├── products.php              # مدیریت محصولات
-├── categories.php            # مدیریت دستهبندیها
-├── customers.php             # مدیریت مشتریان
-├── suppliers.php             # مدیریت تأمینکنندگان
-├── sales.php                 # سیستم فروش
-├── purchases.php             # سیستم خرید
-├── users.php                 # مدیریت کاربران
-├── reports.php               # گزارشات
-├── backup.php                # پشتیبانگیری
-├── print_invoice.php         # چاپ فاکتور
-├── login.php                 # صفحه ورود
-└── database.sql              # ساختار دیتابیس
-```
-
-## نحوه نصب و راهاندازی
-
-### 1. پیش‌نیازها
-- XAMPP یا WAMP
-- PHP 7.4 یا بالاتر
-- MySQL 5.7 یا بالاتر
-
-### 2. مراحل نصب
-1. فایلها را در پوشه `htdocs/motor` کپی کنید
-2. دیتابیس را با فایل `database.sql` ایجاد کنید
-3. تنظیمات دیتابیس را در `config/database.php` بررسی کنید
-4. به آدرس `http://localhost/motor` بروید
-
-### 3. اطلاعات ورود پیش‌فرض
-- **نام کاربری**: admin
-- **رمز عبور**: password
-
-## امنیت سیستم
-
-### ✅ ویژگیهای امنیتی پیاده‌سازی شده
-- Hash کردن رمزهای عبور با bcrypt
-- محافظت در برابر SQL Injection با Prepared Statements
-- کنترل دسترسی بر اساس نقش کاربر
-- اعتبارسنجی ورودیها در سمت سرور
-- محافظت جلسات کاربری
-
-### 🔒 توصیههای امنیتی
-- رمز عبور پیش‌فرض را تغییر دهید
-- دسترسی به پوشه `config` را محدود کنید
-- فایلهای پشتیبان را در مکان امن نگهداری کنید
-- به‌روزرسانی منظم PHP و MySQL
-
-## پیشنهادات ارتقاء
-
-### 📈 ویژگیهای پیشنهادی برای نسخه بعدی
-1. **رابط کاربری**:
-   - استفاده از Tailwind CSS
-   - طراحی ریسپانسیو بهتر
-   - Dark Mode
-
-2. **عملکرد**:
-   - Cache کردن داده‌ها
-   - بهینه‌سازی کوئری‌ها
-   - Lazy Loading
-
-3. **ویژگیهای جدید**:
-   - سیستم اعلانات
-   - گزارشات پیشرفته با نمودار
-   - صدور فاکتور PDF
-   - سیستم پیامک
-   - API RESTful
-
-4. **امنیت**:
-   - Two-Factor Authentication
-   - Rate Limiting
-   - CSRF Protection
-   - XSS Protection
-
-## پشتیبانی
-
-برای گزارش مشکلات یا پیشنهادات، لطفاً با تیم توسعه تماس بگیرید.
+A modular, role-based **Motorcycle Parts Store Management System** built with PHP (MVC pattern), MySQL, and a Bootstrap/JS frontend. Supports inventory, orders, suppliers, reports, and backups.
 
 ---
-**نسخه**: 1.0.0  
-**تاریخ**: 2024  
-**توسعه‌دهنده**: تیم توسعه سیستم مدیریت فروشگاه
+
+## 🚀 Features
+
+- Secure login with **role-based access** (Admin, Sales Manager, Employee)  
+- Central **dashboard** with key KPIs and metrics  
+- **Product & category management** (CRUD, stock control)  
+- **Customer & supplier management**  
+- **Sales & purchase modules** (auto stock update)  
+- **Invoice printing**  
+- **Reporting** (sales, top products, inventory)  
+- **User management** (Admins can manage users)  
+- **Backup & restore**  
+- **Security**: bcrypt password hashing, prepared statements, input validation, session control  
+
+---
+
+## 🛠 Tech Stack
+
+| Layer     | Technology         |
+|-----------|---------------------|
+| Backend   | PHP 7.4+             |
+| Database  | MySQL 5.7+            |
+| Frontend  | HTML5, CSS3, JavaScript |
+| UI Framework | Bootstrap 5.1.3       |
+| Charts    | Chart.js              |
+| Architecture | MVC Pattern         |
+
+---
+
+## 📁 Project Structure
+
+motor/
+├── config/
+│ └── database.php
+├── assets/
+│ ├── css/
+│ ├── js/
+│ └── re-img/ # Real screenshots (dashboard, invoice etc.)
+├── api/
+├── includes/
+├── backups/
+├── *.php # core modules: dashboard, products, sales, etc.
+└── database.sql
+
+---
+
+## 🧩 Installation
+
+1. Clone or copy the project to `htdocs/motor`  
+2. Import `database.sql` into MySQL  
+3. Adjust DB credentials in `config/database.php`  
+4. Visit `http://localhost/motor`
+
+**Default Credentials**  
+
+
+---
+
+## 🧩 Installation
+
+1. Clone or copy the project to `htdocs/motor`  
+2. Import `database.sql` into MySQL  
+3. Adjust DB credentials in `config/database.php`  
+4. Visit `http://localhost/motor`
+
+**Default Credentials**  
+
+---
+
+## 🔐 Security Notes
+
+- Passwords hashed using **bcrypt**  
+- Database interactions use **prepared statements**  
+- Role-based access control  
+- Server-side input validation  
+- Secure session handling  
+
+> **Tip:** Change default credentials immediately, restrict access to `config/`, and keep backups secure. Also به‌روزرسانی مداوم PHP و MySQL را فراموش نکنید.
+
+---
+
+## 📸 Screenshots
+
+| Dashboard | Invoice | Reports |
+|----------|---------|---------|
+| ![Dashboard](assets/re-img/m%20(1).png) | ![Invoice](assets/re-img/m%20(2).png) | ![Reports](assets/re-img/m%20(3).png) | ![Reports](assets/re-img/m%20(4).png) | ![Reports](assets/re-img/m%20(5).png) | ![Reports](assets/re-img/m%20(6).png) | 
+
+> You can replace these files with your actual screenshots from `assets/re-img/`
+
+---
+
+## 🔮 Future Enhancements
+
+- UI redesign with **TailwindCSS** & **Dark Mode**  
+- **PDF export** for invoices  
+- **RESTful API**  
+- **Two-Factor Authentication (2FA)**, CSRF & XSS protection  
+- **Notifications & SMS integration**  
+- **Performance optimizations** (caching, lazy loading, query tuning)  
+
+---
+
+## 📝 License & Support
+
+Licensed under the **Rafe Khatebi**.  
+For issues, feature requests or help, feel free to open an issue or pull request in the repository.
+
+**Version**: 1.0.0  
+**Year**: 2024  
+**Developer**: Motorcycle Store Management System Dev Team
