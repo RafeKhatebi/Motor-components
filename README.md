@@ -95,7 +95,7 @@ motor/
 |----------|---------|---------|
 | ![Dashboard](assets/re-img/m%20(1).png) | ![Invoice](assets/re-img/m%20(2).png) | ![Reports](assets/re-img/m%20(3).png) | ![Reports](assets/re-img/m%20(4).png) | ![Users](assets/re-img/m%20(5).png) | ![Sales](assets/re-img/m%20(6).png) | 
 
-> You can replace these files with your actual screenshots from `assets/re-img/`
+
 
 ---
 
@@ -110,11 +110,3 @@ motor/
 
 ---
 
-## 📝 License & Support
-
-Licensed under the **Rafe Khatebi**.  
-For issues, feature requests or help, feel free to open an issue or pull request in the repository.
-
-**Version**: 1.0.0  
-**Year**: 2024  
-**Developer**: Motorcycle Store Management System Dev Team
